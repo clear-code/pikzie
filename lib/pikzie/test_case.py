@@ -2,8 +2,9 @@ import pprint
 import re
 import sys
 import traceback
-from faults import *
-from assertions import Assertions
+
+from pikzie.faults import *
+from pikzie.assertions import Assertions
 
 class Traceback(object):
     def __init__(self, filename, lineno, name, line):

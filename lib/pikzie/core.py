@@ -6,11 +6,10 @@ import types
 import time
 import math
 import pprint
-from color import *
-from faults import *
-from test_case import TestCase
 
-version = "0.1"
+from pikzie.color import *
+from pikzie.faults import *
+from pikzie.test_case import TestCase
 
 class TestSuite(object):
     """A test suite is a composite test consisting of a number of TestCases.

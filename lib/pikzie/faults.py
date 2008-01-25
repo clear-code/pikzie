@@ -1,4 +1,4 @@
-from color import *
+from pikzie.color import *
 
 class Fault(Exception):
     def __init__(self, message, user_message=None):
