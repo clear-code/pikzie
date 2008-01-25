@@ -24,7 +24,6 @@ class TestCase(unittest.TestCase):
     failureException = Fault
 
     def __init__(self, *args):
-        self._asserting = False
         unittest.TestCase.__init__(self, *args)
 
     def run(self, result=None):
@@ -64,199 +63,171 @@ class TestCase(unittest.TestCase):
             result.stopTest(self)
 
     def fail(self, message):
-        for _ in self._assertion():
-            self._fail(message)
+        self._fail(message)
 
     def assert_none(self, expression, user_message=None):
-        for _ in self._assertion():
-            if expression is None:
-                self._result.pass_assertion()
-            else:
-                message = "expected: <%r> is None" % expression
-                self._fail(message, user_message)
+        if expression is None:
+            self._result.pass_assertion()
+        else:
+            message = "expected: <%r> is None" % expression
+            self._fail(message, user_message)
 
     def assert_not_none(self, expression, user_message=None):
-        for _ in self._assertion():
-            if expression is not None:
-                self._result.pass_assertion()
-            else:
-                self._fail("expected: not None", user_message)
+        if expression is not None:
+            self._result.pass_assertion()
+        else:
+            self._fail("expected: not None", user_message)
 
     def assert_true(self, expression, user_message=None):
-        for _ in self._assertion():
-            if expression:
-                self._result.pass_assertion()
-            else:
-                message = "expected: <%r> is a true value" % expression
-                self._fail(message, user_message)
+        if expression:
+            self._result.pass_assertion()
+        else:
+            message = "expected: <%r> is a true value" % expression
+            self._fail(message, user_message)
 
     def assert_false(self, expression, user_message=None):
-        for _ in self._assertion():
-            if expression:
-                message = "expected: <%r> is a false value" % expression
-                self._fail(message, user_message)
-            else:
-                self._result.pass_assertion()
+        if expression:
+            message = "expected: <%r> is a false value" % expression
+            self._fail(message, user_message)
+        else:
+            self._result.pass_assertion()
 
     def assert_equal(self, expected, actual, user_message=None):
-        for _ in self._assertion():
-            if expected == actual:
-                self._result.pass_assertion()
-            else:
-                expected = pprint.pformat(expected)
-                actual = pprint.pformat(actual)
-                diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
-                message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
-                    (expected, actual, "\n".join(diff))
-                self._fail(message, user_message)
+        if expected == actual:
+            self._result.pass_assertion()
+        else:
+            expected = pprint.pformat(expected)
+            actual = pprint.pformat(actual)
+            diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
+            message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
+                (expected, actual, "\n".join(diff))
+            self._fail(message, user_message)
 
     def assert_not_equal(self, not_expected, actual, user_message=None):
-        for _ in self._assertion():
+        if not_expected != actual:
+            self._result.pass_assertion()
+        else:
+            not_expected = pprint.pformat(not_expected)
+            actual = pprint.pformat(actual)
+            message = "not expected: <%s>\n     but was: <%s>" % \
+                (not_expected, actual)
             if not_expected != actual:
-                self._result.pass_assertion()
-            else:
-                not_expected = pprint.pformat(not_expected)
-                actual = pprint.pformat(actual)
-                message = "not expected: <%s>\n     but was: <%s>" % \
-                    (not_expected, actual)
-                if not_expected != actual:
-                    diff = difflib.ndiff(not_expected.splitlines(),
-                                         actual.splitlines())
-                    message = "%s\ndiff:\n%s" % (message, "\n".join(diff))
-                self._fail(message, user_message)
+                diff = difflib.ndiff(not_expected.splitlines(),
+                                     actual.splitlines())
+                message = "%s\ndiff:\n%s" % (message, "\n".join(diff))
+            self._fail(message, user_message)
 
     def assert_in_delta(self, expected, actual, delta, user_message=None):
-        for _ in self._assertion():
-            lower = expected - delta
-            upper = expected + delta
-            if lower <= actual <= upper:
-                self._result.pass_assertion()
-            else:
-                expected = pprint.pformat(expected)
-                actual = pprint.pformat(actual)
-                delta = pprint.pformat(delta)
-                range = pprint.pformat([lower, upper])
-                message = "expected: <%s+-%s %s>\n but was: <%s>" % \
-                    (expected, delta, range, actual)
-                self._fail(message, user_message)
+        lower = expected - delta
+        upper = expected + delta
+        if lower <= actual <= upper:
+            self._result.pass_assertion()
+        else:
+            expected = pprint.pformat(expected)
+            actual = pprint.pformat(actual)
+            delta = pprint.pformat(delta)
+            range = pprint.pformat([lower, upper])
+            message = "expected: <%s+-%s %s>\n but was: <%s>" % \
+                (expected, delta, range, actual)
+            self._fail(message, user_message)
 
     def assert_match(self, pattern, target, user_message=None):
-        for _ in self._assertion():
-            if re.match(pattern, target):
-                self._result.pass_assertion()
-            else:
-                pattern_repr = self._pformat_re_repr(pattern)
-                pattern = self._pformat_re(pattern)
-                target = pprint.pformat(target)
-                format = \
-                    "expected: re.match(%s, %s) is not None\n" \
-                    " pattern: <%s>\n" \
-                    "  target: <%s>"
-                message = format % (pattern_repr, target, pattern, target)
-                self._fail(message, user_message)
+        if re.match(pattern, target):
+            self._result.pass_assertion()
+        else:
+            pattern_repr = self._pformat_re_repr(pattern)
+            pattern = self._pformat_re(pattern)
+            target = pprint.pformat(target)
+            format = \
+                "expected: re.match(%s, %s) is not None\n" \
+                " pattern: <%s>\n" \
+                "  target: <%s>"
+            message = format % (pattern_repr, target, pattern, target)
+            self._fail(message, user_message)
 
     def assert_not_match(self, pattern, target, user_message=None):
-        for _ in self._assertion():
-            if re.match(pattern, target) is None:
-                self._result.pass_assertion()
-            else:
-                pattern_repr = self._pformat_re_repr(pattern)
-                pattern = self._pformat_re(pattern)
-                target = pprint.pformat(target)
-                format = \
-                    "expected: re.match(%s, %s) is None\n" \
-                    " pattern: <%s>\n" \
-                    "  target: <%s>"
-                message = format % (pattern_repr, target, pattern, target)
-                self._fail(message, user_message)
+        if re.match(pattern, target) is None:
+            self._result.pass_assertion()
+        else:
+            pattern_repr = self._pformat_re_repr(pattern)
+            pattern = self._pformat_re(pattern)
+            target = pprint.pformat(target)
+            format = \
+                "expected: re.match(%s, %s) is None\n" \
+                " pattern: <%s>\n" \
+                "  target: <%s>"
+            message = format % (pattern_repr, target, pattern, target)
+            self._fail(message, user_message)
 
     def assert_search(self, pattern, target, user_message=None):
-        for _ in self._assertion():
-            if re.search(pattern, target):
-                self._result.pass_assertion()
-            else:
-                pattern_repr = self._pformat_re_repr(pattern)
-                pattern = self._pformat_re(pattern)
-                target = pprint.pformat(target)
-                format = \
-                    "expected: re.search(%s, %s) is not None\n" \
-                    " pattern: <%s>\n" \
-                    "  target: <%s>"
-                message = format % (pattern_repr, target, pattern, target)
-                self._fail(message, user_message)
+        if re.search(pattern, target):
+            self._result.pass_assertion()
+        else:
+            pattern_repr = self._pformat_re_repr(pattern)
+            pattern = self._pformat_re(pattern)
+            target = pprint.pformat(target)
+            format = \
+                "expected: re.search(%s, %s) is not None\n" \
+                " pattern: <%s>\n" \
+                "  target: <%s>"
+            message = format % (pattern_repr, target, pattern, target)
+            self._fail(message, user_message)
 
     def assert_not_found(self, pattern, target, user_message=None):
-        for _ in self._assertion():
-            if re.search(pattern, target) is None:
-                self._result.pass_assertion()
-            else:
-                pattern_repr = self._pformat_re_repr(pattern)
-                pattern = self._pformat_re(pattern)
-                target = pprint.pformat(target)
-                format = \
-                    "expected: re.search(%s, %s) is None\n" \
-                    " pattern: <%s>\n" \
-                    "  target: <%s>"
-                message = format % (pattern_repr, target, pattern, target)
-                self._fail(message, user_message)
+        if re.search(pattern, target) is None:
+            self._result.pass_assertion()
+        else:
+            pattern_repr = self._pformat_re_repr(pattern)
+            pattern = self._pformat_re(pattern)
+            target = pprint.pformat(target)
+            format = \
+                "expected: re.search(%s, %s) is None\n" \
+                " pattern: <%s>\n" \
+                "  target: <%s>"
+            message = format % (pattern_repr, target, pattern, target)
+            self._fail(message, user_message)
 
     def assert_hasattr(self, object, name, user_message=None):
-        for _ in self._assertion():
-            if hasattr(object, name):
-                self._result.pass_assertion()
-            else:
-                object = pprint.pformat(object)
-                name = pprint.pformat(name)
-                message = "expected: hasattr(%s, %s)" % (object, name)
-                self._fail(message, user_message)
+        if hasattr(object, name):
+            self._result.pass_assertion()
+        else:
+            object = pprint.pformat(object)
+            name = pprint.pformat(name)
+            message = "expected: hasattr(%s, %s)" % (object, name)
+            self._fail(message, user_message)
 
     def assert_callable(self, object, user_message=None):
-        for _ in self._assertion():
-            if callable(object):
-                self._result.pass_assertion()
-            else:
-                object = pprint.pformat(object)
-                message = "expected: callable(%s)" % (object)
-                self._fail(message, user_message)
+        if callable(object):
+            self._result.pass_assertion()
+        else:
+            object = pprint.pformat(object)
+            message = "expected: callable(%s)" % (object)
+            self._fail(message, user_message)
 
     def assert_call_raise(self, exception, callable, *args, **kw_args):
-        for _ in self._assertion():
-            try:
-                callable(*args, **kw_args)
-            except exception:
-                self._result.pass_assertion()
-            except:
-                actual = sys.exc_info()
-                actual_exception_class, actual_exception_value = actual[:2]
-                message = \
-                    "expected: <%s> is raised\n" \
-                    " but was: <%s>(%s)" % \
-                    (self._pformat_exception_class(exception),
-                     self._pformat_exception_class(actual_exception_class),
-                     str(actual_exception_value))
-                self._fail(message)
-            else:
-                message = \
-                    "expected: <%s> is raised\n" \
-                    " but was: nothing raised" % \
-                    self._pformat_exception_class(exception)
-                self._fail(message)
+        try:
+            callable(*args, **kw_args)
+        except exception:
+            self._result.pass_assertion()
+        except:
+            actual = sys.exc_info()
+            actual_exception_class, actual_exception_value = actual[:2]
+            message = \
+                "expected: <%s> is raised\n" \
+                " but was: <%s>(%s)" % \
+                (self._pformat_exception_class(exception),
+                 self._pformat_exception_class(actual_exception_class),
+                 str(actual_exception_value))
+            self._fail(message)
+        else:
+            message = \
+                "expected: <%s> is raised\n" \
+                " but was: nothing raised" % \
+                self._pformat_exception_class(exception)
+            self._fail(message)
 
     def _fail(self, message, user_message=None):
         raise self.failureException(message, user_message)
-
-    def _assertion(self):
-        if self._asserting:
-            yield self
-        else:
-            previous_asserting = self._asserting
-            try:
-                self._asserting = True
-                yield self
-                self._asserting = previous_asserting
-            except:
-                self._asserting = previous_asserting
-                raise
 
     def _pformat_exception_class(self, exception_class):
         if issubclass(exception_class, Exception):
