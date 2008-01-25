@@ -2,12 +2,12 @@ import sys, os, glob, re, types, time, traceback, math, pprint, difflib
 import unittest
 
 TestSuite = unittest.TestSuite
-FunctionTestCase = unittest.FunctionTestCase
 main = unittest.main
 
 version = "0.1"
 
 __unittest = True
+
 
 class Fault(Exception):
     def __init__(self, message, user_message=None):
@@ -20,67 +20,129 @@ class Fault(Exception):
             result += self.user_message + "\n"
         return result
 
-class TestCase(unittest.TestCase):
-    failureException = Fault
+class TestCase(object):
+    """A class whose instances are single test cases.
 
-    def __init__(self, *args):
-        unittest.TestCase.__init__(self, *args)
+    By default, the test code itself should be placed in a method named
+    'runTest'.
 
-    def run(self, result=None):
-        if result is None: result = self.defaultTestResult()
-        self._result = result
-        result.startTest(self)
-        testMethod = getattr(self, self.__testMethodName)
+    If the fixture may be used for many test cases, create as
+    many test methods as are needed. When instantiating such a TestCase
+    subclass, specify in the constructor arguments the name of the test method
+    that the instance is to execute.
+
+    Test authors should subclass TestCase for their own tests. Construction
+    and deconstruction of the test's environment ('fixture') can be
+    implemented by overriding the 'setUp' and 'tearDown' methods respectively.
+
+    If it is necessary to override the __init__ method, the base class
+    __init__ method must always be called. It is important that subclasses
+    should not change the signature of their __init__ method, since instances
+    of the classes are instantiated automatically by parts of the framework
+    in order to be run.
+    """
+
+    def __init__(self, method_name):
+        self.__method_name = method_name
+        self.__description = getattr(self, method_name).__doc__
+
+    def size(self):
+        return 1
+
+    def description(self):
+        """Returns a one-line description of the test, or None if no
+        description has been provided.
+
+        The default implementation of this method returns the first line of
+        the specified test method's docstring.
+        """
+        description = self.__description
+        if description:
+            return description.split("\n")[0].strip()
+        else:
+            return None
+
+    def id(self):
+        return "%s.%s.%s" % (self.__class__.__module__,
+                             self.__class__.__name__,
+                             self.__method_name)
+
+    def __str__(self):
+        return "%s.%s" % (self.__class__.__name__, self.__method_name)
+
+    def __repr__(self):
+        return "<%s method_name=%s description=%s>" % \
+               (str(self.__class__), self.__method_name, self.__description)
+
+    def __call__(self, *args, **kwds):
+        return self.run(*args, **kwds)
+
+    def run(self, result):
         try:
-            try:
-                self.setUp()
-            except KeyboardInterrupt:
-                raise
-            except:
-                result.addError(self, self.__exc_info())
-                return
+            self.__result = result
+            result.start_test(self)
 
-            ok = False
+            success = False
             try:
-                testMethod()
-                ok = True
-            except self.failureException, e:
-                result.addFailure(self, self.__exc_info())
-            except KeyboardInterrupt:
-                raise
-            except:
-                result.addError(self, self.__exc_info())
+                try:
+                    self.setup()
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    result.add_error(self, sys.exc_info())
+                    return
 
-            try:
-                self.tearDown()
-            except KeyboardInterrupt:
-                raise
-            except:
-                result.addError(self, self.__exc_info())
-                ok = False
-            if ok: result.addSuccess(self)
+                try:
+                    getattr(self, self.__method_name)()
+                    success = True
+                except Fault:
+                    result.add_failure(self, sys.exc_info())
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    result.add_error(self, sys.exc_info())
+            finally:
+                try:
+                    self.teardown()
+                except KeyboardInterrupt:
+                    raise
+                except:
+                    result.add_error(self, sys.exc_info())
+                    success = False
+
+            if success:
+                result.add_success(self)
         finally:
-            result.stopTest(self)
+            result.stop_test(self)
+            self.__result = None
+
+    def setup(self):
+        "Hook method for setting up the test fixture before exercising it."
+        pass
+
+    def teardown(self):
+        "Hook method for deconstructing the test fixture after testing it."
+        pass
 
     def fail(self, message):
         self._fail(message)
 
     def assert_none(self, expression, user_message=None):
         if expression is None:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             message = "expected: <%r> is None" % expression
             self._fail(message, user_message)
 
     def assert_not_none(self, expression, user_message=None):
         if expression is not None:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             self._fail("expected: not None", user_message)
 
     def assert_true(self, expression, user_message=None):
         if expression:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             message = "expected: <%r> is a true value" % expression
             self._fail(message, user_message)
@@ -90,11 +152,11 @@ class TestCase(unittest.TestCase):
             message = "expected: <%r> is a false value" % expression
             self._fail(message, user_message)
         else:
-            self._result.pass_assertion()
+            self._pass_assertion()
 
     def assert_equal(self, expected, actual, user_message=None):
         if expected == actual:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             expected = pprint.pformat(expected)
             actual = pprint.pformat(actual)
@@ -105,7 +167,7 @@ class TestCase(unittest.TestCase):
 
     def assert_not_equal(self, not_expected, actual, user_message=None):
         if not_expected != actual:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             not_expected = pprint.pformat(not_expected)
             actual = pprint.pformat(actual)
@@ -121,7 +183,7 @@ class TestCase(unittest.TestCase):
         lower = expected - delta
         upper = expected + delta
         if lower <= actual <= upper:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             expected = pprint.pformat(expected)
             actual = pprint.pformat(actual)
@@ -133,7 +195,7 @@ class TestCase(unittest.TestCase):
 
     def assert_match(self, pattern, target, user_message=None):
         if re.match(pattern, target):
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             pattern_repr = self._pformat_re_repr(pattern)
             pattern = self._pformat_re(pattern)
@@ -147,7 +209,7 @@ class TestCase(unittest.TestCase):
 
     def assert_not_match(self, pattern, target, user_message=None):
         if re.match(pattern, target) is None:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             pattern_repr = self._pformat_re_repr(pattern)
             pattern = self._pformat_re(pattern)
@@ -161,7 +223,7 @@ class TestCase(unittest.TestCase):
 
     def assert_search(self, pattern, target, user_message=None):
         if re.search(pattern, target):
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             pattern_repr = self._pformat_re_repr(pattern)
             pattern = self._pformat_re(pattern)
@@ -175,7 +237,7 @@ class TestCase(unittest.TestCase):
 
     def assert_not_found(self, pattern, target, user_message=None):
         if re.search(pattern, target) is None:
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             pattern_repr = self._pformat_re_repr(pattern)
             pattern = self._pformat_re(pattern)
@@ -189,7 +251,7 @@ class TestCase(unittest.TestCase):
 
     def assert_hasattr(self, object, name, user_message=None):
         if hasattr(object, name):
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             object = pprint.pformat(object)
             name = pprint.pformat(name)
@@ -198,17 +260,17 @@ class TestCase(unittest.TestCase):
 
     def assert_callable(self, object, user_message=None):
         if callable(object):
-            self._result.pass_assertion()
+            self._pass_assertion()
         else:
             object = pprint.pformat(object)
             message = "expected: callable(%s)" % (object)
             self._fail(message, user_message)
 
-    def assert_call_raise(self, exception, callable, *args, **kw_args):
+    def assert_call_raise(self, exception, callable_object, *args, **kw_args):
         try:
-            callable(*args, **kw_args)
+            callable_object(*args, **kw_args)
         except exception:
-            self._result.pass_assertion()
+            self._pass_assertion()
         except:
             actual = sys.exc_info()
             actual_exception_class, actual_exception_value = actual[:2]
@@ -226,11 +288,15 @@ class TestCase(unittest.TestCase):
                 self._pformat_exception_class(exception)
             self._fail(message)
 
+    def _pass_assertion(self):
+        self.__result.pass_assertion(self)
+
     def _fail(self, message, user_message=None):
-        raise self.failureException(message, user_message)
+        raise Fault(message, user_message)
 
     def _pformat_exception_class(self, exception_class):
-        if issubclass(exception_class, Exception):
+        if issubclass(exception_class, Exception) or \
+                issubclass(exception_class, types.ClassType):
             return str(exception_class)
         else:
             return pprint.pformat(exception_class)
@@ -278,9 +344,6 @@ class TestCase(unittest.TestCase):
         else:
             return " | ".join(flags)
 
-    def __str__(self):
-        return "%s.%s" % (self.__class__.__name__, self.__testMethodName)
-
 class TestLoader(object):
     def __init__(self, pattern=None):
         if pattern is None:
@@ -319,7 +382,7 @@ class TestLoader(object):
             for name in dir(module):
                 object = getattr(module, name)
                 if (isinstance(object, (type, types.ClassType)) and
-                    issubclass(object, unittest.TestCase)):
+                    issubclass(object, TestCase)):
                     test_cases.append(object)
         return test_cases
 
@@ -439,20 +502,20 @@ class TestResult(object):
         return len(filter(lambda fault: isinstance(fault, Error), self.faults))
     n_errors = property(n_errors)
 
-    def pass_assertion(self):
+    def pass_assertion(self, test):
         self.n_assertions += 1
-        self._notify("pass_assertion")
+        self._notify("pass_assertion", test)
 
-    def startTest(self, test):
+    def start_test(self, test):
         "Called when the given test is about to be run"
         self.n_tests += 1
         self._notify("start_test", test)
 
-    def stopTest(self, test):
+    def stop_test(self, test):
         "Called when the given test has been run"
         pass
 
-    def addError(self, test, err):
+    def add_error(self, test, err):
         """Called when an error has occurred. 'err' is a tuple of values as
         returned by sys.exc_info().
         """
@@ -462,7 +525,7 @@ class TestResult(object):
         self.faults.append(error)
         self._notify("error", error)
 
-    def addFailure(self, test, err):
+    def add_failure(self, test, err):
         """Called when an error has occurred. 'err' is a tuple of values as
         returned by sys.exc_info()."""
         (exception_type, detail, traceback) = err
@@ -471,17 +534,16 @@ class TestResult(object):
         self.faults.append(failure)
         self._notify("failure", failure)
 
-    def addSuccess(self, test):
+    def add_success(self, test):
         "Called when a test has completed successfully"
         self._notify("success", test)
-
-    def wasSuccessful(self):
-        "Tells whether or not this result was a success"
-        return self.n_faults == 0
 
     def stop(self):
         "Indicates that the tests should be aborted"
         self.shouldStop = True
+
+    def wasSuccessful(self):
+        return len(self.faults) == 0
 
     def _notify(self, name, *args):
         for listner in self.listners:

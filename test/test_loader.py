@@ -1,7 +1,7 @@
 import pikzie
 
 class TestLoader(pikzie.TestCase):
-    def setUp(self):
+    def setup(self):
         self.fixture_dir = "test/fixtures/tests"
         pattern = self.fixture_dir + "/test_*.py"
         self.loader = pikzie.TestLoader(pattern)

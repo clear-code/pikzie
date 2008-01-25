@@ -3,7 +3,7 @@ import re
 import pikzie
 
 class TestRunner(pikzie.TestCase):
-    def setUp(self):
+    def setup(self):
         self.output = StringIO()
         self.runner = pikzie.TextTestRunner(self.output, use_color=False)
         self.file_name = __file__
@@ -11,7 +11,10 @@ class TestRunner(pikzie.TestCase):
             self.file_name = self.file_name[:-1]
 
     def test_run_empty_test(self):
-        test = pikzie.FunctionTestCase(lambda : "")
+        class TestCase(pikzie.TestCase):
+            def test_nothing(self):
+                pass
+        test = TestCase("test_nothing")
         self.assert_success_output(1, 0, [test])
 
     def test_run_test_with_assertions(self):
