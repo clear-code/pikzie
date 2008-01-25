@@ -7,7 +7,7 @@ import time
 import traceback
 import math
 import pprint
-import difflib
+from assertions import Assertions
 
 version = "0.1"
 
@@ -54,7 +54,16 @@ class TestSuite(object):
             if result.need_interrupt():
                 break
 
-class TestCase(object):
+class TestCaseTemplate(object):
+    def setup(self):
+        "Hook method for setting up the test fixture before exercising it."
+        pass
+
+    def teardown(self):
+        "Hook method for deconstructing the test fixture after testing it."
+        pass
+
+class TestCase(TestCaseTemplate, Assertions):
     """A class whose instances are single test cases.
 
     By default, the test code itself should be placed in a method named
@@ -121,26 +130,26 @@ class TestCase(object):
                     result.interrupted()
                     return
                 except:
-                    result.add_error(self, sys.exc_info())
+                    self._add_error(result)
                     return
 
                 try:
                     getattr(self, self.__method_name)()
                     success = True
                 except Fault:
-                    result.add_failure(self, sys.exc_info())
+                    self._add_failure(result)
                 except KeyboardInterrupt:
                     result.interrupted()
                     return
                 except:
-                    result.add_error(self, sys.exc_info())
+                    self._add_error(result)
             finally:
                 try:
                     self.teardown()
                 except KeyboardInterrupt:
                     result.interrupted()
                 except:
-                    result.add_error(self, sys.exc_info())
+                    self._add_error(result)
                     success = False
 
             if success:
@@ -148,179 +157,6 @@ class TestCase(object):
         finally:
             result.stop_test(self)
             self.__result = None
-
-    def setup(self):
-        "Hook method for setting up the test fixture before exercising it."
-        pass
-
-    def teardown(self):
-        "Hook method for deconstructing the test fixture after testing it."
-        pass
-
-    def fail(self, message):
-        self._fail(message)
-
-    def assert_none(self, expression, message=None):
-        if expression is None:
-            self._pass_assertion()
-        else:
-            system_message = "expected: <%r> is None" % expression
-            self._fail(system_message, message)
-
-    def assert_not_none(self, expression, message=None):
-        if expression is not None:
-            self._pass_assertion()
-        else:
-            self._fail("expected: not None", message)
-
-    def assert_true(self, expression, message=None):
-        if expression:
-            self._pass_assertion()
-        else:
-            system_message = "expected: <%r> is a true value" % expression
-            self._fail(system_message, message)
-
-    def assert_false(self, expression, message=None):
-        if expression:
-            system_message = "expected: <%r> is a false value" % expression
-            self._fail(system_message, message)
-        else:
-            self._pass_assertion()
-
-    def assert_equal(self, expected, actual, message=None):
-        if expected == actual:
-            self._pass_assertion()
-        else:
-            expected = pprint.pformat(expected)
-            actual = pprint.pformat(actual)
-            diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
-            system_message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
-                (expected, actual, "\n".join(diff))
-            self._fail(system_message, message)
-
-    def assert_not_equal(self, not_expected, actual, message=None):
-        if not_expected != actual:
-            self._pass_assertion()
-        else:
-            not_expected = pprint.pformat(not_expected)
-            actual = pprint.pformat(actual)
-            system_message = "not expected: <%s>\n     but was: <%s>" % \
-                (not_expected, actual)
-            if not_expected != actual:
-                diff = difflib.ndiff(not_expected.splitlines(),
-                                     actual.splitlines())
-                system_message = "%s\ndiff:\n%s" % \
-                    (system_message, "\n".join(diff))
-            self._fail(system_message, message)
-
-    def assert_in_delta(self, expected, actual, delta, message=None):
-        lower = expected - delta
-        upper = expected + delta
-        if lower <= actual <= upper:
-            self._pass_assertion()
-        else:
-            expected = pprint.pformat(expected)
-            actual = pprint.pformat(actual)
-            delta = pprint.pformat(delta)
-            range = pprint.pformat([lower, upper])
-            system_message = "expected: <%s+-%s %s>\n but was: <%s>" % \
-                (expected, delta, range, actual)
-            self._fail(system_message, message)
-
-    def assert_match(self, pattern, target, message=None):
-        if re.match(pattern, target):
-            self._pass_assertion()
-        else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
-            format = \
-                "expected: re.match(%s, %s) is not None\n" \
-                " pattern: <%s>\n" \
-                "  target: <%s>"
-            system_message = format % (pattern_repr, target, pattern, target)
-            self._fail(system_message, message)
-
-    def assert_not_match(self, pattern, target, message=None):
-        if re.match(pattern, target) is None:
-            self._pass_assertion()
-        else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
-            format = \
-                "expected: re.match(%s, %s) is None\n" \
-                " pattern: <%s>\n" \
-                "  target: <%s>"
-            system_message = format % (pattern_repr, target, pattern, target)
-            self._fail(system_message, message)
-
-    def assert_search(self, pattern, target, message=None):
-        if re.search(pattern, target):
-            self._pass_assertion()
-        else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
-            format = \
-                "expected: re.search(%s, %s) is not None\n" \
-                " pattern: <%s>\n" \
-                "  target: <%s>"
-            system_message = format % (pattern_repr, target, pattern, target)
-            self._fail(system_message, message)
-
-    def assert_not_found(self, pattern, target, message=None):
-        if re.search(pattern, target) is None:
-            self._pass_assertion()
-        else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
-            format = \
-                "expected: re.search(%s, %s) is None\n" \
-                " pattern: <%s>\n" \
-                "  target: <%s>"
-            system_message = format % (pattern_repr, target, pattern, target)
-            self._fail(system_message, message)
-
-    def assert_hasattr(self, object, name, message=None):
-        if hasattr(object, name):
-            self._pass_assertion()
-        else:
-            object = pprint.pformat(object)
-            name = pprint.pformat(name)
-            system_message = "expected: hasattr(%s, %s)" % (object, name)
-            self._fail(system_message, message)
-
-    def assert_callable(self, object, message=None):
-        if callable(object):
-            self._pass_assertion()
-        else:
-            object = pprint.pformat(object)
-            system_message = "expected: callable(%s)" % (object)
-            self._fail(system_message, message)
-
-    def assert_call_raise(self, exception, callable_object, *args, **kw_args):
-        try:
-            callable_object(*args, **kw_args)
-        except exception:
-            self._pass_assertion()
-        except:
-            actual = sys.exc_info()
-            actual_exception_class, actual_exception_value = actual[:2]
-            message = \
-                "expected: <%s> is raised\n" \
-                " but was: <%s>(%s)" % \
-                (self._pformat_exception_class(exception),
-                 self._pformat_exception_class(actual_exception_class),
-                 str(actual_exception_value))
-            self._fail(message)
-        else:
-            message = \
-                "expected: <%s> is raised\n" \
-                " but was: nothing raised" % \
-                self._pformat_exception_class(exception)
-            self._fail(message)
 
     def _pass_assertion(self):
         self.__result.pass_assertion(self)
@@ -377,6 +213,45 @@ class TestCase(object):
             return None
         else:
             return " | ".join(flags)
+
+    def _add_failure(self, result):
+        exception_type, detail, traceback = sys.exc_info()
+        tracebacks = self._prepare_traceback(traceback, True)
+        failure = Failure(self, detail, tracebacks)
+        result.add_error(self, failure)
+
+    def _add_error(self, result):
+        exception_type, detail, traceback = sys.exc_info()
+        tracebacks = self._prepare_traceback(traceback, False)
+        error = Error(self, exception_type, detail, tracebacks)
+        result.add_error(self, error)
+
+    def _prepare_traceback(self, tb, compute_length):
+        while tb and self._is_relevant_tb_level(tb):
+            tb = tb.tb_next
+        length = None
+        if compute_length:
+            length = self._count_relevant_tb_levels(tb)
+        tracebacks = []
+        for tb in traceback.extract_tb(tb, length):
+            filename, lineno, name, line = tb
+            tracebacks.append(Traceback(filename, lineno, name, line))
+        return tracebacks
+
+    def _is_relevant_tb_level(self, tb):
+        globals = tb.tb_frame.f_globals
+        for cls in (TestCase,) + TestCase.__bases__:
+            name = cls.__name__
+            if globals.has_key(name) and globals[name] == cls:
+                return True
+        return False
+
+    def _count_relevant_tb_levels(self, tb):
+        length = 0
+        while tb and not self._is_relevant_tb_level(tb):
+            length += 1
+            tb = tb.tb_next
+        return length
 
 class TestLoader(object):
     def __init__(self, pattern=None):
@@ -549,22 +424,13 @@ class TestResult(object):
         "Called when the given test has been run"
         pass
 
-    def add_error(self, test, err):
-        """Called when an error has occurred. 'err' is a tuple of values as
-        returned by sys.exc_info().
-        """
-        exception_type, detail, traceback = err
-        tracebacks = self._prepare_traceback(traceback, False)
-        error = Error(test, exception_type, detail, tracebacks)
+    def add_error(self, test, error):
+        """Called when an error has occurred."""
         self.faults.append(error)
         self._notify("error", error)
 
-    def add_failure(self, test, err):
-        """Called when an error has occurred. 'err' is a tuple of values as
-        returned by sys.exc_info()."""
-        (exception_type, detail, traceback) = err
-        tracebacks = self._prepare_traceback(traceback, True)
-        failure = Failure(test, detail, tracebacks)
+    def add_failure(self, test, failure):
+        """Called when a failure has occurred."""
         self.faults.append(failure)
         self._notify("failure", failure)
 
@@ -587,31 +453,6 @@ class TestResult(object):
             callback_name = "on_%s" % name
             if hasattr(listner, callback_name):
                 getattr(listner, callback_name)(self, *args)
-
-    def _prepare_traceback(self, tb, compute_length):
-        while tb and self._is_relevant_tb_level(tb):
-            tb = tb.tb_next
-        length = None
-        if compute_length:
-            length = self._count_relevant_tb_levels(tb)
-        tracebacks = []
-        for tb in traceback.extract_tb(tb, length):
-            filename, lineno, name, line = tb
-            tracebacks.append(Traceback(filename, lineno, name, line))
-        return tracebacks
-
-    def _is_relevant_tb_level(self, tb):
-        globals = tb.tb_frame.f_globals
-        cls = self.__class__
-        name = cls.__name__
-        return globals.has_key(name) and globals[name] == cls
-
-    def _count_relevant_tb_levels(self, tb):
-        length = 0
-        while tb and not self._is_relevant_tb_level(tb):
-            length += 1
-            tb = tb.tb_next
-        return length
 
     def summary(self):
         return "%d test(s), %d assertion(s), %d failure(s), %d error(s)" % \
