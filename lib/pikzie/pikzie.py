@@ -1,9 +1,17 @@
-import sys, os, glob, re, types, time, traceback, math, pprint, difflib
-import unittest
+import sys
+import os
+import glob
+import re
+import types
+import time
+import traceback
+import math
+import pprint
+import difflib
 
 version = "0.1"
 
-__unittest = True
+__pikzie = True
 
 
 class Fault(Exception):
@@ -595,7 +603,7 @@ class TestResult(object):
         return tracebacks
 
     def _is_relevant_tb_level(self, tb):
-        return tb.tb_frame.f_globals.has_key('__unittest')
+        return tb.tb_frame.f_globals.has_key('__pikzie')
 
     def _count_relevant_tb_levels(self, tb):
         length = 0
@@ -685,86 +693,16 @@ class TestProgram(object):
     """A command-line program that runs a set of tests; this is primarily
        for making test modules conveniently executable.
     """
-    USAGE = """\
-Usage: %(progName)s [options] [test] [...]
+    def __init__(self):
+        pass
 
-Options:
-  -h, --help       Show this message
-  -v, --verbose    Verbose output
-  -q, --quiet      Minimal output
-
-Examples:
-  %(progName)s                               - run default set of tests
-  %(progName)s MyTestSuite                   - run suite 'MyTestSuite'
-  %(progName)s MyTestCase.testSomething      - run MyTestCase.testSomething
-  %(progName)s MyTestCase                    - run all 'test*' test methods
-                                               in MyTestCase
-"""
-    def __init__(self, module='__main__', defaultTest=None,
-                 argv=None, testRunner=None, testLoader=unittest.defaultTestLoader):
-        if type(module) == type(''):
-            self.module = __import__(module)
-            for part in module.split('.')[1:]:
-                self.module = getattr(self.module, part)
-        else:
-            self.module = module
-        if argv is None:
-            argv = sys.argv
-        self.verbosity = 1
-        self.defaultTest = defaultTest
-        self.testRunner = testRunner
-        self.testLoader = testLoader
-        self.progName = os.path.basename(argv[0])
-        self.parseArgs(argv)
-        self.runTests()
-
-    def usageExit(self, msg=None):
-        if msg: print msg
-        print self.USAGE % self.__dict__
-        sys.exit(2)
-
-    def parseArgs(self, argv):
-        import getopt
-        try:
-            options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help','verbose','quiet'])
-            for opt, value in options:
-                if opt in ('-h','-H','--help'):
-                    self.usageExit()
-                if opt in ('-q','--quiet'):
-                    self.verbosity = 0
-                if opt in ('-v','--verbose'):
-                    self.verbosity = 2
-            if len(args) == 0 and self.defaultTest is None:
-                self.test = self.testLoader.loadTestsFromModule(self.module)
-                return
-            if len(args) > 0:
-                self.testNames = args
-            else:
-                self.testNames = (self.defaultTest,)
-            self.createTests()
-        except getopt.error, msg:
-            self.usageExit(msg)
-
-    def createTests(self):
-        self.test = self.testLoader.loadTestsFromNames(self.testNames,
-                                                       self.module)
-
-    def runTests(self):
-        if self.testRunner is None:
-            self.testRunner = TextTestRunner(verbosity=self.verbosity)
-        result = self.testRunner.run(self.test)
+    def run(self, argv=sys.argv):
+#         if not self._parse(argv):
+#             return 2
+        test = TestLoader().create_test_suite()
+        runner = TextTestRunner()
+        result = runner.run(test)
         if result.succeeded():
-            sys.exit(0)
+            return 0
         else:
-            sys.exit(-1)
-
-main = TestProgram
-
-original_runTests = main.runTests
-def runTests(self):
-    self.test = TestLoader().create_test_suite()
-    self.testRunner = TextTestRunner()
-    original_runTests(self)
-
-main.runTests = runTests
+            return 1
