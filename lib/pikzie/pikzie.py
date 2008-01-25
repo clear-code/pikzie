@@ -1,9 +1,6 @@
 import sys, os, glob, re, types, time, traceback, math, pprint, difflib
 import unittest
 
-TestSuite = unittest.TestSuite
-main = unittest.main
-
 version = "0.1"
 
 __unittest = True
@@ -19,6 +16,39 @@ class Fault(Exception):
         if self.user_message:
             result += self.user_message + "\n"
         return result
+
+class TestSuite(object):
+    """A test suite is a composite test consisting of a number of TestCases.
+
+    For use, create an instance of TestSuite, then add test case instances.
+    When all tests have been added, the suite can be passed to a test
+    runner, such as TextTestRunner. It will run the individual test cases
+    in the order in which they were added, aggregating the results. When
+    subclassing, do not forget to call the base class constructor.
+    """
+    def __init__(self, tests=()):
+        self._tests = []
+        self.add_tests(tests)
+
+    def __iter__(self):
+        return iter(self._tests)
+
+    def size(self):
+        return sum(map(lambda test: test.size, self._tests))
+    size = property(size)
+
+    def add_test(self, test):
+        self._tests.append(test)
+
+    def add_tests(self, tests):
+        for test in tests:
+            self.add_test(test)
+
+    def run(self, result):
+        for test in self._tests:
+            test.run(result)
+            if result.need_interrupt():
+                break
 
 class TestCase(object):
     """A class whose instances are single test cases.
@@ -48,6 +78,7 @@ class TestCase(object):
 
     def size(self):
         return 1
+    size = property(size)
 
     def description(self):
         """Returns a one-line description of the test, or None if no
@@ -74,9 +105,6 @@ class TestCase(object):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
 
-    def __call__(self, *args, **kwds):
-        return self.run(*args, **kwds)
-
     def run(self, result):
         try:
             self.__result = result
@@ -87,7 +115,8 @@ class TestCase(object):
                 try:
                     self.setup()
                 except KeyboardInterrupt:
-                    raise
+                    result.interrupted()
+                    return
                 except:
                     result.add_error(self, sys.exc_info())
                     return
@@ -98,14 +127,15 @@ class TestCase(object):
                 except Fault:
                     result.add_failure(self, sys.exc_info())
                 except KeyboardInterrupt:
-                    raise
+                    result.interrupted()
+                    return
                 except:
                     result.add_error(self, sys.exc_info())
             finally:
                 try:
                     self.teardown()
                 except KeyboardInterrupt:
-                    raise
+                    result.interrupted()
                 except:
                     result.add_error(self, sys.exc_info())
                     success = False
@@ -393,7 +423,7 @@ class TestLoader(object):
                 return name.startswith("test_") and \
                     callable(getattr(test_case, name))
             tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
-        return unittest.TestSuite(tests)
+        return TestSuite(tests)
 
 class Traceback(object):
     def __init__(self, filename, lineno, name, line):
@@ -484,8 +514,8 @@ class TestResult(object):
         self.n_assertions = 0
         self.n_tests = 0
         self.faults = []
-        self.shouldStop = False
         self.listners = []
+        self.interrupted = False
 
     def add_listner(self, listener):
         self.listners.append(listener)
@@ -538,11 +568,14 @@ class TestResult(object):
         "Called when a test has completed successfully"
         self._notify("success", test)
 
-    def stop(self):
-        "Indicates that the tests should be aborted"
-        self.shouldStop = True
+    def interrupt(self):
+        "Indicates that the tests should be interrupted"
+        self.interrupted = True
 
-    def wasSuccessful(self):
+    def need_interrupt(self):
+        return self.interrupted
+
+    def succeeded(self):
         return len(self.faults) == 0
 
     def _notify(self, name, *args):
@@ -586,14 +619,13 @@ class TextTestRunner(object):
             use_color = term and term.endswith("term")
         self.use_color = use_color
         self.output = output
-        self.faults = []
 
     def run(self, test):
         "Run the given test case or test suite."
         result = TestResult()
         result.add_listner(self)
         start = time.time()
-        test(result)
+        test.run(result)
         elapsed = time.time() - start
         self._writeln()
         self._writeln()
@@ -611,7 +643,6 @@ class TextTestRunner(object):
 
     def _on_fault(self, result, fault):
         self._write(fault.single_character_display(), fault.color())
-        self.faults.append(fault)
 
     on_failure = _on_fault
     on_error = _on_fault
@@ -630,30 +661,107 @@ class TextTestRunner(object):
             self._write(arg, color)
         self._write("\n")
 
-    def _succeeded(self):
-        return len(self.faults) == 0
-
     def _print_errors(self, result):
-        if self._succeeded():
+        if result.succeeded():
             return
-        size = len(self.faults)
+        size = len(result.faults)
         format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
-        for i, fault in enumerate(self.faults):
+        for i, fault in enumerate(result.faults):
             self._writeln(format % (i + 1, fault.long_display()),
                           fault.color())
             self._writeln()
 
     def _result_color(self, result):
-        if self._succeeded():
+        if result.succeeded():
             return self._success_color()
         else:
             def compare(x, y):
                 return cmp(FAULT_RANK[type(x)], FAULT_RANK[type(y)])
-            return sorted(self.faults, compare)[0].color()
+            return sorted(result.faults, compare)[0].color()
 
     def _success_color(self):
         return COLORS["green"]
 
+
+class TestProgram(object):
+    """A command-line program that runs a set of tests; this is primarily
+       for making test modules conveniently executable.
+    """
+    USAGE = """\
+Usage: %(progName)s [options] [test] [...]
+
+Options:
+  -h, --help       Show this message
+  -v, --verbose    Verbose output
+  -q, --quiet      Minimal output
+
+Examples:
+  %(progName)s                               - run default set of tests
+  %(progName)s MyTestSuite                   - run suite 'MyTestSuite'
+  %(progName)s MyTestCase.testSomething      - run MyTestCase.testSomething
+  %(progName)s MyTestCase                    - run all 'test*' test methods
+                                               in MyTestCase
+"""
+    def __init__(self, module='__main__', defaultTest=None,
+                 argv=None, testRunner=None, testLoader=unittest.defaultTestLoader):
+        if type(module) == type(''):
+            self.module = __import__(module)
+            for part in module.split('.')[1:]:
+                self.module = getattr(self.module, part)
+        else:
+            self.module = module
+        if argv is None:
+            argv = sys.argv
+        self.verbosity = 1
+        self.defaultTest = defaultTest
+        self.testRunner = testRunner
+        self.testLoader = testLoader
+        self.progName = os.path.basename(argv[0])
+        self.parseArgs(argv)
+        self.runTests()
+
+    def usageExit(self, msg=None):
+        if msg: print msg
+        print self.USAGE % self.__dict__
+        sys.exit(2)
+
+    def parseArgs(self, argv):
+        import getopt
+        try:
+            options, args = getopt.getopt(argv[1:], 'hHvq',
+                                          ['help','verbose','quiet'])
+            for opt, value in options:
+                if opt in ('-h','-H','--help'):
+                    self.usageExit()
+                if opt in ('-q','--quiet'):
+                    self.verbosity = 0
+                if opt in ('-v','--verbose'):
+                    self.verbosity = 2
+            if len(args) == 0 and self.defaultTest is None:
+                self.test = self.testLoader.loadTestsFromModule(self.module)
+                return
+            if len(args) > 0:
+                self.testNames = args
+            else:
+                self.testNames = (self.defaultTest,)
+            self.createTests()
+        except getopt.error, msg:
+            self.usageExit(msg)
+
+    def createTests(self):
+        self.test = self.testLoader.loadTestsFromNames(self.testNames,
+                                                       self.module)
+
+    def runTests(self):
+        if self.testRunner is None:
+            self.testRunner = TextTestRunner(verbosity=self.verbosity)
+        result = self.testRunner.run(self.test)
+        if result.succeeded():
+            sys.exit(0)
+        else:
+            sys.exit(-1)
+
+main = TestProgram
 
 original_runTests = main.runTests
 def runTests(self):
