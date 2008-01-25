@@ -33,9 +33,8 @@ class TestSuite(object):
     def __iter__(self):
         return iter(self._tests)
 
-    def size(self):
-        return sum(map(lambda test: test.size, self._tests))
-    size = property(size)
+    def __len__(self):
+        return sum(map(len, self._tests))
 
     def add_test(self, test):
         self._tests.append(test)
@@ -76,9 +75,8 @@ class TestCase(object):
         self.__method_name = method_name
         self.__description = getattr(self, method_name).__doc__
 
-    def size(self):
+    def __len__(self):
         return 1
-    size = property(size)
 
     def description(self):
         """Returns a one-line description of the test, or None if no
