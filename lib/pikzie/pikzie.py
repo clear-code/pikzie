@@ -427,17 +427,17 @@ class TestResult(object):
     def add_listner(self, listener):
         self.listners.append(listener)
 
-    @property
     def n_faults(self):
         return len(self.faults)
+    n_faults = property(n_faults)
 
-    @property
     def n_failures(self):
         return len(filter(lambda fault: isinstance(fault, Failure), self.faults))
+    n_failures = property(n_failures)
 
-    @property
     def n_errors(self):
         return len(filter(lambda fault: isinstance(fault, Error), self.faults))
+    n_errors = property(n_errors)
 
     def pass_assertion(self):
         self.n_assertions += 1
