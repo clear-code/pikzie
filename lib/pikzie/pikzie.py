@@ -11,9 +11,6 @@ import difflib
 
 version = "0.1"
 
-__pikzie = True
-
-
 class Fault(Exception):
     def __init__(self, message, user_message=None):
         self.message = message
@@ -604,7 +601,10 @@ class TestResult(object):
         return tracebacks
 
     def _is_relevant_tb_level(self, tb):
-        return tb.tb_frame.f_globals.has_key('__pikzie')
+        globals = tb.tb_frame.f_globals
+        cls = self.__class__
+        name = cls.__name__
+        return globals.has_key(name) and globals[name] == cls
 
     def _count_relevant_tb_levels(self, tb):
         length = 0
