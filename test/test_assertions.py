@@ -61,7 +61,7 @@ class TestAssertions(pikzie.TestCase):
             self.assert_not_equal(5, 1)
 
         def test_assert_not_equal_different_repr(self):
-            class NeverEqual(object):
+            class AlwaysEqual(object):
                 def __init__(self, repr):
                     self.repr = repr
 
@@ -71,7 +71,7 @@ class TestAssertions(pikzie.TestCase):
                 def __repr__(self):
                     return repr(self.repr)
 
-            self.assert_not_equal(NeverEqual("abc"), NeverEqual("aBc"))
+            self.assert_not_equal(AlwaysEqual("abc"), AlwaysEqual("aBc"))
 
         def test_assert_in_delta(self):
             self.assert_in_delta(0.5, 0.5001, 0.01)
@@ -126,6 +126,20 @@ class TestAssertions(pikzie.TestCase):
             self.assert_callable(lambda : "zzz")
             self.assert_callable("string")
             self.assert_callable(self.test_assert_callable)
+
+        def test_assert_call_raise(self):
+            def raise_name_error():
+                unknown_name
+            self.assert_call_raise(NameError, raise_name_error)
+
+            def nothing_raised():
+                "nothing raised"
+            self.assert_call_raise(NameError, nothing_raised)
+
+        def test_assert_call_raise_different_error(self):
+            def raise_zero_division_error():
+                1 / 0
+            self.assert_call_raise(NameError, raise_zero_division_error)
 
     def test_fail(self):
         self.assert_result(1, 0, 1, 0,
@@ -282,6 +296,20 @@ class TestAssertions(pikzie.TestCase):
                              "TestCase.test_assert_callable",
                              "expected: callable('string')")],
                            ["test_assert_callable"])
+
+    def test_assert_call_raise(self):
+        self.assert_result(2, 1, 2, 0,
+                           [('F',
+                             "TestCase.test_assert_call_raise",
+                             "expected: <exceptions.NameError> is raised\n"
+                             " but was: nothing raised"),
+                            ('F',
+                             "TestCase.test_assert_call_raise_different_error",
+                             "expected: <exceptions.NameError> is raised\n"
+                             " but was: <exceptions.ZeroDivisionError>"
+                             "(integer division or modulo by zero)")],
+                           ["test_assert_call_raise",
+                            "test_assert_call_raise_different_error"])
 
     def assert_result(self, n_tests, n_assertions, n_failures, n_errors,
                       fault_infos, tests):

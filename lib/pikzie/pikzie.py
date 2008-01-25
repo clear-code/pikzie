@@ -219,6 +219,29 @@ class TestCase(unittest.TestCase):
                 message = "expected: callable(%s)" % (object)
                 self._fail(message, user_message)
 
+    def assert_call_raise(self, exception, callable, *args, **kw_args):
+        for _ in self._assertion():
+            try:
+                callable(*args, **kw_args)
+            except exception:
+                self._result.pass_assertion()
+            except:
+                actual = sys.exc_info()
+                actual_exception_class, actual_exception_value = actual[:2]
+                message = \
+                    "expected: <%s> is raised\n" \
+                    " but was: <%s>(%s)" % \
+                    (self._pformat_exception_class(exception),
+                     self._pformat_exception_class(actual_exception_class),
+                     str(actual_exception_value))
+                self._fail(message)
+            else:
+                message = \
+                    "expected: <%s> is raised\n" \
+                    " but was: nothing raised" % \
+                    self._pformat_exception_class(exception)
+                self._fail(message)
+
     def _fail(self, message, user_message=None):
         raise self.failureException(message, user_message)
 
@@ -228,12 +251,18 @@ class TestCase(unittest.TestCase):
         else:
             previous_asserting = self._asserting
             try:
-                self._assertioning = True
+                self._asserting = True
                 yield self
                 self._asserting = previous_asserting
             except:
                 self._asserting = previous_asserting
                 raise
+
+    def _pformat_exception_class(self, exception_class):
+        if issubclass(exception_class, Exception):
+            return str(exception_class)
+        else:
+            return pprint.pformat(exception_class)
 
     def _pformat_re(self, pattern):
         re_flags = self._re_flags(pattern)
