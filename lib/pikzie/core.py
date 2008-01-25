@@ -1,15 +1,18 @@
+import pprint
+import re
 import sys
+import traceback
 import os
 import glob
-import re
 import types
 import time
-import math
 import pprint
 
 from pikzie.color import *
 from pikzie.faults import *
-from pikzie.test_case import TestCase
+from pikzie.assertions import Assertions
+
+__all__ = ["TestSuite", "TestCase", "TestResult", "TestLoader"]
 
 class TestSuite(object):
     """A test suite is a composite test consisting of a number of TestCases.
@@ -42,6 +45,219 @@ class TestSuite(object):
             test.run(result)
             if result.need_interrupt():
                 break
+
+class Traceback(object):
+    def __init__(self, filename, lineno, name, line):
+        self.filename = filename
+        self.lineno = lineno
+        self.name = name
+        self.line = line
+
+    def __str__(self):
+        result = '%s:%d: %s()' % (self.filename, self.lineno, self.name)
+        if self.line:
+            result = "%s: %s" % (result, self.line)
+        return result
+
+class TestCaseTemplate(object):
+    def setup(self):
+        "Hook method for setting up the test fixture before exercising it."
+        pass
+
+    def teardown(self):
+        "Hook method for deconstructing the test fixture after testing it."
+        pass
+
+class TestCase(TestCaseTemplate, Assertions):
+    """A class whose instances are single test cases.
+
+    By default, the test code itself should be placed in a method named
+    'runTest'.
+
+    If the fixture may be used for many test cases, create as
+    many test methods as are needed. When instantiating such a TestCase
+    subclass, specify in the constructor arguments the name of the test method
+    that the instance is to execute.
+
+    Test authors should subclass TestCase for their own tests. Construction
+    and deconstruction of the test's environment ('fixture') can be
+    implemented by overriding the 'setUp' and 'tearDown' methods respectively.
+
+    If it is necessary to override the __init__ method, the base class
+    __init__ method must always be called. It is important that subclasses
+    should not change the signature of their __init__ method, since instances
+    of the classes are instantiated automatically by parts of the framework
+    in order to be run.
+    """
+
+    def __init__(self, method_name):
+        self.__method_name = method_name
+        self.__description = getattr(self, method_name).__doc__
+
+    def __len__(self):
+        return 1
+
+    def description(self):
+        """Returns a one-line description of the test, or None if no
+        description has been provided.
+
+        The default implementation of this method returns the first line of
+        the specified test method's docstring.
+        """
+        description = self.__description
+        if description:
+            return description.split("\n")[0].strip()
+        else:
+            return None
+
+    def id(self):
+        return "%s.%s.%s" % (self.__class__.__module__,
+                             self.__class__.__name__,
+                             self.__method_name)
+
+    def __str__(self):
+        return "%s.%s" % (self.__class__.__name__, self.__method_name)
+
+    def __repr__(self):
+        return "<%s method_name=%s description=%s>" % \
+               (str(self.__class__), self.__method_name, self.__description)
+
+    def run(self, result):
+        try:
+            self.__result = result
+            result.start_test(self)
+
+            success = False
+            try:
+                try:
+                    self.setup()
+                except KeyboardInterrupt:
+                    result.interrupted()
+                    return
+                except:
+                    self._add_error(result)
+                    return
+
+                try:
+                    getattr(self, self.__method_name)()
+                    success = True
+                except Fault:
+                    self._add_failure(result)
+                except KeyboardInterrupt:
+                    result.interrupted()
+                    return
+                except:
+                    self._add_error(result)
+            finally:
+                try:
+                    self.teardown()
+                except KeyboardInterrupt:
+                    result.interrupted()
+                except:
+                    self._add_error(result)
+                    success = False
+
+            if success:
+                result.add_success(self)
+        finally:
+            result.stop_test(self)
+            self.__result = None
+
+    def _pass_assertion(self):
+        self.__result.pass_assertion(self)
+
+    def _fail(self, message, user_message=None):
+        raise Fault(message, user_message)
+
+    def _pformat_exception_class(self, exception_class):
+        if issubclass(exception_class, Exception) or \
+                issubclass(exception_class, types.ClassType):
+            return str(exception_class)
+        else:
+            return pprint.pformat(exception_class)
+
+    def _pformat_re(self, pattern):
+        re_flags = self._re_flags(pattern)
+        if hasattr(pattern, "pattern"):
+            pattern = pattern.pattern
+        pattern = pprint.pformat(pattern)
+        return "/%s/%s" % (pattern[1:-1], re_flags)
+
+    def _pformat_re_repr(self, pattern):
+        re_flags_repr = self._re_flags_repr(pattern)
+        if hasattr(pattern, "pattern"):
+            pattern = pattern.pattern
+        pattern = pprint.pformat(pattern)
+        if re_flags_repr:
+            return "re.compile(%s, %s)" % (pattern, re_flags_repr)
+        else:
+            return pattern
+
+    _re_class = type(re.compile(""))
+    def _re_flags(self, pattern):
+        result = ""
+        if isinstance(pattern, self._re_class):
+            if pattern.flags & re.IGNORECASE: result += "i"
+            if pattern.flags & re.LOCALE: result += "l"
+            if pattern.flags & re.MULTILINE: result += "m"
+            if pattern.flags & re.DOTALL: result += "d"
+            if pattern.flags & re.UNICODE: result += "u"
+            if pattern.flags & re.VERBOSE: result += "x"
+        return result
+
+    def _re_flags_repr(self, pattern):
+        flags = []
+        if isinstance(pattern, self._re_class):
+            if pattern.flags & re.IGNORECASE: flags.append("re.IGNORECASE")
+            if pattern.flags & re.LOCALE: flags.append("re.LOCALE")
+            if pattern.flags & re.MULTILINE: flags.append("re.MULTILINE")
+            if pattern.flags & re.DOTALL: flags.append("re.DOTALL")
+            if pattern.flags & re.UNICODE: flags.append("re.UNICODE")
+            if pattern.flags & re.VERBOSE: flags.append("re.VERBOSE")
+        if len(flags) == 0:
+            return None
+        else:
+            return " | ".join(flags)
+
+    def _add_failure(self, result):
+        exception_type, detail, traceback = sys.exc_info()
+        tracebacks = self._prepare_traceback(traceback, True)
+        failure = Failure(self, detail, tracebacks)
+        result.add_error(self, failure)
+
+    def _add_error(self, result):
+        exception_type, detail, traceback = sys.exc_info()
+        tracebacks = self._prepare_traceback(traceback, False)
+        error = Error(self, exception_type, detail, tracebacks)
+        result.add_error(self, error)
+
+    def _prepare_traceback(self, tb, compute_length):
+        while tb and self._is_relevant_tb_level(tb):
+            tb = tb.tb_next
+        length = None
+        if compute_length:
+            length = self._count_relevant_tb_levels(tb)
+        tracebacks = []
+        for tb in traceback.extract_tb(tb, length):
+            filename, lineno, name, line = tb
+            tracebacks.append(Traceback(filename, lineno, name, line))
+        return tracebacks
+
+    def _is_relevant_tb_level(self, tb):
+        globals = tb.tb_frame.f_globals
+        for cls in (TestCase,) + TestCase.__bases__:
+            name = cls.__name__
+            if globals.has_key(name) and globals[name] == cls:
+                return True
+        return False
+
+    def _count_relevant_tb_levels(self, tb):
+        length = 0
+        while tb and not self._is_relevant_tb_level(tb):
+            length += 1
+            tb = tb.tb_next
+        return length
+
 
 class TestLoader(object):
     def __init__(self, pattern=None):
@@ -175,90 +391,3 @@ class TestResult(object):
             (self.n_tests, self.n_assertions, self.n_failures, self.n_errors)
 
     __str__ = summary
-
-class TextTestRunner(object):
-    def __init__(self, output=sys.stdout, use_color=None):
-        if use_color is None:
-            term = os.getenv("TERM")
-            use_color = term and term.endswith("term")
-        self.use_color = use_color
-        self.output = output
-
-    def run(self, test):
-        "Run the given test case or test suite."
-        result = TestResult()
-        result.add_listner(self)
-        start = time.time()
-        test.run(result)
-        elapsed = time.time() - start
-        self._writeln()
-        self._writeln()
-        self._print_errors(result)
-        self._writeln("Finished in %.3f seconds" % elapsed)
-        self._writeln()
-        self._writeln(result.summary(), self._result_color(result))
-        return result
-
-    def on_start_test(self, result, test):
-        pass
-
-    def on_success(self, result, test):
-        self._write(".", self._success_color())
-
-    def _on_fault(self, result, fault):
-        self._write(fault.single_character_display(), fault.color())
-
-    on_failure = _on_fault
-    on_error = _on_fault
-
-    def _write(self, arg, color=None):
-        if self.use_color and color:
-            self.output.write("%s%s%s" % (color.escape_sequence,
-                                          arg,
-                                          COLORS["normal"].escape_sequence))
-        else:
-            self.output.write(arg)
-        self.output.flush()
-
-    def _writeln(self, arg=None, color=None):
-        if arg:
-            self._write(arg, color)
-        self._write("\n")
-
-    def _print_errors(self, result):
-        if result.succeeded():
-            return
-        size = len(result.faults)
-        format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
-        for i, fault in enumerate(result.faults):
-            self._writeln(format % (i + 1, fault.long_display()),
-                          fault.color())
-            self._writeln()
-
-    def _result_color(self, result):
-        if result.succeeded():
-            return self._success_color()
-        else:
-            return sorted(result.faults, compare_fault)[0].color()
-
-    def _success_color(self):
-        return COLORS["green"]
-
-
-class TestProgram(object):
-    """A command-line program that runs a set of tests; this is primarily
-       for making test modules conveniently executable.
-    """
-    def __init__(self):
-        pass
-
-    def run(self, argv=sys.argv):
-#         if not self._parse(argv):
-#             return 2
-        test = TestLoader().create_test_suite()
-        runner = TextTestRunner()
-        result = runner.run(test)
-        if result.succeeded():
-            return 0
-        else:
-            return 1

@@ -9,4 +9,4 @@ sys.path.insert(0, base_dir)
 
 import pikzie
 
-sys.exit(pikzie.TestProgram().run())
+sys.exit(pikzie.Tester().run())
