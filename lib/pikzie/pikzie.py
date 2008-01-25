@@ -163,59 +163,60 @@ class TestCase(object):
     def fail(self, message):
         self._fail(message)
 
-    def assert_none(self, expression, user_message=None):
+    def assert_none(self, expression, message=None):
         if expression is None:
             self._pass_assertion()
         else:
-            message = "expected: <%r> is None" % expression
-            self._fail(message, user_message)
+            system_message = "expected: <%r> is None" % expression
+            self._fail(system_message, message)
 
-    def assert_not_none(self, expression, user_message=None):
+    def assert_not_none(self, expression, message=None):
         if expression is not None:
             self._pass_assertion()
         else:
-            self._fail("expected: not None", user_message)
+            self._fail("expected: not None", message)
 
-    def assert_true(self, expression, user_message=None):
+    def assert_true(self, expression, message=None):
         if expression:
             self._pass_assertion()
         else:
-            message = "expected: <%r> is a true value" % expression
-            self._fail(message, user_message)
+            system_message = "expected: <%r> is a true value" % expression
+            self._fail(system_message, message)
 
-    def assert_false(self, expression, user_message=None):
+    def assert_false(self, expression, message=None):
         if expression:
-            message = "expected: <%r> is a false value" % expression
-            self._fail(message, user_message)
+            system_message = "expected: <%r> is a false value" % expression
+            self._fail(system_message, message)
         else:
             self._pass_assertion()
 
-    def assert_equal(self, expected, actual, user_message=None):
+    def assert_equal(self, expected, actual, message=None):
         if expected == actual:
             self._pass_assertion()
         else:
             expected = pprint.pformat(expected)
             actual = pprint.pformat(actual)
             diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
-            message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
+            system_message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
                 (expected, actual, "\n".join(diff))
-            self._fail(message, user_message)
+            self._fail(system_message, message)
 
-    def assert_not_equal(self, not_expected, actual, user_message=None):
+    def assert_not_equal(self, not_expected, actual, message=None):
         if not_expected != actual:
             self._pass_assertion()
         else:
             not_expected = pprint.pformat(not_expected)
             actual = pprint.pformat(actual)
-            message = "not expected: <%s>\n     but was: <%s>" % \
+            system_message = "not expected: <%s>\n     but was: <%s>" % \
                 (not_expected, actual)
             if not_expected != actual:
                 diff = difflib.ndiff(not_expected.splitlines(),
                                      actual.splitlines())
-                message = "%s\ndiff:\n%s" % (message, "\n".join(diff))
-            self._fail(message, user_message)
+                system_message = "%s\ndiff:\n%s" % \
+                    (system_message, "\n".join(diff))
+            self._fail(system_message, message)
 
-    def assert_in_delta(self, expected, actual, delta, user_message=None):
+    def assert_in_delta(self, expected, actual, delta, message=None):
         lower = expected - delta
         upper = expected + delta
         if lower <= actual <= upper:
@@ -225,11 +226,11 @@ class TestCase(object):
             actual = pprint.pformat(actual)
             delta = pprint.pformat(delta)
             range = pprint.pformat([lower, upper])
-            message = "expected: <%s+-%s %s>\n but was: <%s>" % \
+            system_message = "expected: <%s+-%s %s>\n but was: <%s>" % \
                 (expected, delta, range, actual)
-            self._fail(message, user_message)
+            self._fail(system_message, message)
 
-    def assert_match(self, pattern, target, user_message=None):
+    def assert_match(self, pattern, target, message=None):
         if re.match(pattern, target):
             self._pass_assertion()
         else:
@@ -240,10 +241,10 @@ class TestCase(object):
                 "expected: re.match(%s, %s) is not None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
-            message = format % (pattern_repr, target, pattern, target)
-            self._fail(message, user_message)
+            system_message = format % (pattern_repr, target, pattern, target)
+            self._fail(system_message, message)
 
-    def assert_not_match(self, pattern, target, user_message=None):
+    def assert_not_match(self, pattern, target, message=None):
         if re.match(pattern, target) is None:
             self._pass_assertion()
         else:
@@ -254,10 +255,10 @@ class TestCase(object):
                 "expected: re.match(%s, %s) is None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
-            message = format % (pattern_repr, target, pattern, target)
-            self._fail(message, user_message)
+            system_message = format % (pattern_repr, target, pattern, target)
+            self._fail(system_message, message)
 
-    def assert_search(self, pattern, target, user_message=None):
+    def assert_search(self, pattern, target, message=None):
         if re.search(pattern, target):
             self._pass_assertion()
         else:
@@ -268,10 +269,10 @@ class TestCase(object):
                 "expected: re.search(%s, %s) is not None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
-            message = format % (pattern_repr, target, pattern, target)
-            self._fail(message, user_message)
+            system_message = format % (pattern_repr, target, pattern, target)
+            self._fail(system_message, message)
 
-    def assert_not_found(self, pattern, target, user_message=None):
+    def assert_not_found(self, pattern, target, message=None):
         if re.search(pattern, target) is None:
             self._pass_assertion()
         else:
@@ -282,25 +283,25 @@ class TestCase(object):
                 "expected: re.search(%s, %s) is None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
-            message = format % (pattern_repr, target, pattern, target)
-            self._fail(message, user_message)
+            system_message = format % (pattern_repr, target, pattern, target)
+            self._fail(system_message, message)
 
-    def assert_hasattr(self, object, name, user_message=None):
+    def assert_hasattr(self, object, name, message=None):
         if hasattr(object, name):
             self._pass_assertion()
         else:
             object = pprint.pformat(object)
             name = pprint.pformat(name)
-            message = "expected: hasattr(%s, %s)" % (object, name)
-            self._fail(message, user_message)
+            system_message = "expected: hasattr(%s, %s)" % (object, name)
+            self._fail(system_message, message)
 
-    def assert_callable(self, object, user_message=None):
+    def assert_callable(self, object, message=None):
         if callable(object):
             self._pass_assertion()
         else:
             object = pprint.pformat(object)
-            message = "expected: callable(%s)" % (object)
-            self._fail(message, user_message)
+            system_message = "expected: callable(%s)" % (object)
+            self._fail(system_message, message)
 
     def assert_call_raise(self, exception, callable_object, *args, **kw_args):
         try:
