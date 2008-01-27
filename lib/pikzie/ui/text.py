@@ -1,6 +1,5 @@
 import sys
 import os
-import time
 import math
 
 from pikzie.color import COLORS
@@ -19,13 +18,11 @@ class TextTestRunner(object):
         "Run the given test case or test suite."
         result = TestResult()
         result.add_listner(self)
-        start = time.time()
         test.run(result)
-        elapsed = time.time() - start
         self._writeln()
         self._writeln()
         self._print_errors(result)
-        self._writeln("Finished in %.3f seconds" % elapsed)
+        self._writeln("Finished in %.3f seconds" % result.elapsed)
         self._writeln()
         self._writeln(result.summary(), self._result_color(result))
         return result

@@ -327,6 +327,7 @@ class TestResult(object):
         self.faults = []
         self.listners = []
         self.interrupted = False
+        self.elapsed = 0
 
     def add_listner(self, listener):
         self.listners.append(listener)
@@ -349,12 +350,14 @@ class TestResult(object):
 
     def start_test(self, test):
         "Called when the given test is about to be run"
+        self._start_at = time.time()
         self.n_tests += 1
         self._notify("start_test", test)
 
     def stop_test(self, test):
         "Called when the given test has been run"
-        pass
+        self._stop_at = time.time()
+        self.elapsed += (self._stop_at - self._start_at)
 
     def add_error(self, test, error):
         """Called when an error has occurred."""

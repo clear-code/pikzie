@@ -1,5 +1,6 @@
 from StringIO import StringIO
 import re
+
 import pikzie
 import pikzie.ui.text
 
@@ -83,10 +84,10 @@ class TestRunner(pikzie.TestCase):
             "%s\n" \
             "\n" \
             "%s" \
-            "Finished in 0.000 seconds\n" \
+            "Finished in %.3f seconds\n" \
             "\n" \
             "%d test(s), %d assertion(s), %d failure(s), %d error(s)\n"
-        self.assert_equal(format % (progress, details,
+        self.assert_equal(format % (progress, details, result.elapsed,
                                     n_tests, n_assertions, n_failures, n_errors),
                           message)
 
