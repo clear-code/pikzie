@@ -59,6 +59,17 @@ class Traceback(object):
             result = "%s: %s" % (result, self.line)
         return result
 
+class AssertionFailure(Exception):
+    def __init__(self, message, user_message=None):
+        self.message = message
+        self.user_message = user_message
+
+    def __str__(self):
+        result = self.message
+        if self.user_message:
+            result += self.user_message + "\n"
+        return result
+
 class TestCaseTemplate(object):
     def setup(self):
         "Hook method for setting up the test fixture before exercising it."
@@ -141,7 +152,7 @@ class TestCase(TestCaseTemplate, Assertions):
                 try:
                     getattr(self, self.__method_name)()
                     success = True
-                except Fault:
+                except AssertionFailure:
                     self._add_failure(result)
                 except KeyboardInterrupt:
                     result.interrupted()
@@ -167,7 +178,7 @@ class TestCase(TestCaseTemplate, Assertions):
         self.__result.pass_assertion(self)
 
     def _fail(self, message, user_message=None):
-        raise Fault(message, user_message)
+        raise AssertionFailure(message, user_message)
 
     def _pformat_exception_class(self, exception_class):
         if issubclass(exception_class, Exception) or \

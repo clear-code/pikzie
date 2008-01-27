@@ -1,16 +1,5 @@
 from pikzie.color import *
 
-class Fault(Exception):
-    def __init__(self, message, user_message=None):
-        self.message = message
-        self.user_message = user_message
-
-    def __str__(self):
-        result = self.message
-        if self.user_message:
-            result += self.user_message + "\n"
-        return result
-
 class Failure(object):
     def __init__(self, test, detail, tracebacks):
         self.test = test
