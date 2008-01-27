@@ -2,15 +2,35 @@ import sys
 import os
 import math
 
+from optparse import OptionValueError
+
 from pikzie.color import COLORS
 from pikzie.core import *
 from pikzie.faults import *
 
 class ConsoleTestRunner(object):
+    def setup_options(cls, parser):
+        available_values = "[yes|true|no|false|auto]"
+        def store_use_color(option, opt, value, parser):
+            if value == "yes" or value == "true":
+                parser.values.use_color = True
+            elif value == "no" or value == "false":
+                parser.values.use_color = False
+            elif value == "auto" or value is None:
+                pass
+            else:
+                format = "should be one of %s: %s"
+                raise OptionValueError(format % (available_values, value))
+
+        help = "Output log with colors %s (default: auto)" % available_values
+        parser.add_option("-c", "--color",
+                          action="callback", callback=store_use_color,
+                          dest="use_color", nargs=1, type="string", help=help)
+    setup_options = classmethod(setup_options)
+
     def __init__(self, output=sys.stdout, use_color=None):
         if use_color is None:
-            term = os.getenv("TERM")
-            use_color = term and term.endswith("term")
+            use_color = self._detect_color_availability()
         self.use_color = use_color
         self.output = output
 
@@ -72,3 +92,6 @@ class ConsoleTestRunner(object):
     def _success_color(self):
         return COLORS["green"]
 
+    def _detect_color_availability(self):
+        term = os.getenv("TERM")
+        return term and term.endswith("term")

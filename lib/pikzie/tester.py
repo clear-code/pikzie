@@ -14,8 +14,13 @@ class Tester(object):
 
     def run(self, args=None):
         options, args = self._parse(args)
-        test = TestLoader().create_test_suite()
-        runner = ConsoleTestRunner()
+        options = options.__dict__
+        test_suite_create_options = {
+            "test_name": options.pop("test_name"),
+            "test_case_name": options.pop("test_case_name")
+        }
+        test = TestLoader(**test_suite_create_options).create_test_suite()
+        runner = ConsoleTestRunner(**options)
         result = runner.run(test)
         if result.succeeded():
             return 0
@@ -28,4 +33,5 @@ class Tester(object):
                           dest="test_name", help="Specify tests")
         parser.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
                           dest="test_case_name", help="Specify test cases")
+        ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)

@@ -271,10 +271,12 @@ class TestCase(TestCaseTemplate, Assertions):
 
 
 class TestLoader(object):
-    def __init__(self, pattern=None):
+    def __init__(self, pattern=None, test_name=None, test_case_name=None):
         if pattern is None:
             pattern = "**/test_*.py"
         self.pattern = pattern
+        self.test_name = test_name
+        self.test_case_name = test_case_name
 
     def find_targets(self):
         targets = []
