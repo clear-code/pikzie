@@ -3,7 +3,7 @@ from optparse import OptionParser
 
 import pikzie
 from pikzie.core import *
-from pikzie.ui.text import *
+from pikzie.ui.console import *
 
 class Tester(object):
     """A command-line program that runs a set of tests; this is primarily
@@ -13,9 +13,9 @@ class Tester(object):
         pass
 
     def run(self, argv=sys.argv):
-        (options, args) = self._parse(argv)
+        options, args = self._parse(argv)
         test = TestLoader().create_test_suite()
-        runner = TextTestRunner()
+        runner = ConsoleTestRunner()
         result = runner.run(test)
         if result.succeeded():
             return 0

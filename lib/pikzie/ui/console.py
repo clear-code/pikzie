@@ -6,7 +6,7 @@ from pikzie.color import COLORS
 from pikzie.core import *
 from pikzie.faults import *
 
-class TextTestRunner(object):
+class ConsoleTestRunner(object):
     def __init__(self, output=sys.stdout, use_color=None):
         if use_color is None:
             term = os.getenv("TERM")
