@@ -139,7 +139,7 @@ class release(Command):
         sdist = self.reinitialize_command("sdist")
         self.run_command("sdist")
         _run("misc/release.rb", sf_user, sf_project_name, version,
-             "%s-%s.tar.gz" % (package_name, version),
+             "dist/%s-%s.tar.gz" % (package_name, version),
              "README", "NEWS")
 
 class tag(Command):
