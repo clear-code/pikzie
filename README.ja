@@ -1,4 +1,4 @@
-# -*- rst -*-
+.. -*- rst -*-
 
 ========
  README
@@ -21,11 +21,13 @@ PythonのためのUnit Testing Frameworkです。
 
 PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 ます。
+
   * PythonらしいAPI
   * 豊富な表明（assert_*）
   * デバッグに使いやすい出力結果
 
 上記に加えて以下のような特徴があります。
+
   * ...
 
 依存ライブラリ
@@ -38,17 +40,21 @@ PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 
 http://sourceforge.net/project/showfiles.php?group_id=215708
 
+::
+
   % svn co https://pikzie.svn.sourceforge.net/svnroot/pikzie/trunk pikzie
 
 インストール
 ============
+
+::
 
   % sudo python setup.py install
 
 使い方
 ======
 
-以下のようなディレクトリ構造だとする。
+以下のようなディレクトリ構造だとする。::
 
   . -+- lib  --- yourlib --- ...
      |
@@ -78,6 +84,8 @@ test/run-test.pyは以下の通りである。::
 以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
 トを自動で読み込み、定義されているテストを実行する。
 
+::
+
   % test/run-test.py
 
 オプション
@@ -100,11 +108,13 @@ TODO
 
 TODO
 
-=== 表明
+表明
+----
 
 TODO
 
-=== 雛型
+雛型
+----
 
 テストの雛型は以下のようになります。::
 
