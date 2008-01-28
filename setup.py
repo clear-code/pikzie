@@ -156,10 +156,10 @@ class tag(Command):
         try:
             _run("svn", "ls", "%s/tags/%s" % (sf_repos, version))
         except:
-            print "%s is already tagged" % version
-        else:
             _run("svn", "cp", "-m", "released %s!!!" % version,
                  "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
+        else:
+            print "%s is already tagged" % version
 
 setup(name=package_name,
       version=version,
