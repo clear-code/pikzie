@@ -169,7 +169,7 @@ setup(name=package_name,
       url="http://pikzie.sf.net/",
       license="LGPL",
       package_dir={'': 'lib'},
-      packages=["pikzie"],
+      packages=["pikzie", "pikzie.ui"],
       classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Testing",
