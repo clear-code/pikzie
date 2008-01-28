@@ -16,6 +16,7 @@ version = pikzie.version
 sf_project_name = "pikzie"
 sf_user = "ktou"
 sf_host = "%s@shell.sourceforge.net" % sf_user
+sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
 def _run(*command):
@@ -62,6 +63,15 @@ class release(Command):
              "%s-%s.tar.gz" % (package_name, version),
              "README", "NEWS")
 
+class tag(Command):
+    try:
+        _run("svn", "ls", "%s/tags/%s" % (sf_repos, version))
+    except:
+        print "%s is already tagged" % version
+    else:
+        _run("svn", "cp", "-m", "released %s!!!" % version,
+             "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
+
 setup(name=package_name,
       version=version,
       description="an easy to write/debug Unit Testing Framework for Python",
@@ -76,4 +86,5 @@ setup(name=package_name,
         "Topic :: Software Development :: Testing",
         ],
       cmdclass={"upload_doc": upload_doc,
-                "release": release})
+                "release": release,
+                "tag": tag})
