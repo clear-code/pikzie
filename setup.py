@@ -31,6 +31,26 @@ def _run_without_check(*command):
     print " ".join(command)
     return subprocess.call(command)
 
+class update_po(Command):
+    description = "update *.po"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        command = ["pygettext", "--extract-all", "--default-domain", "pikzie",
+                   "--docstrings", "--output-dir", "po"]
+        command.extend(glob.glob("lib/*.py"))
+        command.extend(glob.glob("lib/*/*.py"))
+        command.extend(glob.glob("lib/*/*/*.py"))
+        _run(*command)
+        for po in glob.glob("po/*.po"):
+            _run("msgmerge", "--update", po, "po/pikzie.pot")
+
 class update_doc(Command):
     description = "update documentation"
     user_options = []
@@ -121,7 +141,8 @@ setup(name=package_name,
         "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Testing",
         ],
-      cmdclass={"update_doc": update_doc,
+      cmdclass={"update_po": update_po,
+                "update_doc": update_doc,
                 "upload_doc": upload_doc,
                 "release": release,
                 "tag": tag})

@@ -109,7 +109,7 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_match(self, pattern, target, message=None):
-        """Passes if re.match(pattern, target) is not None.
+        """Passes if re.match(pattern, target) doesn't return None.
 
         self.assert_match("abc", "abcde") # => pass
         self.assert_match("abc", "deabc") # => fail
@@ -121,17 +121,17 @@ class Assertions(object):
             pattern = self._pformat_re(pattern)
             target = pprint.pformat(target)
             format = \
-                "expected: re.match(%s, %s) is not None\n" \
+                "expected: re.match(%s, %s) doesn't return None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
             system_message = format % (pattern_repr, target, pattern, target)
             self._fail(system_message, message)
 
     def assert_not_match(self, pattern, target, message=None):
-        """Passes if re.match(pattern, target) is None.
+        """Passes if re.match(pattern, target) returns None.
 
-        self.assert_match("abc", "deabc") # => pass
-        self.assert_match("abc", "abcde") # => fail
+        self.assert_not_match("abc", "deabc") # => pass
+        self.assert_not_match("abc", "abcde") # => fail
         """
         if re.match(pattern, target) is None:
             self._pass_assertion()
@@ -140,14 +140,14 @@ class Assertions(object):
             pattern = self._pformat_re(pattern)
             target = pprint.pformat(target)
             format = \
-                "expected: re.match(%s, %s) is None\n" \
+                "expected: re.match(%s, %s) returns None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
             system_message = format % (pattern_repr, target, pattern, target)
             self._fail(system_message, message)
 
     def assert_search(self, pattern, target, message=None):
-        """Passes if re.search(pattern, target) is not None.
+        """Passes if re.search(pattern, target) doesn't return None.
 
         self.assert_search("abc", "deabc") # => pass
         self.assert_search("abc", "deABC") # => fail
@@ -159,14 +159,14 @@ class Assertions(object):
             pattern = self._pformat_re(pattern)
             target = pprint.pformat(target)
             format = \
-                "expected: re.search(%s, %s) is not None\n" \
+                "expected: re.search(%s, %s) doesn't return None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
             system_message = format % (pattern_repr, target, pattern, target)
             self._fail(system_message, message)
 
     def assert_not_found(self, pattern, target, message=None):
-        """Passes if re.search(pattern, target) is None.
+        """Passes if re.search(pattern, target) returns None.
 
         self.assert_search("abc", "deABC") # => pass
         self.assert_search("abc", "deabc") # => fail
@@ -178,14 +178,14 @@ class Assertions(object):
             pattern = self._pformat_re(pattern)
             target = pprint.pformat(target)
             format = \
-                "expected: re.search(%s, %s) is None\n" \
+                "expected: re.search(%s, %s) returns None\n" \
                 " pattern: <%s>\n" \
                 "  target: <%s>"
             system_message = format % (pattern_repr, target, pattern, target)
             self._fail(system_message, message)
 
     def assert_hasattr(self, object, name, message=None):
-        """Passes if hasattr(object, name).
+        """Passes if hasattr(object, name) returns True.
 
         self.assert_hasattr("string", "strip")   # => pass
         self.assert_hasattr("string", "unknown") # => fail
@@ -199,7 +199,7 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_callable(self, object, message=None):
-        """Passes if callable(object).
+        """Passes if callable(object) returns True.
 
         self.assert_callable(lambda: 1) # => pass
         self.assert_callable("string")  # => fail
