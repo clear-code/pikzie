@@ -1,7 +1,6 @@
 import sys
 from optparse import OptionParser
 
-import pikzie
 from pikzie.core import *
 from pikzie.ui.console import *
 
