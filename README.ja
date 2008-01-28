@@ -1,0 +1,124 @@
+# -*- rst -*-
+
+========
+ README
+========
+
+名前
+====
+
+Pikzie（ピクジー）
+
+ライセンス
+==========
+
+LGPL
+
+Pikzie?
+=======
+
+PythonのためのUnit Testing Frameworkです。
+
+PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
+ます。
+  * PythonらしいAPI
+  * 豊富な表明（assert_*）
+  * デバッグに使いやすい出力結果
+
+上記に加えて以下のような特徴があります。
+  * ...
+
+依存ライブラリ
+==============
+
+  * Python >= 2.3
+
+入手方法
+========
+
+http://sourceforge.net/project/showfiles.php?group_id=215708
+
+  % svn co https://pikzie.svn.sourceforge.net/svnroot/pikzie/trunk pikzie
+
+インストール
+============
+
+  % sudo python setup.py install
+
+使い方
+======
+
+以下のようなディレクトリ構造だとする。
+
+  . -+- lib  --- yourlib --- ...
+     |
+     +- test -+- run-test.py
+              |
+	      +- __init__.py
+              |
+	      +- test_module1.py
+              |
+	      +- ...
+
+test/run-test.pyは以下の通りである。::
+
+  #!/usr/bin/env python
+
+  import sys
+  import os
+
+  base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+  sys.path.insert(0, os.path.join(base_dir, "lib"))
+  sys.path.insert(0, base_dir)
+
+  import pikzie
+
+  sys.exit(pikzie.Tester().run())
+
+以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
+トを自動で読み込み、定義されているテストを実行する。
+
+  % test/run-test.py
+
+オプション
+==========
+
+TODO
+
+テストの仕方
+============
+
+TODO
+
+テスト結果
+==========
+
+TODO
+
+リファレンス
+============
+
+TODO
+
+=== 表明
+
+TODO
+
+=== 雛型
+
+テストの雛型は以下のようになります。::
+
+  import pikzie
+  import テスト対象のモジュール
+  
+  class TestYourModule(pikzie.TestCase):
+      def setup(self):
+          # 初期化用コード
+	  self.setup_called = True
+
+      def teardown(self):
+          # 後片付け用コード
+	  self.setup_called = False
+
+      def test_condition(self): # "test_"から始める
+          self.assert_true(self.setup_called)
