@@ -231,12 +231,14 @@ class TestAssertions(pikzie.TestCase):
         self.assert_result(2, 2, 2, 0,
                            [('F',
                              "TestCase.test_assert_match",
-                             "expected: re.match('abc', 'Xabcde') is not None\n"
+                             "expected: re.match('abc', 'Xabcde') "
+                               "doesn't return None\n"
                              " pattern: </abc/>\n"
                              "  target: <'Xabcde'>"),
                             ('F',
                              "TestCase.test_assert_match_re",
-                             "expected: re.match('xyz', 'abcxyz') is not None\n"
+                             "expected: re.match('xyz', 'abcxyz') "
+                               "doesn't return None\n"
                              " pattern: </xyz/>\n"
                              "  target: <'abcxyz'>")],
                            ["test_assert_match",
@@ -246,12 +248,12 @@ class TestAssertions(pikzie.TestCase):
         self.assert_result(2, 2, 2, 0,
                            [('F',
                              "TestCase.test_assert_not_match",
-                             "expected: re.match('abc', 'abcde') is None\n"
+                             "expected: re.match('abc', 'abcde') returns None\n"
                              " pattern: </abc/>\n"
                              "  target: <'abcde'>"),
                             ('F',
                              "TestCase.test_assert_not_match_re",
-                             "expected: re.match(%s, 'XYZabc') is None\n"
+                             "expected: re.match(%s, 'XYZabc') returns None\n"
                              " pattern: </xyz/i>\n"
                              "  target: <'XYZabc'>" % \
                                  ("re.compile('xyz', re.IGNORECASE)"))],
@@ -262,12 +264,14 @@ class TestAssertions(pikzie.TestCase):
         self.assert_result(2, 4, 2, 0,
                            [('F',
                              "TestCase.test_assert_search",
-                             "expected: re.search('bcd', 'abCde') is not None\n"
+                             "expected: re.search('bcd', 'abCde') "
+                               "doesn't return None\n"
                              " pattern: </bcd/>\n"
                              "  target: <'abCde'>"),
                             ('F',
                              "TestCase.test_assert_search_re",
-                             "expected: re.search('xyz', 'AxYzA') is not None\n"
+                             "expected: re.search('xyz', 'AxYzA') "
+                               "doesn't return None\n"
                              " pattern: </xyz/>\n"
                              "  target: <'AxYzA'>")],
                            ["test_assert_search",
@@ -278,7 +282,7 @@ class TestAssertions(pikzie.TestCase):
         self.assert_result(1, 2, 1, 0,
                            [('F',
                              "TestCase.test_assert_not_found",
-                             "expected: re.search(%s, 'abCde') is None\n"
+                             "expected: re.search(%s, 'abCde') returns None\n"
                              " pattern: </bcd/il>\n"
                              "  target: <'abCde'>" % re_repr)],
                            ["test_assert_not_found"])
