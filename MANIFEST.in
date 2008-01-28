@@ -1,0 +1,9 @@
+include README*
+include NEWS*
+include setup.py
+include lib/*/*.py
+include lib/*/*/*.py
+include test/*.py
+include test/*/*.py
+include test/*/*/*.py
+

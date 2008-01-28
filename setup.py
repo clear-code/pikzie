@@ -89,7 +89,7 @@ setup(name=package_name,
       author_email="kou@cozmixng.org",
       url="http://pikzie.sf.net/",
       license="LGPL",
-      package_dir = {'': 'lib'},
+      package_dir={'': 'lib'},
       packages=["pikzie"],
       classifiers=[
         "Development Status :: 4 - Beta",
