@@ -51,6 +51,25 @@ class update_po(Command):
         for po in glob.glob("po/*.po"):
             _run("msgmerge", "--update", po, "po/pikzie.pot")
 
+class update_mo(Command):
+    description = "update *.mo"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        for po in glob.glob("po/*.po"):
+            (lang, ext) = os.path.splitext(os.path.basename(po))
+            mo_dir = os.path.join("data", "locale", lang, "LC_MESSAGES")
+            if not os.access(mo_dir, os.F_OK):
+                os.makedirs(mo_dir)
+            _run("msgfmt", "--output-file", os.path.join(mo_dir, "pikzie.mo"),
+                 po)
+
 class update_doc(Command):
     description = "update documentation"
     user_options = []
@@ -142,6 +161,7 @@ setup(name=package_name,
         "Topic :: Software Development :: Testing",
         ],
       cmdclass={"update_po": update_po,
+                "update_mo": update_mo,
                 "update_doc": update_doc,
                 "upload_doc": upload_doc,
                 "release": release,
