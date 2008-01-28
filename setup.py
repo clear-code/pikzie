@@ -32,10 +32,14 @@ class upload_doc(Command):
         self._run("rst2html", "README.ja", "html/readme.html.ja")
         self._run("scp", "html/readme.html", "html/readme.html.ja",
                   "%s:%s/" % (sf_host, sf_htdocs))
+        self._run_without_check("ssh", sf_host, "chmod", "-R", "g+w", sf_htdocs)
 
     def _run(self, *command):
-        if subprocess.call(command) != 0:
+        if self._run_without_check != 0:
             raise "failed to run: %s" % " ".join(command)
+
+    def _run_without_check(self, *command):
+        return subprocess.call(command)
 
 setup(name="pikzie",
       version=pikzie.version,
