@@ -64,13 +64,23 @@ class release(Command):
              "README", "NEWS")
 
 class tag(Command):
-    try:
-        _run("svn", "ls", "%s/tags/%s" % (sf_repos, version))
-    except:
-        print "%s is already tagged" % version
-    else:
-        _run("svn", "cp", "-m", "released %s!!!" % version,
-             "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
+    description = "tag %s" % version
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            _run("svn", "ls", "%s/tags/%s" % (sf_repos, version))
+        except:
+            print "%s is already tagged" % version
+        else:
+            _run("svn", "cp", "-m", "released %s!!!" % version,
+                 "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
 
 setup(name=package_name,
       version=version,
