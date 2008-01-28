@@ -293,12 +293,9 @@ class TestLoader(object):
             parts = target.split(".")
             module = None
             while len(parts) > 0 and module is None:
-                try:
-                    name = ".".join(parts)
-                    __import__(name)
-                    module = sys.modules[name]
-                except ImportError:
-                    pass
+                name = ".".join(parts)
+                __import__(name)
+                module = sys.modules[name]
                 parts.pop()
             if module is not None:
                 modules.append(module)

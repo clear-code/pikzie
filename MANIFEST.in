@@ -6,4 +6,3 @@ include lib/*/*/*.py
 include test/*.py
 include test/*/*.py
 include test/*/*/*.py
-

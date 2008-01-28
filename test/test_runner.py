@@ -2,12 +2,12 @@ from StringIO import StringIO
 import re
 
 import pikzie
-import pikzie.ui.text
+from pikzie.ui.console import ConsoleTestRunner
 
 class TestRunner(pikzie.TestCase):
     def setup(self):
         self.output = StringIO()
-        self.runner = pikzie.ui.text.TextTestRunner(self.output, use_color=False)
+        self.runner = ConsoleTestRunner(self.output, use_color=False)
         self.file_name = __file__
         if self.file_name.endswith("pyc"):
             self.file_name = self.file_name[:-1]
