@@ -6,6 +6,7 @@ import glob
 import subprocess
 import pydoc
 import shutil
+import gettext
 
 from distutils.core import setup
 from distutils.cmd import Command
@@ -81,16 +82,29 @@ class update_doc(Command):
         pass
 
     def run(self):
-        object = pikzie.assertions.Assertions
-        page = pydoc.html.page(pydoc.describe(object),
-                               pydoc.html.document(object, "assertions"))
-        html = file("html/assertions.html", "w")
-        html.write(page)
-        html.close()
+        self._generate_assertions_html(None)
         _run("rst2html", "README", "html/readme.html")
         _run("rst2html", "README.ja", "html/readme.html.ja")
         _run("rst2html", "NEWS", "html/news.html")
         _run("rst2html", "NEWS.ja", "html/news.html.ja")
+
+    def _generate_assertions_html(self, lang):
+        object = pikzie.assertions.Assertions
+        html_name = "html/assertions.html"
+        if lang:
+            html_name = "%s.%s" % (html_name, lang)
+            _ = gettext.translation("pikzie", "data/locale",[lang]).gettext
+            for name in dir(object):
+                if name.startswith("_"):
+                    continue
+                method = getattr(object, name)
+                method.__doc__ = _(method.__doc__) # Not work :<
+
+        page = pydoc.html.page(pydoc.describe(object),
+                               pydoc.html.document(object, "assertions"))
+        html = file(html_name, "w")
+        html.write(page)
+        html.close()
 
 class upload_doc(Command):
     description = "upload documentation"
