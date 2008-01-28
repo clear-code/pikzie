@@ -2,7 +2,10 @@
 
 import sys
 import os
+import glob
 import subprocess
+import pydoc
+import shutil
 
 from distutils.core import setup
 from distutils.cmd import Command
@@ -20,12 +23,29 @@ sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
 def _run(*command):
-    if _run_without_check != 0:
-        raise "failed to run: %s" % " ".join(command)
+    return_code = _run_without_check(*command)
+    if return_code != 0:
+        raise "failed to run <%d>: %s" % (return_code, " ".join(command))
 
 def _run_without_check(*command):
     print " ".join(command)
     return subprocess.call(command)
+
+class update_doc(Command):
+    description = "update documentation"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        pydoc.writedoc(pikzie.assertions.Assertions)
+        shutil.move("Assertions.html", "html/")
+        _run("rst2html", "README", "html/readme.html")
+        _run("rst2html", "README.ja", "html/readme.html.ja")
 
 class upload_doc(Command):
     description = "upload documentation"
@@ -38,12 +58,12 @@ class upload_doc(Command):
         pass
 
     def run(self):
-        _run("scp", "html/index.html",
-             "%s:%s/index.html" % (sf_host, sf_htdocs))
-        _run("rst2html", "README", "html/readme.html")
-        _run("rst2html", "README.ja", "html/readme.html.ja")
-        _run("scp", "html/readme.html", "html/readme.html.ja",
-             "%s:%s/" % (sf_host, sf_htdocs))
+        sdist = self.reinitialize_command("update_doc")
+        self.run_command("update_doc")
+        commands = ["scp"]
+        commands.extend(glob.glob("html/*.html"))
+        commands.append("%s:%s/" % (sf_host, sf_htdocs))
+        _run(*commands)
         _run_without_check("ssh", sf_host, "chmod", "-R", "g+w", sf_htdocs)
 
 class release(Command):
@@ -95,6 +115,7 @@ setup(name=package_name,
         "Development Status :: 4 - Beta",
         "Topic :: Software Development :: Testing",
         ],
-      cmdclass={"upload_doc": upload_doc,
+      cmdclass={"update_doc": update_doc,
+                "upload_doc": upload_doc,
                 "release": release,
                 "tag": tag})
