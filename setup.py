@@ -42,10 +42,16 @@ class update_doc(Command):
         pass
 
     def run(self):
-        pydoc.writedoc(pikzie.assertions.Assertions)
-        shutil.move("Assertions.html", "html/")
+        object = pikzie.assertions.Assertions
+        page = pydoc.html.page(pydoc.describe(object),
+                               pydoc.html.document(object, "assertions"))
+        html = file("html/assertions.html", "w")
+        html.write(page)
+        html.close()
         _run("rst2html", "README", "html/readme.html")
         _run("rst2html", "README.ja", "html/readme.html.ja")
+        _run("rst2html", "NEWS", "html/news.html")
+        _run("rst2html", "NEWS.ja", "html/news.html.ja")
 
 class upload_doc(Command):
     description = "upload documentation"
@@ -61,7 +67,7 @@ class upload_doc(Command):
         sdist = self.reinitialize_command("update_doc")
         self.run_command("update_doc")
         commands = ["scp"]
-        commands.extend(glob.glob("html/*.html"))
+        commands.extend(glob.glob("html/*.html*"))
         commands.append("%s:%s/" % (sf_host, sf_htdocs))
         _run(*commands)
         _run_without_check("ssh", sf_host, "chmod", "-R", "g+w", sf_htdocs)
