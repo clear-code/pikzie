@@ -30,8 +30,8 @@ PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 
   * ...
 
-依存ライブラリ
-==============
+依存関係
+========
 
   * Python >= 2.3
 
@@ -82,9 +82,7 @@ test/run-test.pyは以下の通りである。::
   sys.exit(pikzie.Tester().run())
 
 以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
-トを自動で読み込み、定義されているテストを実行する。
-
-::
+トを自動で読み込み、定義されているテストを実行する。::
 
   % test/run-test.py
 
