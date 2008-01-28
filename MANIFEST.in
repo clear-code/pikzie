@@ -1,5 +1,6 @@
 include README*
 include NEWS*
+include html/*
 include setup.py
 include lib/*/*.py
 include lib/*/*/*.py
