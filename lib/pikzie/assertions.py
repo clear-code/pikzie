@@ -213,16 +213,21 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_call_raise(self, exception, callable_object, *args, **kw_args):
-        """Passes if callable_object(*args, **kw_args) raises exception.
+        """Passes if callable_object(*args, **kw_args) raises exception and
+        returns raised exception value.
 
-        self.assert_call_raise(NameError, lambda: unknown_variable) # => pass
-        self.assert_call_raise(NameError, lambda: 1)                # => fail
+        self.assert_call_raise(NameError,
+                               lambda: unknown_variable) # => pass
+                                                         # => returns NameError
+                                                         #    value
+        self.assert_call_raise(NameError, lambda: 1)     # => fail
         """
         self.assert_callable(callable_object)
         try:
             callable_object(*args, **kw_args)
         except exception:
             self._pass_assertion()
+            return sys.exc_info()[1]
         except:
             actual = sys.exc_info()
             actual_exception_class, actual_exception_value = actual[:2]
@@ -244,7 +249,8 @@ class Assertions(object):
             self._fail(message)
 
     def assert_call_nothing_raised(self, callable_object, *args, **kw_args):
-        """Passes if callable_object(*args, **kw_args) raises nothing exception.
+        """Passes if callable_object(*args, **kw_args) raises nothing exception
+        and returns called result.
 
         self.assert_call_nothing_raised(lambda: 1)                # => pass
                                                                   # => returns 1

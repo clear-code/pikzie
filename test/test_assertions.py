@@ -130,7 +130,9 @@ class TestAssertions(pikzie.TestCase):
         def test_assert_call_raise(self):
             def raise_name_error():
                 unknown_name
-            self.assert_call_raise(NameError, raise_name_error)
+            exception = self.assert_call_raise(NameError, raise_name_error)
+            self.assert_equal("global name \'unknown_name\' is not defined",
+                              str(exception))
 
             def nothing_raised():
                 "nothing raised"
@@ -308,7 +310,7 @@ class TestAssertions(pikzie.TestCase):
                            ["test_assert_callable"])
 
     def test_assert_call_raise(self):
-        self.assert_result(2, 4, 2, 0,
+        self.assert_result(2, 5, 2, 0,
                            [('F',
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
