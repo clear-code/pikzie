@@ -141,6 +141,12 @@ class TestAssertions(pikzie.TestCase):
                 1 / 0
             self.assert_call_raise(NameError, raise_zero_division_error)
 
+        def test_assert_call_nothing_raised(self):
+            self.assert_call_nothing_raised(lambda : "nothing raised")
+            def raise_zero_division_error():
+                1 / 0
+            self.assert_call_nothing_raised(raise_zero_division_error)
+
     def test_fail(self):
         self.assert_result(1, 0, 1, 0,
                            [("F", "TestCase.test_fail", "Failed!!!")],
@@ -302,7 +308,7 @@ class TestAssertions(pikzie.TestCase):
                            ["test_assert_callable"])
 
     def test_assert_call_raise(self):
-        self.assert_result(2, 1, 2, 0,
+        self.assert_result(2, 4, 2, 0,
                            [('F',
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
@@ -314,6 +320,18 @@ class TestAssertions(pikzie.TestCase):
                              "(integer division or modulo by zero)")],
                            ["test_assert_call_raise",
                             "test_assert_call_raise_different_error"])
+
+    def test_assert_call_nothing_raised(self):
+        self.assert_result(1, 3, 1, 0,
+                           [('F',
+                             "TestCase.test_assert_call_nothing_raised",
+                             "expected: %s(*(), **{}) nothing raised\n"
+                             " but was: <%s>(%s) is raised" % \
+                                 ("test.test_assertions."
+                                  "raise_zero_division_error",
+                                  "exceptions.ZeroDivisionError",
+                                  "integer division or modulo by zero"))],
+                           ["test_assert_call_nothing_raised"])
 
     def assert_result(self, n_tests, n_assertions, n_failures, n_errors,
                       fault_infos, tests):

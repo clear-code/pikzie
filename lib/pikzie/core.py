@@ -187,6 +187,16 @@ class TestCase(TestCaseTemplate, Assertions):
         else:
             return pprint.pformat(exception_class)
 
+    def _pformat_callable_object(self, callable_object):
+        if hasattr(callable_object, "im_class"):
+            cls = callable_object.im_class
+            return "%s.%s.%s" % (cls.__module__,
+                                 cls.__class__.__name__,
+                                 callable_object.__name__)
+        else:
+            return "%s.%s" % (callable_object.__module__,
+                              callable_object.__name__)
+
     def _pformat_re(self, pattern):
         re_flags = self._re_flags(pattern)
         if hasattr(pattern, "pattern"):

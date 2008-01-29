@@ -2,6 +2,7 @@ import sys
 import re
 import pprint
 import difflib
+import traceback
 
 class Assertions(object):
     def fail(self, message):
@@ -217,6 +218,7 @@ class Assertions(object):
         self.assert_call_raise(NameError, lambda: unknown_variable) # => pass
         self.assert_call_raise(NameError, lambda: 1)                # => fail
         """
+        self.assert_callable(callable_object)
         try:
             callable_object(*args, **kw_args)
         except exception:
@@ -237,4 +239,28 @@ class Assertions(object):
                 " but was: nothing raised" % \
                 self._pformat_exception_class(exception)
             self._fail(message)
+
+    def assert_call_nothing_raised(self, callable_object, *args, **kw_args):
+        """Passes if callable_object(*args, **kw_args) raises nothing exception.
+
+        self.assert_call_nothing_raised(lambda: 1)                # => pass
+        self.assert_call_nothing_raised(lambda: unknown_variable) # => fail
+        """
+        self.assert_callable(callable_object)
+        try:
+            callable_object(*args, **kw_args)
+        except:
+            actual = sys.exc_info()
+            actual_exception_class, actual_exception_value = actual[:2]
+            message = \
+                "expected: %s(*%s, **%s) nothing raised\n" \
+                " but was: <%s>(%s) is raised" % \
+                (self._pformat_callable_object(callable_object),
+                 pprint.pformat(args),
+                 pprint.pformat(kw_args),
+                 self._pformat_exception_class(actual_exception_class),
+                 str(actual_exception_value))
+            self._fail(message)
+        else:
+            self._pass_assertion()
 
