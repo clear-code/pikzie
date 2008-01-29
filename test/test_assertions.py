@@ -142,7 +142,7 @@ class TestAssertions(pikzie.TestCase):
             self.assert_call_raise(NameError, raise_zero_division_error)
 
         def test_assert_call_nothing_raised(self):
-            self.assert_call_nothing_raised(lambda : "nothing raised")
+            self.assert_equal(123, self.assert_call_nothing_raised(lambda : 123))
             def raise_zero_division_error():
                 1 / 0
             self.assert_call_nothing_raised(raise_zero_division_error)
@@ -323,7 +323,7 @@ class TestAssertions(pikzie.TestCase):
                             "test_assert_call_raise_different_error"])
 
     def test_assert_call_nothing_raised(self):
-        self.assert_result(1, 3, 1, 0,
+        self.assert_result(1, 4, 1, 0,
                            [('F',
                              "TestCase.test_assert_call_nothing_raised",
                              "expected: %s(*(), **{}) nothing raised\n"

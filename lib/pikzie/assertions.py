@@ -247,11 +247,12 @@ class Assertions(object):
         """Passes if callable_object(*args, **kw_args) raises nothing exception.
 
         self.assert_call_nothing_raised(lambda: 1)                # => pass
+                                                                  # => returns 1
         self.assert_call_nothing_raised(lambda: unknown_variable) # => fail
         """
         self.assert_callable(callable_object)
         try:
-            callable_object(*args, **kw_args)
+            result = callable_object(*args, **kw_args)
         except:
             actual = sys.exc_info()
             actual_exception_class, actual_exception_value = actual[:2]
@@ -264,6 +265,5 @@ class Assertions(object):
                  self._pformat_exception_class(actual_exception_class),
                  str(actual_exception_value))
             self._fail(message)
-        else:
-            self._pass_assertion()
-
+        self._pass_assertion()
+        return result
