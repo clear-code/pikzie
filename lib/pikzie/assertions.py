@@ -236,8 +236,11 @@ class Assertions(object):
         else:
             message = \
                 "expected: <%s> is raised\n" \
-                " but was: nothing raised" % \
-                self._pformat_exception_class(exception)
+                " but was: %s(*%s, **%s) nothing raised" % \
+                (self._pformat_exception_class(exception),
+                 self._pformat_callable_object(callable_object),
+                 pprint.pformat(args),
+                 pprint.pformat(kw_args))
             self._fail(message)
 
     def assert_call_nothing_raised(self, callable_object, *args, **kw_args):

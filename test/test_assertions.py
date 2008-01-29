@@ -312,7 +312,8 @@ class TestAssertions(pikzie.TestCase):
                            [('F',
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
-                             " but was: nothing raised"),
+                             " but was: %s(*(), **{}) nothing raised" %
+                             ("test.test_assertions.nothing_raised")),
                             ('F',
                              "TestCase.test_assert_call_raise_different_error",
                              "expected: <exceptions.NameError> is raised\n"
