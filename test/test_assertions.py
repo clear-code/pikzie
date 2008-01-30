@@ -152,6 +152,7 @@ class TestAssertions(pikzie.TestCase):
             self.assert_call_nothing_raised(raise_zero_division_error)
 
     def test_fail(self):
+        """Test for fail"""
         self.assert_result(1, 0, 1, 0,
                            [("F", "TestCase.test_fail", "Failed!!!")],
                            ["test_fail"])

@@ -105,6 +105,10 @@ class ConsoleTestRunner(object):
             return " %s" % test_case.__doc__
 
     def on_start_test(self, result, test):
+        if test.description():
+            self._writeln(" %s" % test.description(),
+                          level=VERBOSE_LEVEL_VERBOSE)
+
         test_name = test.short_name()
         indent = "  "
         result_mark = "."
