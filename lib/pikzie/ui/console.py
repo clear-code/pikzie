@@ -22,10 +22,11 @@ class ConsoleTestRunner(object):
                 format = "should be one of %s: %s"
                 raise OptionValueError(format % (available_values, value))
 
+        group = parser.add_option_group("Console UI", "Options for console UI")
         help = "Output log with colors %s (default: auto)" % available_values
-        parser.add_option("-c", "--color",
-                          action="callback", callback=store_use_color,
-                          dest="use_color", nargs=1, type="string", help=help)
+        group.add_option("-c", "--color",
+                         action="callback", callback=store_use_color,
+                         dest="use_color", nargs=1, type="string", help=help)
     setup_options = classmethod(setup_options)
 
     def __init__(self, output=sys.stdout, use_color=None):

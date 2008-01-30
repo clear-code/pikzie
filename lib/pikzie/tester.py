@@ -30,13 +30,14 @@ class Tester(object):
     def _parse(self, args):
         parser = OptionParser(version=self.version,
                               usage="%prog [options] [test_files]")
-        parser.add_option("-p", "--test-file-name-pattern",
-                          metavar="PATTERN", dest="test_file_name_pattern",
-                          help="Glob for test file name "
-                          "(default: %s)" % TestLoader.default_pattern)
-        parser.add_option("-n", "--name", metavar="TEST_NAME",
-                          dest="test_name", help="Specify tests")
-        parser.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
-                          dest="test_case_name", help="Specify test cases")
+        group = parser.add_option_group("Common", "Common options")
+        group.add_option("-p", "--test-file-name-pattern",
+                         metavar="PATTERN", dest="test_file_name_pattern",
+                         help="Glob for test file name "
+                         "(default: %s)" % TestLoader.default_pattern)
+        group.add_option("-n", "--name", metavar="TEST_NAME",
+                         dest="test_name", help="Specify tests")
+        group.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
+                         dest="test_case_name", help="Specify test cases")
         ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)
