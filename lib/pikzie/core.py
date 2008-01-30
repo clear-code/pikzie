@@ -284,8 +284,6 @@ class TestLoader(object):
     default_pattern = "test/test_*.py"
 
     def __init__(self, pattern=None, test_name=None, test_case_name=None):
-        if pattern is None:
-            pattern = self.default_pattern
         self.pattern = pattern
         self.test_name = test_name
         self.test_case_name = test_case_name
@@ -305,13 +303,14 @@ class TestLoader(object):
         for test_case in self.collect_test_cases(files):
             def is_test_method(name):
                 return name.startswith("test_") and \
+                    re.search(self.test_name or "", name) and \
                     callable(getattr(test_case, name))
             tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
         return TestSuite(tests)
 
     def _find_targets(self):
         targets = []
-        for target in glob.glob(self.pattern):
+        for target in glob.glob(self.pattern or self.default_pattern):
             if os.path.isfile(target):
                 targets.append(target)
         return targets
