@@ -281,7 +281,7 @@ class TestCase(TestCaseTemplate, Assertions):
 
 
 class TestLoader(object):
-    default_pattern = "*/test_*.py"
+    default_pattern = "test/test_*.py"
 
     def __init__(self, pattern=None, test_name=None, test_case_name=None):
         if pattern is None:
