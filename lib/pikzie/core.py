@@ -300,10 +300,12 @@ class TestCase(TestCaseTemplate, Assertions):
 class TestLoader(object):
     default_pattern = "test/test_*.py"
 
-    def __init__(self, pattern=None, test_name=None, test_case_name=None):
+    def __init__(self, pattern=None, test_name=None, test_case_name=None,
+                 target_modules=None):
         self.pattern = pattern
         self.test_name = test_name
         self.test_case_name = test_case_name
+        self.target_modules = target_modules or []
 
     def collect_test_cases(self, files=[]):
         test_cases = []
@@ -335,9 +337,9 @@ class TestLoader(object):
         return targets
 
     def _load_modules(self, files=[]):
-        modules = []
+        modules = self.target_modules[:]
         targets = files
-        if len(files) == 0 or self.pattern is not None:
+        if (len(files) == 0 and len(modules) == 0) or self.pattern is not None:
             targets += self._find_targets()
         for target in targets:
             target = os.path.splitext(target)[0]
