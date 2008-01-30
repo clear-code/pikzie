@@ -336,7 +336,10 @@ class TestLoader(object):
 
     def _load_modules(self, files=[]):
         modules = []
-        for target in files + self._find_targets():
+        targets = files
+        if len(files) == 0 or self.pattern is not None:
+            targets += self._find_targets()
+        for target in targets:
             target = os.path.splitext(target)[0]
             target = re.sub(re.escape(os.path.sep), ".", target)
             parts = target.split(".")
