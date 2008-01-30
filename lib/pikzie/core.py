@@ -281,9 +281,11 @@ class TestCase(TestCaseTemplate, Assertions):
 
 
 class TestLoader(object):
+    default_pattern = "*/test_*.py"
+
     def __init__(self, pattern=None, test_name=None, test_case_name=None):
         if pattern is None:
-            pattern = "**/test_*.py"
+            pattern = self.default_pattern
         self.pattern = pattern
         self.test_name = test_name
         self.test_case_name = test_case_name

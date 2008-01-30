@@ -15,6 +15,7 @@ class Tester(object):
         options, args = self._parse(args)
         options = options.__dict__
         test_suite_create_options = {
+            "pattern": options.pop("test_file_name_pattern"),
             "test_name": options.pop("test_name"),
             "test_case_name": options.pop("test_case_name")
         }
@@ -28,6 +29,10 @@ class Tester(object):
 
     def _parse(self, args):
         parser = OptionParser(version=self.version)
+        parser.add_option("-p", "--test-file-name-pattern",
+                          metavar="PATTERN", dest="test_file_name_pattern",
+                          help="Glob for test file name "
+                          "(default: %s)" % TestLoader.default_pattern)
         parser.add_option("-n", "--name", metavar="TEST_NAME",
                           dest="test_name", help="Specify tests")
         parser.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
