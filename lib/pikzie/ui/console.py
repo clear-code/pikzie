@@ -72,8 +72,9 @@ class ConsoleTestRunner(object):
         result = TestResult()
         result.add_listner(self)
         test.run(result)
-        self._writeln()
-        self._writeln()
+        if self.verbose_level == VERBOSE_LEVEL_NORMAL:
+            self._writeln()
+            self._writeln()
         self._print_errors(result)
         self._writeln("Finished in %.3f seconds" % result.elapsed)
         self._writeln()
@@ -122,6 +123,9 @@ class ConsoleTestRunner(object):
     on_error = _on_fault
 
     def on_finish_test(self, result, test):
+        self._writeln(level=VERBOSE_LEVEL_VERBOSE)
+
+    def on_finish_test_case(self, result, test_case):
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
     def _write(self, arg, color=None, level=VERBOSE_LEVEL_NORMAL):
