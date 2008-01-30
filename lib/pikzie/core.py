@@ -290,16 +290,35 @@ class TestLoader(object):
         self.test_name = test_name
         self.test_case_name = test_case_name
 
-    def find_targets(self):
+    def collect_test_cases(self, files=[]):
+        test_cases = []
+        for module in self._load_modules(files):
+            for name in dir(module):
+                object = getattr(module, name)
+                if (isinstance(object, (type, types.ClassType)) and
+                    issubclass(object, TestCase)):
+                    test_cases.append(object)
+        return test_cases
+
+    def create_test_suite(self, files=[]):
+        tests = []
+        for test_case in self.collect_test_cases(files):
+            def is_test_method(name):
+                return name.startswith("test_") and \
+                    callable(getattr(test_case, name))
+            tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
+        return TestSuite(tests)
+
+    def _find_targets(self):
         targets = []
         for target in glob.glob(self.pattern):
             if os.path.isfile(target):
                 targets.append(target)
         return targets
 
-    def load_modules(self):
+    def _load_modules(self, files=[]):
         modules = []
-        for target in self.find_targets():
+        for target in files + self._find_targets():
             target = os.path.splitext(target)[0]
             target = re.sub(re.escape(os.path.sep), ".", target)
             parts = target.split(".")
@@ -309,28 +328,9 @@ class TestLoader(object):
                 __import__(name)
                 module = sys.modules[name]
                 parts.pop()
-            if module is not None:
+            if module is not None and module not in modules:
                 modules.append(module)
         return modules
-
-    def collect_test_cases(self):
-        test_cases = []
-        for module in self.load_modules():
-            for name in dir(module):
-                object = getattr(module, name)
-                if (isinstance(object, (type, types.ClassType)) and
-                    issubclass(object, TestCase)):
-                    test_cases.append(object)
-        return test_cases
-
-    def create_test_suite(self):
-        tests = []
-        for test_case in self.collect_test_cases():
-            def is_test_method(name):
-                return name.startswith("test_") and \
-                    callable(getattr(test_case, name))
-            tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
-        return TestSuite(tests)
 
 class TestResult(object):
     """Holder for test result information.

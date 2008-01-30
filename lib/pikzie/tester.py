@@ -19,7 +19,7 @@ class Tester(object):
             "test_name": options.pop("test_name"),
             "test_case_name": options.pop("test_case_name")
         }
-        test = TestLoader(**test_suite_create_options).create_test_suite()
+        test = TestLoader(**test_suite_create_options).create_test_suite(args)
         runner = ConsoleTestRunner(**options)
         result = runner.run(test)
         if result.succeeded():
@@ -28,7 +28,8 @@ class Tester(object):
             return 1
 
     def _parse(self, args):
-        parser = OptionParser(version=self.version)
+        parser = OptionParser(version=self.version,
+                              usage="%prog [options] [test_files]")
         parser.add_option("-p", "--test-file-name-pattern",
                           metavar="PATTERN", dest="test_file_name_pattern",
                           help="Glob for test file name "

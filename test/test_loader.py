@@ -11,10 +11,10 @@ class TestLoader(pikzie.TestCase):
             return "%s/test_%s.py" % (self.fixture_dir, name)
 
         self.assert_equal(sorted(map(build_full_path, ["xxx", "yyy", "zzz"])),
-                          sorted(self.loader.find_targets()))
+                          sorted(self.loader._find_targets()))
 
     def test_load_modules(self):
-        modules = self.loader.load_modules()
+        modules = self.loader._load_modules()
         module_names = map(lambda module: module.__name__, modules)
         self.assert_equal(["test.fixtures.tests.test_xxx",
                            "test.fixtures.tests.test_yyy",
