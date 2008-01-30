@@ -70,6 +70,23 @@ class AssertionFailure(Exception):
             result += self.user_message + "\n"
         return result
 
+class TestCaseRunner(object):
+    def __init__(self, test_case, test_names):
+        self.test_case = test_case
+        self.test_names = test_names
+
+    def tests(self):
+        return map(lambda test_name: self.test_case(test_name), self.test_names)
+
+    def run(self, result):
+        if len(self.test_names) == 0:
+            return
+
+        result.start_test_case(self.test_case)
+        for test in self.tests():
+            test.run(result)
+        result.finish_test_case(self.test_case)
+
 class TestCaseTemplate(object):
     def setup(self):
         "Hook method for setting up the test fixture before exercising it."
@@ -81,9 +98,6 @@ class TestCaseTemplate(object):
 
 class TestCase(TestCaseTemplate, Assertions):
     """A class whose instances are single test cases.
-
-    By default, the test code itself should be placed in a method named
-    'runTest'.
 
     If the fixture may be used for many test cases, create as
     many test methods as are needed. When instantiating such a TestCase
@@ -129,6 +143,9 @@ class TestCase(TestCaseTemplate, Assertions):
     def __str__(self):
         return "%s.%s" % (self.__class__.__name__, self.__method_name)
 
+    def short_name(self):
+        return self.__method_name
+
     def __repr__(self):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
@@ -171,7 +188,7 @@ class TestCase(TestCaseTemplate, Assertions):
             if success:
                 result.add_success(self)
         finally:
-            result.stop_test(self)
+            result.finish_test(self)
             self.__result = None
 
     def _pass_assertion(self):
@@ -306,7 +323,8 @@ class TestLoader(object):
                 return (name.startswith("test_") and
                         re.search(self.test_name or "", name) and
                         callable(getattr(test_case, name)))
-            tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
+            tests.append(TestCaseRunner(test_case,
+                                        filter(is_test_method, dir(test_case))))
         return TestSuite(tests)
 
     def _find_targets(self):
@@ -376,10 +394,19 @@ class TestResult(object):
         self.n_tests += 1
         self._notify("start_test", test)
 
-    def stop_test(self, test):
+    def finish_test(self, test):
         "Called when the given test has been run"
-        self._stop_at = time.time()
-        self.elapsed += (self._stop_at - self._start_at)
+        self._finish_at = time.time()
+        self.elapsed += (self._finish_at - self._start_at)
+        self._notify("finish_test", test)
+
+    def start_test_case(self, test_case):
+        "Called when the given test case is about to be run"
+        self._notify("start_test_case", test_case)
+
+    def finish_test_case(self, test_case):
+        "Called when the given test case has been run"
+        self._notify("finish_test_case", test_case)
 
     def add_error(self, test, error):
         """Called when an error has occurred."""

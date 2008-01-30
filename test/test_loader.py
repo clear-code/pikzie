@@ -1,6 +1,8 @@
 import pikzie
 
 class TestLoader(pikzie.TestCase):
+    """Tests for TestLoader"""
+
     def setup(self):
         self.fixture_dir = "test/fixtures/tests"
         pattern = self.fixture_dir + "/test_*.py"
@@ -36,16 +38,21 @@ class TestLoader(pikzie.TestCase):
 
     def test_create_test_suite(self):
         test_suite = self.loader.create_test_suite()
-        test_names = map(lambda test: test.id(), test_suite._tests)
         self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
                            "test.fixtures.tests.test_xxx.TestXXX1.test_two",
                            "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
-                          sorted(test_names))
+                          sorted(self._collect_test_names(test_suite)))
 
     def test_create_test_suite_with_test_name_filter(self):
         self.loader.test_name = "one|xyz"
         test_suite = self.loader.create_test_suite()
-        test_names = map(lambda test: test.id(), test_suite._tests)
         self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
                            "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
-                          sorted(test_names))
+                          sorted(self._collect_test_names(test_suite)))
+
+    def _collect_test_names(self, test_suite):
+        names = []
+        for test_case_runner in test_suite._tests:
+            names.extend(map(lambda test: test.id(),
+                             test_case_runner.tests()))
+        return names

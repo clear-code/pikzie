@@ -2,6 +2,8 @@ import re
 import pikzie
 
 class TestAssertions(pikzie.TestCase):
+    """Tests for assertions."""
+
     class TestCase(pikzie.TestCase):
         def test_fail(self):
             self.fail("Failed!!!")

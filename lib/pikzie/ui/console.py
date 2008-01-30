@@ -1,6 +1,7 @@
 import sys
 import os
 import math
+import re
 
 from optparse import OptionValueError
 
@@ -79,8 +80,31 @@ class ConsoleTestRunner(object):
         self._writeln(result.summary(), self._result_color(result))
         return result
 
+    def on_start_test_case(self, result, test_case):
+        description = self._generate_test_case_description(test_case)
+        self._writeln("%s:%s" % (test_case.__name__, description),
+                      level=VERBOSE_LEVEL_VERBOSE)
+
+    def _generate_test_case_description(self, test_case):
+        if not test_case.__doc__:
+            return ""
+
+        if re.search("\n", test_case.__doc__):
+            lines = test_case.__doc__.rstrip().split("\n")
+            min_indent = 1000
+            for line in lines[1:]:
+                if re.match(" *$", line):
+                    continue
+                min_indent = min([min_indent, re.match(" *", line).end()])
+            lines = lines[0:1] + map(lambda line: line[min_indent:],
+                                     lines[1:])
+            lines = map(lambda line: " " + line, lines)
+            return "\n%s" % "\n".join(lines)
+        else:
+            return " %s" % test_case.__doc__
+
     def on_start_test(self, result, test):
-        test_name = str(test)
+        test_name = test.short_name()
         indent = "  "
         result_mark = "."
         spaces = len(indent) + len(":") + len(result_mark)
@@ -90,13 +114,15 @@ class ConsoleTestRunner(object):
 
     def on_success(self, result, test):
         self._write(".", self._success_color())
-        self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
     def _on_fault(self, result, fault):
         self._write(fault.single_character_display(), fault.color())
 
     on_failure = _on_fault
     on_error = _on_fault
+
+    def on_finish_test(self, result, test):
+        self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
     def _write(self, arg, color=None, level=VERBOSE_LEVEL_NORMAL):
         if self.verbose_level < level:
