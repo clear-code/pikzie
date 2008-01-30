@@ -5,7 +5,7 @@ if not hasattr(__builtins__, "sorted"):
         list = iterable[:]
         list.sort()
         return list
-    __builtins__.sorted = sorted
+    __builtins__["sorted"] = sorted
 
 from pikzie.tester import Tester
 from pikzie.core import *
