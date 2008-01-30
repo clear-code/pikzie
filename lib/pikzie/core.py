@@ -293,7 +293,8 @@ class TestLoader(object):
         for module in self._load_modules(files):
             for name in dir(module):
                 object = getattr(module, name)
-                if (isinstance(object, (type, types.ClassType)) and
+                if (re.search(self.test_case_name or "", name) and
+                    isinstance(object, (type, types.ClassType)) and
                     issubclass(object, TestCase)):
                     test_cases.append(object)
         return test_cases
@@ -302,9 +303,9 @@ class TestLoader(object):
         tests = []
         for test_case in self.collect_test_cases(files):
             def is_test_method(name):
-                return name.startswith("test_") and \
-                    re.search(self.test_name or "", name) and \
-                    callable(getattr(test_case, name))
+                return (name.startswith("test_") and
+                        re.search(self.test_name or "", name) and
+                        callable(getattr(test_case, name)))
             tests.extend(map(test_case, filter(is_test_method, dir(test_case))))
         return TestSuite(tests)
 

@@ -27,6 +27,13 @@ class TestLoader(pikzie.TestCase):
         self.assert_equal(["TestXXX1", "TestXXX2", "TestYYY"],
                           sorted(test_case_names))
 
+    def test_collect_test_cases_with_test_case_name_filter(self):
+        self.loader.test_case_name = "XXX"
+        test_cases = self.loader.collect_test_cases()
+        test_case_names = map(lambda case: case.__name__, test_cases)
+        self.assert_equal(["TestXXX1", "TestXXX2"],
+                          sorted(test_case_names))
+
     def test_create_test_suite(self):
         test_suite = self.loader.create_test_suite()
         test_names = map(lambda test: test.id(), test_suite._tests)
