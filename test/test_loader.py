@@ -49,6 +49,12 @@ class TestLoader(pikzie.TestCase):
         self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
                            "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
                           sorted(self._collect_test_names(test_suite)))
+    def test_create_test_suite_with_filters(self):
+        self.loader.test_case_name = "XXX"
+        self.loader.test_name = "one|xyz"
+        test_suite = self.loader.create_test_suite()
+        self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one"],
+                          sorted(self._collect_test_names(test_suite)))
 
     def _collect_test_names(self, test_suite):
         names = []
