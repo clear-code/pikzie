@@ -36,6 +36,7 @@ class TestRunner(pikzie.TestCase):
 
         test = TestCase("test_fail_assertion")
         format = \
+            "\n" \
             "1) Failure: TestCase.test_fail_assertion: %s\n" \
             "expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
@@ -57,6 +58,7 @@ class TestRunner(pikzie.TestCase):
 
         test = TestCase("test_error_raised")
         format = \
+            "\n" \
             "1) Error: TestCase.test_error_raised\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_method'\n" \
@@ -82,7 +84,6 @@ class TestRunner(pikzie.TestCase):
         message = self.output.read()
         format = \
             "%s\n" \
-            "\n" \
             "%s" \
             "Finished in %.3f seconds\n" \
             "\n" \

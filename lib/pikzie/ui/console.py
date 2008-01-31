@@ -74,7 +74,6 @@ class ConsoleTestRunner(object):
         test.run(result)
         if self.verbose_level == VERBOSE_LEVEL_NORMAL:
             self._writeln()
-            self._writeln()
         self._print_errors(result)
         self._writeln("Finished in %.3f seconds" % result.elapsed)
         self._writeln()
@@ -152,6 +151,7 @@ class ConsoleTestRunner(object):
         if result.succeeded():
             return
         size = len(result.faults)
+        self._writeln()
         format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
         for i, fault in enumerate(result.faults):
             self._writeln(format % (i + 1, fault.long_display()),
