@@ -15,7 +15,7 @@ The history of Pikzie
   * accepted test target file list from command line arguments
   * added --name, --test-case options
     (You can run only your tests or test cases tests that
-     you specified)
+    you specified)
   * supported colorized output (added --color option)
   * supported verbose mode (added --verbose option)
   * supported Python 2.3
