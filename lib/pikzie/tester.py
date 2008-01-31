@@ -29,8 +29,8 @@ class Tester(object):
         options = options.__dict__
         test_suite_create_options = {
             "pattern": options.pop("test_file_name_pattern"),
-            "test_name": options.pop("test_name"),
-            "test_case_name": options.pop("test_case_name"),
+            "test_names": options.pop("test_names"),
+            "test_case_names": options.pop("test_case_names"),
             "target_modules": self.target_modules
         }
         test = TestLoader(**test_suite_create_options).create_test_suite(args)
@@ -50,9 +50,11 @@ class Tester(object):
                          help="Glob for test file name "
                          "(default: %s)" % TestLoader.default_pattern)
         group.add_option("-n", "--name", metavar="TEST_NAME",
-                         dest="test_name", help="Specify tests")
+                         action="append", dest="test_names",
+                         help="Specify tests")
         group.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
-                         dest="test_case_name", help="Specify test cases")
+                         action="append", dest="test_case_names",
+                         help="Specify test cases")
         ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)
 

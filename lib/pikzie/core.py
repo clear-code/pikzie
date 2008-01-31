@@ -300,19 +300,39 @@ class TestCase(TestCaseTemplate, Assertions):
 class TestLoader(object):
     default_pattern = "test/test_*.py"
 
-    def __init__(self, pattern=None, test_name=None, test_case_name=None,
+    def __init__(self, pattern=None, test_names=None, test_case_names=None,
                  target_modules=None):
         self.pattern = pattern
-        self.test_name = test_name
-        self.test_case_name = test_case_name
+        self.test_names = test_names
+        self.test_case_names = test_case_names
         self.target_modules = target_modules or []
+
+    def _get_test_names(self):
+        return self._test_names
+    def _set_test_names(self, names):
+        self._test_names = self._prepare_target_names(names)
+    test_names = property(_get_test_names, _set_test_names)
+
+    def _get_test_case_names(self):
+        return self._test_case_names
+    def _set_test_case_names(self, names):
+        self._test_case_names = self._prepare_target_names(names)
+    test_case_names = property(_get_test_case_names, _set_test_case_names)
 
     def collect_test_cases(self, files=[]):
         test_cases = []
         for module in self._load_modules(files):
             for name in dir(module):
                 object = getattr(module, name)
-                if (re.search(self.test_case_name or "", name) and
+                def is_target_test_case_name():
+                    if self.test_case_names is None: return True
+                    def is_target_name(test_case_name):
+                        if type(test_case_name) == str:
+                            return test_case_name == name
+                        else:
+                            return test_case_name.search(name)
+                    return len(filter(is_target_name, self.test_case_names)) > 0
+                if (is_target_test_case_name() and
                     isinstance(object, (type, types.ClassType)) and
                     issubclass(object, TestCase)):
                     test_cases.append(object)
@@ -321,12 +341,11 @@ class TestLoader(object):
     def create_test_suite(self, files=[]):
         tests = []
         for test_case in self.collect_test_cases(files):
-            def is_test_method(name):
-                return (name.startswith("test_") and
-                        re.search(self.test_name or "", name) and
-                        callable(getattr(test_case, name)))
-            tests.append(TestCaseRunner(test_case,
-                                        filter(is_test_method, dir(test_case))))
+            def _is_test_method(name):
+                return self._is_test_method(test_case, name)
+            target_tests = filter(_is_test_method, dir(test_case))
+            if len(target_tests) > 0:
+                tests.append(TestCaseRunner(test_case, target_tests))
         return TestSuite(tests)
 
     def _find_targets(self):
@@ -354,6 +373,28 @@ class TestLoader(object):
             if module is not None and module not in modules:
                 modules.append(module)
         return modules
+
+    def _is_test_method(self, test_case, name):
+        if not name.startswith("test_"): return False
+        if self.test_names is not None:
+            def is_target_name(test_name):
+                if type(test_name) == str:
+                    return test_name == name
+                else:
+                    return test_name.search(name)
+            if len(filter(is_target_name, self.test_names)) == 0:
+                return False
+        return callable(getattr(test_case, name))
+
+    def _prepare_target_names(self, names):
+        if names is None: return names
+        if type(names) == str:
+            names = [names]
+        def prepare(name):
+            if name.startswith("/") and name.endswith("/"):
+                name = re.compile(name[1:-1])
+            return name
+        return map(prepare, names)
 
 class TestResult(object):
     """Holder for test result information.
