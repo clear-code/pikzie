@@ -6,6 +6,20 @@
 
 The history of Pikzie
 
+0.2.0: 2008-01-31
+=================
+
+  * added assert_call_nothing_raised
+  * added auto test runner
+    (You can run your tests without test runner script)
+  * accepted test target file list from command line arguments
+  * added --name, --test-case options
+    (You can run only your tests or test cases tests that
+     you specified)
+  * supported colorized output (added --color option)
+  * supported verbose mode (added --verbose option)
+  * supported Python 2.3
+
 0.1.0: 2008-01-28
 =================
 
