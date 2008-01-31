@@ -89,7 +89,57 @@ test/run-test.pyは以下の通りである。::
 オプション
 ==========
 
-TODO
+-nTEST_NAME, --name=TEST_NAME  TEST_NAMEにマッチしたテストを実
+                               行します。もし、TEST_NAMEが
+                               "/"で囲まれていた場合は（例:
+                               /test\_/）正規表現として扱いま
+                               す。
+
+			       このオプションは何度でも指定で
+                               き、その場合は、どれかのパター
+                               ンにマッチしたテストすべてが実
+                               行されます。
+
+-tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  TEST_CASE_NAME
+                                              にマッチしたテ
+                                              ストケースを実
+                                              行します。もし、
+                                              TEST_CASE_NAME
+                                              が"/"で囲まれて
+                                              いた場合は（例:
+                                              /TestMyLib/）正
+                                              規表現として扱
+                                              います。
+
+					      このオプション
+                                              は何度でも指定
+                                              でき、その場合
+                                              は、どれかのパ
+                                              ターンにマッチ
+                                              したテストケー
+                                              スすべてが実行
+                                              されます。
+
+-vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
+                          [s|silent|n|normal|v|verbose]のう
+	 		  ちのどれかです。
+
+			  このオプションはコンソールUIを使用
+			  する場合だけ有効です。（現在はコン
+			  ソールUIしかありません。）
+
+-cMODE, --color=MODE      出力を色付けするかどうかを指定しま
+                          す。MODEには[yes|true|no|false|auto]の
+                          どれかを指定します。yesまたはtrue
+                          が指定された場合はエスケープシーケ
+                          ンスで色付けして出力します。
+                          noまたはfalseが指定された場合は色付
+                          けしません。autoあるいは値が省略さ
+                          れた時は、可能なら色付けをします。
+
+			  このオプションはコンソールUIを使用
+                          する場合だけ有効です。（現在はコン
+                          ソールUIしかありません。）
 
 テストの仕方
 ============
@@ -109,7 +159,13 @@ TODO
 表明
 ----
 
-TODO
+pydocを見てください。::
+
+  % pydoc pikzie.assertions.Assertions
+
+あるいはHTML化されたものをWeb上で見ることもできます。
+http://pikzie.sourceforge.net/assertions.html
+
 
 雛型
 ----

@@ -89,7 +89,63 @@ are ran by invoking run-test.py like the following::
 Options
 -------
 
-TODO
+-nTEST_NAME, --name=TEST_NAME  runs tests that are matched
+                               with TEST_NAME. If TEST_NAME
+                               is surrounded by "/"
+                               (e.g. /test\_/), TEST_NAME is
+                               handled as regular
+                               expression.
+
+			       This option can be specified
+                               n times. In the case, Pikzie
+                               runs tests that are matched
+                               with any TEST_NAME.
+
+-tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  runs test
+                                              cases that are
+                                              matched with
+                                              TEST_CASE_NAME.
+					      If
+                                              TEST_CASE_NAME
+                                              is surrounded
+                                              by "/"
+                                              (e.g. /TestMyLib/),
+                                              TEST_CASE_NAME
+                                              is handled as
+                                              regular
+                                              expression.
+
+					      This option
+					      can be
+					      specified n
+					      times. In the
+					      case, Pikzie
+					      runs test
+					      cases that are
+					      matched with
+					      any
+					      TEST_CASE_NAME.
+
+-vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
+                          one of [s|silent|n|normal|v|verbose].
+
+			  This option is only for console
+			  UI. (There are only console UI at
+			  present.)
+
+-cMODE, --color=MODE      specifies whether colorize output
+                          or not. MODE is one of
+                          [yes|true|no|false|auto]. If 'yes'
+                          or 'true' is specified, colorized
+                          output by escape sequence is used.
+			  If 'no' or 'false' is specified,
+                          colorized output is never used. If 'auto'
+			  or the option is omitted,
+                          colorized output is used if available.
+
+			  This option is only for console
+			  UI. (There are only console UI at
+			  present.)
 
 How to test
 ===========
@@ -109,7 +165,12 @@ TODO
 Assertions
 ----------
 
-TODO
+Use pydoc::
+
+  % pydoc pikzie.assertions.Assertions
+
+Or you can see HTML version on the Web:
+http://pikzie.sourceforge.net/assertions.html
 
 Template
 --------
