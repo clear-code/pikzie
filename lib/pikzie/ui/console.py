@@ -169,4 +169,5 @@ class ConsoleTestRunner(object):
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")
-        return term and term.endswith("term")
+        if not term: return False
+        return term.endswith("term") or term == "screen"
