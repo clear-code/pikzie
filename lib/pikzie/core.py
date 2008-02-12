@@ -11,6 +11,7 @@ import pprint
 from pikzie.color import *
 from pikzie.faults import *
 from pikzie.assertions import Assertions
+from pikzie.decorators import metadata
 
 __all__ = ["TestSuite", "TestCase", "TestResult", "TestLoader"]
 
@@ -121,6 +122,14 @@ class TestCase(TestCaseTemplate, Assertions):
 
     def __len__(self):
         return 1
+
+    def get_metadata(self, name):
+        test_method = getattr(self, self.__method_name)
+        metadata_container_key = metadata.container_key
+        if hasattr(test_method, metadata_container_key):
+            return getattr(test_method, metadata_container_key)[name]
+        else:
+            return None
 
     def description(self):
         """Returns a one-line description of the test, or None if no
