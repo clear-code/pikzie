@@ -126,10 +126,12 @@ class TestCase(TestCaseTemplate, Assertions):
     def get_metadata(self, name):
         test_method = getattr(self, self.__method_name)
         metadata_container_key = metadata.container_key
-        if hasattr(test_method, metadata_container_key):
-            return getattr(test_method, metadata_container_key)[name]
-        else:
+        if not hasattr(test_method, metadata_container_key):
             return None
+        metadata_container = getattr(test_method, metadata_container_key)
+        if not metadata_container.has_key(name):
+            return None
+        return metadata_container[name]
 
     def description(self):
         """Returns a one-line description of the test, or None if no
