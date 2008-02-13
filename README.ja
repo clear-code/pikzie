@@ -54,7 +54,7 @@ http://sourceforge.net/project/showfiles.php?group_id=215708
 使い方
 ======
 
-以下のようなディレクトリ構造だとする。::
+以下のようなディレクトリ構造だとします。::
 
   . -+- lib  --- yourlib --- ...
      |
@@ -66,7 +66,7 @@ http://sourceforge.net/project/showfiles.php?group_id=215708
               |
 	      +- ...
 
-test/run-test.pyは以下の通りである。::
+test/run-test.pyは以下の通りです。::
 
   #!/usr/bin/env python
 
@@ -82,7 +82,7 @@ test/run-test.pyは以下の通りである。::
   sys.exit(pikzie.Tester().run())
 
 以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
-トを自動で読み込み、定義されているテストを実行する。::
+トを自動で読み込み、定義されているテストを実行します。::
 
   % test/run-test.py
 
@@ -141,20 +141,140 @@ test/run-test.pyは以下の通りである。::
                           する場合だけ有効です。（現在はコン
                           ソールUIしかありません。）
 
-テストの仕方
-============
-
-TODO
-
 テスト結果
 ==========
 
-TODO
+テスト結果は例えば以下のようになります。::
+
+  ....F..............................
+  
+  1) Failure: TestLoader.test_collect_test_cases: sorted(test_case_names))
+  expected: <['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']>
+   but was: <['TestXXX1', 'TestXXX2', 'TestYYY']>
+  diff:
+  - ['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']
+  ?                                   -----------
+  
+  + ['TestXXX1', 'TestXXX2', 'TestYYY']
+  /home/kou/work/python/pikzie/test/test_loader.py:30: test_collect_test_cases(): sorted(test_case_names))
+  
+  Finished in 0.013 seconds
+  
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s)
+
+進行状況
+--------
+
+一番上にある「.」と「F」の部分がテストの進行状況を示していま
+す。::
+
+  ....F..............................
+
+各「.」、「F」が1つのテストケース（テストメソッド）を表してい
+ます。「.」が成功したテストケース、「F」が失敗したテストケー
+スを表しています。他にも「E」、「P」、「N」があり、それぞれエ
+ラー、保留、通知を表しています。まとめると以下のようになりま
+す。
+
+.
+  成功したテスト
+
+F
+  表明が失敗したテスト
+
+E
+  異常終了したテスト
+
+P
+  保留マークがついているテスト（未実装）
+
+N
+  通知が行われたテスト（未実装）
+
+上記のテストを表す印はテストが実行される毎に出力されます。テ
+スト実行中は、この出力で実行状況を確認できます。
+
+テスト結果のまとめ
+------------------
+
+テストが終了すると、テスト結果のまとめを出力します。まとめは、
+まず、成功しなかったテストの詳細をそれぞれ表示します。例では
+1つ失敗があったのでそれを表示しています。::
+
+  1) Failure: TestLoader.test_collect_test_cases: sorted(test_case_names))
+  expected: <['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']>
+   but was: <['TestXXX1', 'TestXXX2', 'TestYYY']>
+  diff:
+  - ['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']
+  ?                                   -----------
+  
+  + ['TestXXX1', 'TestXXX2', 'TestYYY']
+  /home/kou/work/python/pikzie/test/test_loader.py:30: test_collect_test_cases(): sorted(test_case_names))
+
+この例ではTestLoader.test_collect_test_casesテストケースが失
+敗し、期待する結果が::
+
+  ['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']
+
+だったのに、実際は::
+
+  ['TestXXX1', 'TestXXX2', 'TestYYY']
+
+になっていることを表しています。「diff:」以下の部分ではこれ
+らの違いがわかりやすいように異なる部分に印を付けて表示してい
+ます。::
+
+  diff:
+  - ['TestXXX1', 'TestXXX2', 'TestYYY', 'TestZZZ']
+  ?                                   -----------
+  
+  + ['TestXXX1', 'TestXXX2', 'TestYYY']
+
+また、この失敗した表明は
+/home/kou/work/python/pikzie/test/test_loader.pyの30行目、
+test_collect_test_cases()メソッド内の以下のような内容の部分::
+
+  sorted(test_case_names))
+
+にあることがわかります。
+
+テスト結果の詳細一覧の後はテストにかかった時間が表示されま
+す。::
+
+  Finished in 0.013 seconds
+
+最後にテスト結果の要約が表示されます。::
+
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s)
+
+それぞれは以下のような意味です。
+
+n test(s)
+  n個のテストケース（テスト関数）を実行した
+
+n assertion(s)
+  n個の表明にパスした
+
+n failure(s)
+  n個の表明に失敗した
+
+n error(s)
+  n個の異常事態が発生した（例外が発生した）
+
+n pending(s)
+  n個のテストケースを保留にした（self.pending()を使用した）
+  （未実装）
+
+n notification(s)
+  n個の通知が発生した（self.notification()を使用した）
+  （未実装）
+
+この例では35個のテストケースを実行し、55個の表明にパスし、1
+個の表明に失敗したということになります。異常事態や保留にした
+テストケースなどはありませんでした。
 
 リファレンス
 ============
-
-TODO
 
 表明
 ----
