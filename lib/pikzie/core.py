@@ -90,10 +90,10 @@ class TestCaseRunner(object):
         if len(self.test_names) == 0:
             return
 
-        result.start_test_case(self.test_case)
+        result.on_start_test_case(self.test_case)
         for test in self.tests():
             test.run(result)
-        result.finish_test_case(self.test_case)
+        result.on_finish_test_case(self.test_case)
 
 class TestCaseTemplate(object):
     def setup(self):
@@ -175,7 +175,7 @@ class TestCase(TestCaseTemplate, Assertions):
     def run(self, result):
         try:
             self.__result = result
-            result.start_test(self)
+            result.on_start_test(self)
 
             success = False
             try:
@@ -212,7 +212,7 @@ class TestCase(TestCaseTemplate, Assertions):
             if success:
                 result.add_success(self)
         finally:
-            result.finish_test(self)
+            result.on_finish_test(self)
             self.__result = None
 
     def _test_method(self):
@@ -474,23 +474,23 @@ class TestResult(object):
         self.n_assertions += 1
         self._notify("pass_assertion", test)
 
-    def start_test(self, test):
+    def on_start_test(self, test):
         "Called when the given test is about to be run"
         self._start_at = time.time()
         self.n_tests += 1
         self._notify("start_test", test)
 
-    def finish_test(self, test):
+    def on_finish_test(self, test):
         "Called when the given test has been run"
         self._finish_at = time.time()
         self.elapsed += (self._finish_at - self._start_at)
         self._notify("finish_test", test)
 
-    def start_test_case(self, test_case):
+    def on_start_test_case(self, test_case):
         "Called when the given test case is about to be run"
         self._notify("start_test_case", test_case)
 
-    def finish_test_case(self, test_case):
+    def on_finish_test_case(self, test_case):
         "Called when the given test case has been run"
         self._notify("finish_test_case", test_case)
 
