@@ -525,7 +525,8 @@ class TestResult(object):
         return self.interrupted
 
     def succeeded(self):
-        return len(self.faults) == 0
+        return len(filter(lambda fault: fault.critical, self.faults)) == 0
+    succeeded = property(succeeded)
 
     def _notify(self, name, *args):
         for listner in self.listners:

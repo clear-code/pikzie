@@ -36,7 +36,7 @@ class Tester(object):
         test = TestLoader(**test_suite_create_options).create_test_suite(args)
         runner = ConsoleTestRunner(**options)
         result = runner.run(test)
-        if result.succeeded():
+        if result.succeeded:
             return 0
         else:
             return 1

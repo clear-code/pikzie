@@ -9,15 +9,12 @@ def format_metadata(metadata):
 
 class Pending(object):
     def __init__(self, test, detail, tracebacks):
+        self.critical = False
+        self.single_character_display = "P"
+        self.color = COLORS["yellow"]
         self.test = test
         self.detail = detail
         self.tracebacks = tracebacks
-
-    def single_character_display(self):
-        return "P"
-
-    def color(self):
-        return COLORS["yellow"]
 
     def long_display(self):
         metadata = format_metadata(self.test.metadata)
@@ -27,15 +24,12 @@ class Pending(object):
 
 class Failure(object):
     def __init__(self, test, detail, tracebacks):
+        self.critical = True
+        self.single_character_display = "F"
+        self.color = COLORS["red"]
         self.test = test
         self.detail = detail
         self.tracebacks = tracebacks
-
-    def single_character_display(self):
-        return "F"
-
-    def color(self):
-        return COLORS["red"]
 
     def long_display(self):
         metadata = format_metadata(self.test.metadata)
@@ -48,16 +42,13 @@ class Failure(object):
 
 class Error(object):
     def __init__(self, test, exception_type, detail, tracebacks):
+        self.critical = True
+        self.single_character_display = "E"
+        self.color = COLORS["purple"]
         self.test = test
         self.exception_type = exception_type
         self.detail = detail
         self.tracebacks = tracebacks
-
-    def single_character_display(self):
-        return "E"
-
-    def color(self):
-        return COLORS["purple"]
 
     def long_display(self):
         return "Error: %s\n%s%s: %s\n%s" % \

@@ -66,6 +66,7 @@ class ConsoleTestRunner(object):
             verbose_level = VERBOSE_LEVEL_NORMAL
         self.verbose_level = verbose_level
         self.output = output
+        self._success_color = COLORS["green"]
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -117,10 +118,10 @@ class ConsoleTestRunner(object):
                     level=VERBOSE_LEVEL_VERBOSE)
 
     def on_success(self, result, test):
-        self._write(".", self._success_color())
+        self._write(".", self._success_color)
 
     def _on_fault(self, result, fault):
-        self._write(fault.single_character_display(), fault.color())
+        self._write(fault.single_character_display, fault.color)
 
     on_failure = _on_fault
     on_error = _on_fault
@@ -149,24 +150,21 @@ class ConsoleTestRunner(object):
         self._write("\n", level=level)
 
     def _print_faults(self, result):
-        if result.succeeded():
-            return
         size = len(result.faults)
+        if size == 0:
+            return
         self._writeln()
         format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
         for i, fault in enumerate(result.faults):
             self._writeln(format % (i + 1, fault.long_display()),
-                          fault.color())
+                          fault.color)
             self._writeln()
 
     def _result_color(self, result):
-        if result.succeeded():
-            return self._success_color()
+        if len(result.faults) == 0:
+            return self._success_color
         else:
-            return sorted(result.faults, compare_fault)[0].color()
-
-    def _success_color(self):
-        return COLORS["green"]
+            return sorted(result.faults, compare_fault)[0].color
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")
