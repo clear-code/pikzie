@@ -71,7 +71,7 @@ class AssertionFailure(Exception):
             result += self.user_message + "\n"
         return result
 
-class TestPend(Exception):
+class PendingTestError(Exception):
     def __init__(self, message):
         self.message = message
 
@@ -181,6 +181,8 @@ class TestCase(TestCaseTemplate, Assertions):
             try:
                 try:
                     self.setup()
+                except PendingTestError:
+                    self._pend_test(result)
                 except KeyboardInterrupt:
                     result.interrupted()
                     return
@@ -193,7 +195,7 @@ class TestCase(TestCaseTemplate, Assertions):
                     success = True
                 except AssertionFailure:
                     self._add_failure(result)
-                except TestPend:
+                except PendingTestError:
                     self._pend_test(result)
                 except KeyboardInterrupt:
                     result.interrupted()
@@ -203,6 +205,8 @@ class TestCase(TestCaseTemplate, Assertions):
             finally:
                 try:
                     self.teardown()
+                except PendingTestError:
+                    self._pend_test(result)
                 except KeyboardInterrupt:
                     result.interrupted()
                 except:
@@ -225,7 +229,7 @@ class TestCase(TestCaseTemplate, Assertions):
         raise AssertionFailure(message, user_message)
 
     def _pend(self, message):
-        raise TestPend(message)
+        raise PendingTestError(message)
 
     def _pformat_exception_class(self, exception_class):
         if issubclass(exception_class, Exception) or \
