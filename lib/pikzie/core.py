@@ -107,7 +107,7 @@ class TestCase(TestCaseTemplate, Assertions):
 
     Test authors should subclass TestCase for their own tests. Construction
     and deconstruction of the test's environment ('fixture') can be
-    implemented by overriding the 'setUp' and 'tearDown' methods respectively.
+    implemented by overriding the 'setup' and 'teardown' methods respectively.
 
     If it is necessary to override the __init__ method, the base class
     __init__ method must always be called. It is important that subclasses
@@ -124,7 +124,7 @@ class TestCase(TestCaseTemplate, Assertions):
         return 1
 
     def get_metadata(self, name):
-        test_method = getattr(self, self.__method_name)
+        test_method = self._test_method()
         metadata_container_key = metadata.container_key
         if not hasattr(test_method, metadata_container_key):
             return None
@@ -178,7 +178,7 @@ class TestCase(TestCaseTemplate, Assertions):
                     return
 
                 try:
-                    getattr(self, self.__method_name)()
+                    self._test_method()()
                     success = True
                 except AssertionFailure:
                     self._add_failure(result)
@@ -201,6 +201,9 @@ class TestCase(TestCaseTemplate, Assertions):
         finally:
             result.finish_test(self)
             self.__result = None
+
+    def _test_method(self):
+        return getattr(self, self.__method_name)
 
     def _pass_assertion(self):
         self.__result.pass_assertion(self)
