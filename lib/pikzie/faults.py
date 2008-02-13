@@ -1,5 +1,12 @@
 from pikzie.color import *
 
+def format_metadata(metadata):
+    if metadata is None or len(metadata) == 0:
+        return ""
+    formatted_metadata = map(lambda key: "  %s: %s" % (key, metadata[key]),
+                             metadata)
+    return "\n".join(formatted_metadata) + "\n"
+
 class Failure(object):
     def __init__(self, test, detail, tracebacks):
         self.test = test
@@ -13,11 +20,12 @@ class Failure(object):
         return COLORS["red"]
 
     def long_display(self):
+        metadata = format_metadata(self.test.metadata)
         if len(self.tracebacks) == 0:
-            return "Failure: %s\n%s" % (self.test, self.detail)
+            return "Failure: %s\n%s%s" % (self.test, metadata, self.detail)
         else:
-            return "Failure: %s: %s\n%s\n%s" % \
-                (self.test, self.tracebacks[0].line,
+            return "Failure: %s: %s\n%s%s\n%s" % \
+                (self.test, self.tracebacks[0].line, metadata,
                  self.detail, "\n".join(map(str, self.tracebacks)))
 
 class Error(object):
@@ -34,8 +42,9 @@ class Error(object):
         return COLORS["purple"]
 
     def long_display(self):
-        return "Error: %s\n%s: %s\n%s" % \
+        return "Error: %s\n%s%s: %s\n%s" % \
             (self.test, self.exception_type,
+             format_metadata(self.test.metadata),
              self.detail, "\n".join(map(str, self.tracebacks)))
 
 FAULT_RANK = {

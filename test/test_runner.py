@@ -4,7 +4,9 @@ import re
 import pikzie
 from pikzie.ui.console import ConsoleTestRunner
 
-class TestRunner(pikzie.TestCase):
+import test.utils
+
+class TestRunner(pikzie.TestCase, test.utils.Assertions):
     def setup(self):
         self.output = StringIO()
         self.runner = ConsoleTestRunner(self.output, use_color=False)
@@ -69,28 +71,44 @@ class TestRunner(pikzie.TestCase):
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("E", 1, 0, 0, 1, details, [test])
 
-    def assert_success_output(self, n_tests, n_assertions, tests):
-        self.assert_output("." * n_tests, n_tests, n_assertions, 0, 0, "", tests)
+    def test_fail_tests_with_metadata(self):
+        class TestCase(pikzie.TestCase):
+            def test_error_raised(self):
+                self.unknown_attribute
+                self.assert_equal(3, 1 + 2)
 
-    def assert_output(self, progress, n_tests, n_assertions, n_failures,
-                      n_errors, details, tests):
-        suite = pikzie.TestSuite(tests)
-        result = self.runner.run(suite)
-        self.assert_equal(n_tests, result.n_tests)
-        self.assert_equal(n_assertions, result.n_assertions)
-        self.assert_equal(n_failures, result.n_failures)
-        self.assert_equal(n_errors, result.n_errors)
-        self.output.seek(0)
-        message = self.output.read()
+            def test_with_metadata(self):
+                self.assert_equal(3, 1 - 2)
+            test_with_metadata = pikzie.bug(999)(test_with_metadata)
+            test_with_metadata = \
+                pikzie.metadata("key", "value")(test_with_metadata)
+
+        tests = [TestCase("test_error_raised"),
+                 TestCase("test_with_metadata")]
         format = \
-            "%s\n" \
-            "%s" \
-            "Finished in %.3f seconds\n" \
             "\n" \
-            "%d test(s), %d assertion(s), %d failure(s), %d error(s)\n"
-        self.assert_equal(format % (progress, details, result.elapsed,
-                                    n_tests, n_assertions, n_failures, n_errors),
-                          message)
+            "1) Error: TestCase.test_error_raised\n" \
+            "exceptions.AttributeError: " \
+            "'TestCase' object has no attribute 'unknown_attribute'\n" \
+            "%s:%d: test_error_raised(): %s\n" \
+            "\n" \
+            "2) Failure: TestCase.test_with_metadata: %s\n" \
+            "  bug: 999\n" \
+            "  key: value\n" \
+            "expected: <3>\n" \
+            " but was: <-1>\n" \
+            "diff:\n" \
+            "- 3\n" \
+            "+ -1\n" \
+            "%s:%d: test_with_metadata(): %s\n" \
+            "\n"
+        target_line1 = "self.unknown_attribute"
+        line_no1 = self._find_target_line_no(target_line1)
+        target_line2 = "self.assert_equal(3, 1 - 2)"
+        line_no2 = self._find_target_line_no(target_line2)
+        details = format % (self.file_name, line_no1, target_line1,
+                            target_line2, self.file_name, line_no2, target_line2)
+        self.assert_output("EF", 2, 0, 1, 1, details, tests)
 
     def _find_target_line_no(self, pattern):
         line_no = -1
