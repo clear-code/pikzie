@@ -130,7 +130,7 @@ Options
                           one of [s|silent|n|normal|v|verbose].
 
 			  This option is only for console
-			  UI. (There are only console UI at
+			  UI. (There is only console UI at
 			  present.)
 
 -cMODE, --color=MODE      specifies whether colorize output
@@ -144,7 +144,7 @@ Options
                           colorized output is used if available.
 
 			  This option is only for console
-			  UI. (There are only console UI at
+			  UI. (There is only console UI at
 			  present.)
 
 How to test
@@ -183,9 +183,9 @@ Here is a template of a test case::
   class TestYourModule(pikzie.TestCase):
       def setup(self):
 	  self.setup_called = True
-
+  
       def teardown(self):
 	  self.setup_called = False
-
+  
       def test_condition(self): # starts with "test_"
           self.assert_true(self.setup_called)
