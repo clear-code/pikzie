@@ -263,13 +263,15 @@ n failure(s)
   n assertion(s) are failed.
 
 n error(s)
-  n error(s) are occurred (cut_error() is used n times)
+  n error(s) are occurred (n exception(s) are raised)
 
 n pending(s)
-  n test case(s) are pending (cut_pending() is used n times)
+  n test case(s) are pending (self.pending() is used n times)
+  (not implemented yet)
 
 n notification(s)
-  n notification(s) are occurred (cut_notification() is used n times)
+  n notification(s) are occurred (self.notification() is used n times)
+  (not implemented yet)
 
 In the example, 35 test cases are run, 55 assertions are
 passed and an assertion is failed. There are no error,
