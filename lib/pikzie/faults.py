@@ -7,6 +7,24 @@ def format_metadata(metadata):
                              metadata)
     return "\n".join(formatted_metadata) + "\n"
 
+class Pending(object):
+    def __init__(self, test, detail, tracebacks):
+        self.test = test
+        self.detail = detail
+        self.tracebacks = tracebacks
+
+    def single_character_display(self):
+        return "P"
+
+    def color(self):
+        return COLORS["yellow"]
+
+    def long_display(self):
+        metadata = format_metadata(self.test.metadata)
+        return "Pending: %s: %s\n%s%s" % \
+            (self.test, self.detail, metadata,
+             "\n".join(map(str, self.tracebacks)))
+
 class Failure(object):
     def __init__(self, test, detail, tracebacks):
         self.test = test
@@ -47,10 +65,8 @@ class Error(object):
              format_metadata(self.test.metadata),
              self.detail, "\n".join(map(str, self.tracebacks)))
 
-FAULT_RANK = {
-    Failure: 0,
-    Error: 1,
-}
+FAULT_ORDER = [Pending, Failure, Error]
 
 def compare_fault(fault1, fault2):
-    return cmp(FAULT_RANK[type(fault1)], FAULT_RANK[type(fault2)])
+    return cmp(FAULT_ORDER.index(type(fault1)),
+               FAULT_ORDER.index(type(fault2)))

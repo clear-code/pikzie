@@ -71,6 +71,13 @@ class AssertionFailure(Exception):
             result += self.user_message + "\n"
         return result
 
+class TestPend(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
 class TestCaseRunner(object):
     def __init__(self, test_case, test_names):
         self.test_case = test_case
@@ -186,6 +193,8 @@ class TestCase(TestCaseTemplate, Assertions):
                     success = True
                 except AssertionFailure:
                     self._add_failure(result)
+                except TestPend:
+                    self._pend_test(result)
                 except KeyboardInterrupt:
                     result.interrupted()
                     return
@@ -214,6 +223,9 @@ class TestCase(TestCaseTemplate, Assertions):
 
     def _fail(self, message, user_message=None):
         raise AssertionFailure(message, user_message)
+
+    def _pend(self, message):
+        raise TestPend(message)
 
     def _pformat_exception_class(self, exception_class):
         if issubclass(exception_class, Exception) or \
@@ -286,6 +298,12 @@ class TestCase(TestCaseTemplate, Assertions):
         tracebacks = self._prepare_traceback(traceback, False)
         error = Error(self, exception_type, detail, tracebacks)
         result.add_error(self, error)
+
+    def _pend_test(self, result):
+        exception_type, detail, traceback = sys.exc_info()
+        tracebacks = self._prepare_traceback(traceback, True)
+        pending = Pending(self, detail, tracebacks)
+        result.pend_test(self, pending)
 
     def _prepare_traceback(self, tb, compute_length):
         while tb and self._is_relevant_tb_level(tb):
@@ -448,6 +466,10 @@ class TestResult(object):
         return len(filter(lambda fault: isinstance(fault, Error), self.faults))
     n_errors = property(n_errors)
 
+    def n_pendings(self):
+        return len(filter(lambda fault: isinstance(fault, Pending), self.faults))
+    n_pendings = property(n_pendings)
+
     def pass_assertion(self, test):
         self.n_assertions += 1
         self._notify("pass_assertion", test)
@@ -486,6 +508,11 @@ class TestResult(object):
         "Called when a test has completed successfully"
         self._notify("success", test)
 
+    def pend_test(self, test, pending):
+        """Called when a test is pended."""
+        self.faults.append(pending)
+        self._notify("pending", pending)
+
     def interrupt(self):
         "Indicates that the tests should be interrupted"
         self.interrupted = True
@@ -503,7 +530,9 @@ class TestResult(object):
                 getattr(listner, callback_name)(self, *args)
 
     def summary(self):
-        return "%d test(s), %d assertion(s), %d failure(s), %d error(s)" % \
-            (self.n_tests, self.n_assertions, self.n_failures, self.n_errors)
+        return ("%d test(s), %d assertion(s), %d failure(s), %d error(s), " \
+                    "%d pending(s)") % \
+            (self.n_tests, self.n_assertions, self.n_failures, self.n_errors,
+             self.n_pendings)
 
     __str__ = summary

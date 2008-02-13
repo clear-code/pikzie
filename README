@@ -166,7 +166,7 @@ Here is an example test result::
   
   Finished in 0.013 seconds
   
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
 
 Progress
 --------
@@ -192,7 +192,7 @@ E
   A test that had an error
 
 P
-  A test that is marked as pending (not implemented yet)
+  A test that is marked as pending
 
 N
   A test that had an notification (not implemented yet)
@@ -249,7 +249,7 @@ of test result::
 
 The last line is an summary of test result::
 
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
 
 Here are the means of each output:
 
@@ -266,11 +266,10 @@ n error(s)
   n error(s) are occurred (n exception(s) are raised)
 
 n pending(s)
-  n test case(s) are pending (self.pending() is used n times)
-  (not implemented yet)
+  n test case(s) are pending (self.pend() is used n times)
 
 n notification(s)
-  n notification(s) are occurred (self.notification() is used n times)
+  n notification(s) are occurred (self.notify() is used n times)
   (not implemented yet)
 
 In the example, 35 test cases are run, 55 assertions are

@@ -124,6 +124,7 @@ class ConsoleTestRunner(object):
 
     on_failure = _on_fault
     on_error = _on_fault
+    on_pending = _on_fault
 
     def on_finish_test(self, result, test):
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)

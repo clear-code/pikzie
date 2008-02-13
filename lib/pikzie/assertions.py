@@ -12,6 +12,13 @@ class Assertions(object):
         """
         self._fail(message)
 
+    def pend(self, message):
+        """Pending the current running test.
+
+        self.pend("module XXX isn't found") # => pend test
+        """
+        self._pend(message)
+
     def assert_none(self, expression, message=None):
         """Passes if expression is None.
 
