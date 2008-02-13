@@ -1,7 +1,8 @@
 import re
 import pikzie
+import test.utils
 
-class TestAssertions(pikzie.TestCase):
+class TestAssertions(pikzie.TestCase, test.utils.Assertions):
     """Tests for assertions."""
 
     class TestCase(pikzie.TestCase):
@@ -154,31 +155,43 @@ class TestAssertions(pikzie.TestCase):
     def test_fail(self):
         """Test for fail"""
         self.assert_result(1, 0, 1, 0,
-                           [("F", "TestCase.test_fail", "Failed!!!")],
+                           [("F", "TestCase.test_fail", "Failed!!!", None)],
                            ["test_fail"])
 
     def test_assert_none(self):
         self.assert_result(1, 1, 1, 0,
-                           [("F", "TestCase.test_assert_none",
-                             "expected: <False> is None")],
+                           [("F",
+                             "TestCase.test_assert_none",
+                             "expected: <False> is None",
+                             None)],
                            ["test_assert_none"])
 
     def test_assert_not_none(self):
         self.assert_result(1, 1, 1, 0,
-                           [("F", "TestCase.test_assert_not_none",
-                             "expected: not None")],
+                           [("F",
+                             "TestCase.test_assert_not_none",
+                             "expected: not None",
+                             None)],
                            ["test_assert_not_none"])
 
     def test_assert_true(self):
         self.assert_result(4, 3, 4, 0,
-                           [("F", "TestCase.test_assert_true_for_none",
-                             "expected: <None> is a true value"),
-                            ("F", "TestCase.test_assert_true_for_boolean",
-                             "expected: <False> is a true value"),
-                            ("F", "TestCase.test_assert_true_for_integer",
-                             "expected: <0> is a true value"),
-                            ("F", "TestCase.test_assert_true_for_string",
-                             "expected: <''> is a true value")],
+                           [("F",
+                             "TestCase.test_assert_true_for_none",
+                             "expected: <None> is a true value",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_true_for_boolean",
+                             "expected: <False> is a true value",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_true_for_integer",
+                             "expected: <0> is a true value",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_true_for_string",
+                             "expected: <''> is a true value",
+                             None)],
                            ["test_assert_true_for_none",
                             "test_assert_true_for_boolean",
                             "test_assert_true_for_integer",
@@ -186,12 +199,18 @@ class TestAssertions(pikzie.TestCase):
 
     def test_assert_false(self):
         self.assert_result(4, 4, 3, 0,
-                           [("F", "TestCase.test_assert_false_for_boolean",
-                             "expected: <True> is a false value"),
-                            ("F", "TestCase.test_assert_false_for_integer",
-                             "expected: <10> is a false value"),
-                            ("F", "TestCase.test_assert_false_for_string",
-                             "expected: <'STRING'> is a false value")],
+                           [("F",
+                             "TestCase.test_assert_false_for_boolean",
+                             "expected: <True> is a false value",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_false_for_integer",
+                             "expected: <10> is a false value",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_false_for_string",
+                             "expected: <'STRING'> is a false value",
+                             None)],
                            ["test_assert_false_for_none",
                             "test_assert_false_for_boolean",
                             "test_assert_false_for_integer",
@@ -199,12 +218,14 @@ class TestAssertions(pikzie.TestCase):
 
     def test_assert_equal(self):
         self.assert_result(1, 1, 1, 0,
-                           [('F', 'TestCase.test_assert_equal',
+                           [('F',
+                             'TestCase.test_assert_equal',
                              "expected: <2>\n"
                              " but was: <3>\n"
                              "diff:\n"
                              "- 2\n"
-                             "+ 3")],
+                             "+ 3",
+                             None)],
                            ["test_assert_equal"])
 
     def test_assert_not_equal(self):
@@ -212,7 +233,8 @@ class TestAssertions(pikzie.TestCase):
                            [('F',
                              "TestCase.test_assert_not_equal",
                              "not expected: <2>\n"
-                             "     but was: <2>"),
+                             "     but was: <2>",
+                             None),
                             ("F",
                              "TestCase.test_assert_not_equal_different_repr",
                              "not expected: <'abc'>\n"
@@ -222,7 +244,8 @@ class TestAssertions(pikzie.TestCase):
                              "?   ^\n"
                              "\n"
                              "+ 'aBc'\n"
-                             "?   ^\n")],
+                             "?   ^\n",
+                             None)],
                            ["test_assert_not_equal",
                             "test_assert_not_equal_different_repr"])
 
@@ -235,7 +258,8 @@ class TestAssertions(pikzie.TestCase):
                            [('F',
                              "TestCase.test_assert_in_delta",
                              "expected: <%r+-%r %r>\n"
-                             " but was: <%r>" % params)],
+                             " but was: <%r>" % params,
+                             None)],
                            ["test_assert_in_delta"])
 
     def test_assert_match(self):
@@ -245,13 +269,15 @@ class TestAssertions(pikzie.TestCase):
                              "expected: re.match('abc', 'Xabcde') "
                                "doesn't return None\n"
                              " pattern: </abc/>\n"
-                             "  target: <'Xabcde'>"),
+                             "  target: <'Xabcde'>",
+                             None),
                             ('F',
                              "TestCase.test_assert_match_re",
                              "expected: re.match('xyz', 'abcxyz') "
                                "doesn't return None\n"
                              " pattern: </xyz/>\n"
-                             "  target: <'abcxyz'>")],
+                             "  target: <'abcxyz'>",
+                             None)],
                            ["test_assert_match",
                             "test_assert_match_re"])
 
@@ -261,13 +287,15 @@ class TestAssertions(pikzie.TestCase):
                              "TestCase.test_assert_not_match",
                              "expected: re.match('abc', 'abcde') returns None\n"
                              " pattern: </abc/>\n"
-                             "  target: <'abcde'>"),
+                             "  target: <'abcde'>",
+                             None),
                             ('F',
                              "TestCase.test_assert_not_match_re",
                              "expected: re.match(%s, 'XYZabc') returns None\n"
                              " pattern: </xyz/i>\n"
                              "  target: <'XYZabc'>" % \
-                                 ("re.compile('xyz', re.IGNORECASE)"))],
+                                 ("re.compile('xyz', re.IGNORECASE)"),
+                             None)],
                            ["test_assert_not_match",
                             "test_assert_not_match_re"])
 
@@ -278,13 +306,15 @@ class TestAssertions(pikzie.TestCase):
                              "expected: re.search('bcd', 'abCde') "
                                "doesn't return None\n"
                              " pattern: </bcd/>\n"
-                             "  target: <'abCde'>"),
+                             "  target: <'abCde'>",
+                             None),
                             ('F',
                              "TestCase.test_assert_search_re",
                              "expected: re.search('xyz', 'AxYzA') "
                                "doesn't return None\n"
                              " pattern: </xyz/>\n"
-                             "  target: <'AxYzA'>")],
+                             "  target: <'AxYzA'>",
+                             None)],
                            ["test_assert_search",
                             "test_assert_search_re"])
 
@@ -295,21 +325,24 @@ class TestAssertions(pikzie.TestCase):
                              "TestCase.test_assert_not_found",
                              "expected: re.search(%s, 'abCde') returns None\n"
                              " pattern: </bcd/il>\n"
-                             "  target: <'abCde'>" % re_repr)],
+                             "  target: <'abCde'>" % re_repr,
+                             None)],
                            ["test_assert_not_found"])
 
     def test_assert_hasattr(self):
         self.assert_result(1, 2, 1, 0,
                            [('F',
                              "TestCase.test_assert_hasattr",
-                             "expected: hasattr('string', 'Strip')")],
+                             "expected: hasattr('string', 'Strip')",
+                             None)],
                            ["test_assert_hasattr"])
 
     def test_assert_callable(self):
         self.assert_result(1, 2, 1, 0,
                            [('F',
                              "TestCase.test_assert_callable",
-                             "expected: callable('string')")],
+                             "expected: callable('string')",
+                             None)],
                            ["test_assert_callable"])
 
     def test_assert_call_raise(self):
@@ -318,12 +351,14 @@ class TestAssertions(pikzie.TestCase):
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
                              " but was: %s(*(), **{}) nothing raised" %
-                             ("test.test_assertions.nothing_raised")),
+                             ("test.test_assertions.nothing_raised"),
+                             None),
                             ('F',
                              "TestCase.test_assert_call_raise_different_error",
                              "expected: <exceptions.NameError> is raised\n"
                              " but was: <exceptions.ZeroDivisionError>"
-                             "(integer division or modulo by zero)")],
+                             "(integer division or modulo by zero)",
+                             None)],
                            ["test_assert_call_raise",
                             "test_assert_call_raise_different_error"])
 
@@ -336,22 +371,6 @@ class TestAssertions(pikzie.TestCase):
                                  ("test.test_assertions."
                                   "raise_zero_division_error",
                                   "exceptions.ZeroDivisionError",
-                                  "integer division or modulo by zero"))],
+                                  "integer division or modulo by zero"),
+                             None)],
                            ["test_assert_call_nothing_raised"])
-
-    def assert_result(self, n_tests, n_assertions, n_failures, n_errors,
-                      fault_infos, tests):
-        result = pikzie.TestResult()
-        for test_name in tests:
-            self.TestCase(test_name).run(result)
-
-        def collect_fault_info(fault):
-            return (fault.single_character_display(),
-                    str(fault.test),
-                    str(fault.detail))
-
-        self.assert_equal([[n_tests, n_assertions, n_failures, n_errors],
-                           fault_infos],
-                          [[result.n_tests, result.n_assertions,
-                            result.n_failures, result.n_errors],
-                           map(collect_fault_info, result.faults)])
