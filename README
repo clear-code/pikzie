@@ -172,6 +172,36 @@ Use pydoc::
 Or you can see HTML version on the Web:
 http://pikzie.sourceforge.net/assertions.html
 
+Metadata
+--------
+
+You can add metadata to your test to get more useful
+information on failure. For example, you can add Bug ID like
+the following::
+
+  import pikzie
+  
+  class TestYourModule(pikzie.TestCase):
+      @pikzie.bug(123)
+      def test_invalid_input(self):
+          self.assert_call_raise(IndexError, ().__getitem__, 0)
+
+In the above example, test_invalid_input test has a metadata
+that the test is for Bug #123.
+
+And the above example uses decorator that is introduced since
+Python 2.4. If you want to use with Python 2.3, you need to
+write like the following::
+
+  def test_invalid_input(self):
+      self.assert_call_raise(IndexError, ().__getitem__, 0)
+  test_invalid_input = pikzie.bug(123)(test_invalid_input)
+
+Here is a list of available metadata:
+
+pikzie.bug(id)
+  Set id as Bug ID.
+
 Template
 --------
 

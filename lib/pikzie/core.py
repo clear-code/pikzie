@@ -127,9 +127,7 @@ class TestCase(TestCaseTemplate, Assertions):
         metadata_container = self.metadata
         if metadata_container is None:
             return None
-        if not metadata_container.has_key(name):
-            return None
-        return metadata_container[name]
+        return metadata_container.get(name)
 
     def metadata(self):
         test_method = self._test_method()

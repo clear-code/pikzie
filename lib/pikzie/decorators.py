@@ -1,4 +1,5 @@
 def metadata(name, value):
+    """Set metadata to a method."""
     def decorator(function):
         if not hasattr(function, metadata.container_key):
             setattr(function, metadata.container_key, {})
@@ -8,4 +9,5 @@ def metadata(name, value):
 metadata.container_key = "__metadata__"
 
 def bug(id):
+    """Set Bug ID to a method."""
     return metadata("bug", id)
