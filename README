@@ -166,7 +166,7 @@ Here is an example test result::
   
   Finished in 0.013 seconds
   
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s), 0 notification(s)
 
 Progress
 --------
@@ -195,7 +195,7 @@ P
   A test that is marked as pending
 
 N
-  A test that had an notification (not implemented yet)
+  A test that had an notification
 
 The above marks are showed after each test is finished. We
 can confirm the test progress from the output in testing.
@@ -249,7 +249,7 @@ of test result::
 
 The last line is an summary of test result::
 
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s), 0 notification(s)
 
 Here are the means of each output:
 
@@ -270,7 +270,6 @@ n pending(s)
 
 n notification(s)
   n notification(s) are occurred (self.notify() is used n times)
-  (not implemented yet)
 
 In the example, 35 test cases are run, 55 assertions are
 passed and an assertion is failed. There are no error,

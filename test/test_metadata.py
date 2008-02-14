@@ -21,7 +21,7 @@ class TestMetadata(pikzie.TestCase, test.utils.Assertions):
         self.assert_metadata("bug", 111, "test_for_bug_111")
 
     def test_bug_result(self):
-        self.assert_result(False, 1, 0, 1, 0, 0,
+        self.assert_result(False, 1, 0, 1, 0, 0, 0,
                            [("F",
                              "TestCase.test_for_bug_111",
                              "This is a bug!!!",

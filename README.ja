@@ -160,7 +160,7 @@ test/run-test.pyは以下の通りです。::
   
   Finished in 0.013 seconds
   
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s), 0 notification(s)
 
 進行状況
 --------
@@ -189,7 +189,7 @@ P
   保留マークがついているテスト
 
 N
-  通知が行われたテスト（未実装）
+  通知が行われたテスト
 
 上記のテストを表す印はテストが実行される毎に出力されます。テ
 スト実行中は、この出力で実行状況を確認できます。
@@ -245,7 +245,7 @@ test_collect_test_cases()メソッド内の以下のような内容の部分::
 
 最後にテスト結果の要約が表示されます。::
 
-  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s)
+  35 test(s), 55 assertion(s), 1 failure(s), 0 error(s), 0 pending(s), 0 notification(s)
 
 それぞれは以下のような意味です。
 
@@ -266,7 +266,6 @@ n pending(s)
 
 n notification(s)
   n個の通知が発生した（self.notify()を使用した）
-  （未実装）
 
 この例では35個のテストケースを実行し、55個の表明にパスし、1
 個の表明に失敗したということになります。異常事態や保留にした

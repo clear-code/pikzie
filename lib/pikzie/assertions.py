@@ -19,6 +19,15 @@ class Assertions(object):
         """
         self._pend(message)
 
+    def notify(self, message):
+        """Notify a message for the current running test.
+
+        if command_not_found:
+            self.notify("skip due to command not found") # => notify a message
+            return
+        """
+        self._notify(message)
+
     def assert_none(self, expression, message=None):
         """Passes if expression is None.
 

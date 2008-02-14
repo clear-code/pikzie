@@ -7,6 +7,21 @@ def format_metadata(metadata):
                              metadata)
     return "\n".join(formatted_metadata) + "\n"
 
+class Notification(object):
+    def __init__(self, test, detail, tracebacks):
+        self.critical = False
+        self.single_character_display = "N"
+        self.color = COLORS["cyan"]
+        self.test = test
+        self.detail = detail
+        self.tracebacks = tracebacks
+
+    def long_display(self):
+        metadata = format_metadata(self.test.metadata)
+        return "Notification: %s: %s\n%s%s" % \
+            (self.test, self.detail, metadata,
+             "\n".join(map(str, self.tracebacks)))
+
 class Pending(object):
     def __init__(self, test, detail, tracebacks):
         self.critical = False
@@ -56,7 +71,7 @@ class Error(object):
              format_metadata(self.test.metadata),
              self.detail, "\n".join(map(str, self.tracebacks)))
 
-FAULT_ORDER = [Pending, Failure, Error]
+FAULT_ORDER = [Notification, Pending, Failure, Error]
 
 def compare_fault(fault1, fault2):
     return cmp(FAULT_ORDER.index(type(fault1)),

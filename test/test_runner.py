@@ -50,7 +50,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
         line_no = self._find_target_line_no(target_line)
         details = format % (target_line, self.file_name, line_no, target_line)
-        self.assert_output("F", 1, 1, 1, 0, 0, details, [test])
+        self.assert_output("F", 1, 1, 1, 0, 0, 0, details, [test])
 
     def test_run_error_test(self):
         class TestCase(pikzie.TestCase):
@@ -69,7 +69,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         target_line = "self.unknown_method(12345)"
         line_no = self._find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
-        self.assert_output("E", 1, 0, 0, 1, 0, details, [test])
+        self.assert_output("E", 1, 0, 0, 1, 0, 0, details, [test])
 
     def test_fail_tests_with_metadata(self):
         class TestCase(pikzie.TestCase):
@@ -108,7 +108,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         line_no2 = self._find_target_line_no(target_line2)
         details = format % (self.file_name, line_no1, target_line1,
                             target_line2, self.file_name, line_no2, target_line2)
-        self.assert_output("EF", 2, 0, 1, 1, 0, details, tests)
+        self.assert_output("EF", 2, 0, 1, 1, 0, 0, details, tests)
 
     def test_run_pending_test(self):
         class TestCase(pikzie.TestCase):
@@ -124,7 +124,25 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         target_line = "self.pend(\"just a minute!\")"
         line_no = self._find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
-        self.assert_output("P", 1, 0, 0, 0, 1, details, [test])
+        self.assert_output("P", 1, 0, 0, 0, 1, 0, details, [test])
+
+    def test_notification(self):
+        class TestCase(pikzie.TestCase):
+            def test_notify(self):
+                self.assert_equal(1, 3 - 2)
+                self.notify("Call me!")
+                self.assert_equal(5, 3 + 2)
+
+        test = TestCase("test_notify")
+        format = \
+            "\n" \
+            "1) Notification: TestCase.test_notify: Call me!\n" \
+            "%s:%d: test_notify(): %s\n" \
+            "\n"
+        target_line = "self.notify(\"Call me!\")"
+        line_no = self._find_target_line_no(target_line)
+        details = format % (self.file_name, line_no, target_line)
+        self.assert_output("N.", 1, 2, 0, 0, 0, 1, details, [test])
 
     def _find_target_line_no(self, pattern):
         line_no = -1

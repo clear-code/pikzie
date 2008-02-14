@@ -231,6 +231,15 @@ class TestCase(TestCaseTemplate, Assertions):
     def _pend(self, message):
         raise PendingTestError(message)
 
+    def _notify(self, message):
+        try:
+            raise ZeroDivisionError
+        except ZeroDivisionError:
+            frame = sys.exc_info()[2].tb_frame.f_back.f_back
+        tracebacks = self._prepare_frame(frame, True)
+        notification = Notification(self, message, tracebacks)
+        self.__result.add_notification(self, notification)
+
     def _pformat_exception_class(self, exception_class):
         if issubclass(exception_class, Exception) or \
                 issubclass(exception_class, types.ClassType):
@@ -295,7 +304,7 @@ class TestCase(TestCaseTemplate, Assertions):
         exception_type, detail, traceback = sys.exc_info()
         tracebacks = self._prepare_traceback(traceback, True)
         failure = Failure(self, detail, tracebacks)
-        result.add_error(self, failure)
+        result.add_failure(self, failure)
 
     def _add_error(self, result):
         exception_type, detail, traceback = sys.exc_info()
@@ -310,30 +319,43 @@ class TestCase(TestCaseTemplate, Assertions):
         result.pend_test(self, pending)
 
     def _prepare_traceback(self, tb, compute_length):
-        while tb and self._is_relevant_tb_level(tb):
+        while tb and self._is_relevant_frame_level(tb.tb_frame):
             tb = tb.tb_next
         length = None
         if compute_length:
-            length = self._count_relevant_tb_levels(tb)
+            length = self._count_relevant_frame_levels(tb.tb_frame)
+        stack_infos = traceback.extract_tb(tb, length)
+        return self._create_traceback_objects(stack_infos)
+
+    def _prepare_frame(self, frame, compute_length):
+        while frame and self._is_relevant_frame_level(frame):
+            frame = frame.f_back
+        length = None
+        if compute_length:
+            length = self._count_relevant_frame_levels(frame)
+        stack_infos = traceback.extract_stack(frame, length)
+        return self._create_traceback_objects(stack_infos)
+
+    def _create_traceback_objects(self, stack_infos):
         tracebacks = []
-        for tb in traceback.extract_tb(tb, length):
-            filename, lineno, name, line = tb
+        for stack_info in stack_infos:
+            filename, lineno, name, line = stack_info
             tracebacks.append(Traceback(filename, lineno, name, line))
         return tracebacks
 
-    def _is_relevant_tb_level(self, tb):
-        globals = tb.tb_frame.f_globals
+    def _is_relevant_frame_level(self, frame):
+        globals = frame.f_globals
         for cls in (TestCase,) + TestCase.__bases__:
             name = cls.__name__
             if globals.has_key(name) and globals[name] == cls:
                 return True
         return False
 
-    def _count_relevant_tb_levels(self, tb):
+    def _count_relevant_frame_levels(self, frame):
         length = 0
-        while tb and not self._is_relevant_tb_level(tb):
+        while frame and not self._is_relevant_frame_level(frame):
             length += 1
-            tb = tb.tb_next
+            frame = frame.f_back
         return length
 
 
@@ -474,6 +496,11 @@ class TestResult(object):
         return len(filter(lambda fault: isinstance(fault, Pending), self.faults))
     n_pendings = property(n_pendings)
 
+    def n_notifications(self):
+        return len(filter(lambda fault: isinstance(fault, Notification),
+                          self.faults))
+    n_notifications = property(n_notifications)
+
     def pass_assertion(self, test):
         self.n_assertions += 1
         self._notify("pass_assertion", test)
@@ -508,6 +535,11 @@ class TestResult(object):
         self.faults.append(failure)
         self._notify("failure", failure)
 
+    def add_notification(self, test, notification):
+        """Called when a notification has occurred."""
+        self.faults.append(notification)
+        self._notify("notification", notification)
+
     def add_success(self, test):
         "Called when a test has completed successfully"
         self._notify("success", test)
@@ -536,8 +568,8 @@ class TestResult(object):
 
     def summary(self):
         return ("%d test(s), %d assertion(s), %d failure(s), %d error(s), " \
-                    "%d pending(s)") % \
+                    "%d pending(s), %d notification(s)") % \
             (self.n_tests, self.n_assertions, self.n_failures, self.n_errors,
-             self.n_pendings)
+             self.n_pendings, self.n_notifications)
 
     __str__ = summary

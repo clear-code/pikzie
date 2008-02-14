@@ -155,15 +155,21 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         def test_pend(self):
             self.assert_equal(3, 1 + 2)
             self.pend("Pending!!!")
+            self.assert_equal(5, 3 + 2)
+
+        def test_notify(self):
+            self.assert_equal(3, 1 + 2)
+            self.notify("Notification!!!")
+            self.assert_equal(5, 3 + 2)
 
     def test_fail(self):
         """Test for fail"""
-        self.assert_result(False, 1, 0, 1, 0, 0,
+        self.assert_result(False, 1, 0, 1, 0, 0, 0,
                            [("F", "TestCase.test_fail", "Failed!!!", None)],
                            ["test_fail"])
 
     def test_assert_none(self):
-        self.assert_result(False, 1, 1, 1, 0, 0,
+        self.assert_result(False, 1, 1, 1, 0, 0, 0,
                            [("F",
                              "TestCase.test_assert_none",
                              "expected: <False> is None",
@@ -171,7 +177,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_none"])
 
     def test_assert_not_none(self):
-        self.assert_result(False, 1, 1, 1, 0, 0,
+        self.assert_result(False, 1, 1, 1, 0, 0, 0,
                            [("F",
                              "TestCase.test_assert_not_none",
                              "expected: not None",
@@ -179,7 +185,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_not_none"])
 
     def test_assert_true(self):
-        self.assert_result(False, 4, 3, 4, 0, 0,
+        self.assert_result(False, 4, 3, 4, 0, 0, 0,
                            [("F",
                              "TestCase.test_assert_true_for_none",
                              "expected: <None> is a true value",
@@ -202,7 +208,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_true_for_string"])
 
     def test_assert_false(self):
-        self.assert_result(False, 4, 4, 3, 0, 0,
+        self.assert_result(False, 4, 4, 3, 0, 0, 0,
                            [("F",
                              "TestCase.test_assert_false_for_boolean",
                              "expected: <True> is a false value",
@@ -221,7 +227,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_false_for_string"])
 
     def test_assert_equal(self):
-        self.assert_result(False, 1, 1, 1, 0, 0,
+        self.assert_result(False, 1, 1, 1, 0, 0, 0,
                            [('F',
                              'TestCase.test_assert_equal',
                              "expected: <2>\n"
@@ -233,7 +239,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_equal"])
 
     def test_assert_not_equal(self):
-        self.assert_result(False, 2, 1, 2, 0, 0,
+        self.assert_result(False, 2, 1, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_equal",
                              "not expected: <2>\n"
@@ -258,7 +264,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         actual = 0.5001
         delta = 0.00001
         params = (expected, delta, [expected - delta, expected + delta], actual)
-        self.assert_result(False, 1, 3, 1, 0, 0,
+        self.assert_result(False, 1, 3, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_in_delta",
                              "expected: <%r+-%r %r>\n"
@@ -267,7 +273,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_in_delta"])
 
     def test_assert_match(self):
-        self.assert_result(False, 2, 2, 2, 0, 0,
+        self.assert_result(False, 2, 2, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_match",
                              "expected: re.match('abc', 'Xabcde') "
@@ -286,7 +292,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_match_re"])
 
     def test_assert_not_match(self):
-        self.assert_result(False, 2, 2, 2, 0, 0,
+        self.assert_result(False, 2, 2, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_match",
                              "expected: re.match('abc', 'abcde') returns None\n"
@@ -304,7 +310,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_not_match_re"])
 
     def test_assert_search(self):
-        self.assert_result(False, 2, 4, 2, 0, 0,
+        self.assert_result(False, 2, 4, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_search",
                              "expected: re.search('bcd', 'abCde') "
@@ -324,7 +330,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
 
     def test_assert_not_found(self):
         re_repr = "re.compile('bcd', re.IGNORECASE | re.LOCALE)"
-        self.assert_result(False, 1, 2, 1, 0, 0,
+        self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_found",
                              "expected: re.search(%s, 'abCde') returns None\n"
@@ -334,7 +340,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_not_found"])
 
     def test_assert_hasattr(self):
-        self.assert_result(False, 1, 2, 1, 0, 0,
+        self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_hasattr",
                              "expected: hasattr('string', 'Strip')",
@@ -342,7 +348,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_hasattr"])
 
     def test_assert_callable(self):
-        self.assert_result(False, 1, 2, 1, 0, 0,
+        self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_callable",
                              "expected: callable('string')",
@@ -350,7 +356,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_callable"])
 
     def test_assert_call_raise(self):
-        self.assert_result(False, 2, 5, 2, 0, 0,
+        self.assert_result(False, 2, 5, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
@@ -367,7 +373,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_call_raise_different_error"])
 
     def test_assert_call_nothing_raised(self):
-        self.assert_result(False, 1, 4, 1, 0, 0,
+        self.assert_result(False, 1, 4, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_call_nothing_raised",
                              "expected: %s(*(), **{}) nothing raised\n"
@@ -380,9 +386,17 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_call_nothing_raised"])
 
     def test_pend(self):
-        self.assert_result(True, 1, 1, 0, 0, 1,
+        self.assert_result(True, 1, 1, 0, 0, 1, 0,
                            [('P',
                              "TestCase.test_pend",
                              "Pending!!!",
                              None)],
                            ["test_pend"])
+
+    def test_notify(self):
+        self.assert_result(True, 1, 2, 0, 0, 0, 1,
+                           [('N',
+                             "TestCase.test_notify",
+                             "Notification!!!",
+                             None)],
+                           ["test_notify"])
