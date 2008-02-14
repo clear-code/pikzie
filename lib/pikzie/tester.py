@@ -58,10 +58,12 @@ class Tester(object):
         ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)
 
-auto_test_run_reject_pattern = r"\b(?:pydoc[\d.]*|setup\.py)$"
+auto_test_run_reject_pattern = \
+    r"\b(?:pydoc[\d.]*|setup\.py|ipython[\d.]*|easy_install[\d.]*)$"
 
 def auto_test_run():
     if Tester.ran: return
+    if not sys.argv[0]: return
     if re.search(auto_test_run_reject_pattern, sys.argv[0]): return
     sys.exit(Tester(target_modules=['__main__']).run())
 
