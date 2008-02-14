@@ -22,7 +22,8 @@ LGPL
 What's this?
 ============
 
-Pikzie is an Unit Testing Framework for Python.
+Pikzie is an easy to write/debug Unit Testing Framework for
+Python.
 
 Pikzie provides the following features that are lacked in
 unittest.py included in the standard Python distribution:

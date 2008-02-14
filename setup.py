@@ -25,6 +25,9 @@ sf_host = "%s@shell.sourceforge.net" % sf_user
 sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
+long_description = re.split("\n.+\n=+", open("README"))[5].strip()
+description = long_description.split("\n")[0]
+
 def get_fullname(self):
     return "%s-%s" % (distribution_name, self.get_version())
 DistributionMetadata.get_fullname = get_fullname
@@ -169,7 +172,8 @@ class tag(Command):
 
 setup(name=package_name,
       version=version,
-      description="an easy to write/debug Unit Testing Framework for Python",
+      description=description,
+      long_description=long_description,
       author="Kouhei Sutou",
       author_email="kou@cozmixng.org",
       url="http://pikzie.sf.net/",

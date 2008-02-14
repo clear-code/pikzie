@@ -17,7 +17,8 @@ LGPL
 Pikzie?
 =======
 
-PythonのためのUnit Testing Frameworkです。
+Pythonのための書きやすさとデバッグのしやすさを重視したUnit
+Testing Frameworkです。
 
 PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 ます。
