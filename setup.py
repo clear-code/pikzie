@@ -2,6 +2,7 @@
 
 import sys
 import os
+import re
 import glob
 import subprocess
 import pydoc
@@ -25,7 +26,7 @@ sf_host = "%s@shell.sourceforge.net" % sf_user
 sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
-long_description = re.split("\n.+\n=+", open("README"))[5].strip()
+long_description = re.split("\n.+\n=+", open("README").read())[5].strip()
 description = long_description.split("\n")[0]
 
 def get_fullname(self):
