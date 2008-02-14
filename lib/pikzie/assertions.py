@@ -1,9 +1,16 @@
+import os
 import sys
 import re
 import pprint
 import difflib
 import traceback
 import subprocess
+import random
+import syslog
+import select
+
+if not hasattr(os, "SEEK_END"):
+    os.SEEK_END = 2
 
 class Assertions(object):
     def fail(self, message):
@@ -309,7 +316,7 @@ class Assertions(object):
             process = subprocess.Popen(command, **popen_kw_args)
         except OSError:
             exception_class, exception_value = sys.exc_info()[:2]
-            message = "expected: %s is successfully ran\n" \
+            message = "expected: <%s> is successfully ran\n" \
                 " but was: <%s>(%s) is raised and failed to ran" % \
                 (pprint.pformat(command),
                  self._pformat_exception_class(exception_class),
@@ -317,9 +324,47 @@ class Assertions(object):
             self._fail(message)
         return_code = process.wait()
         if return_code != 0:
-            message = "expected: %s is successfully finished\n" \
+            message = "expected: <%s> is successfully finished\n" \
                 " but was: failed with %d return code" % \
                 (pprint.pformat(command), return_code)
             self._fail(message)
         self._pass_assertion()
         return process
+
+    def assert_search_syslog(self, pattern, callable_object, *args, **kw_args):
+        """Passes if re.search(pattern, SYSLOG_CONTENT) doesn't return None.
+
+        self.assert_search_syslog("abc", syslog.syslog, "abc") # => pass
+        self.assert_search_syslog("abc", syslog.syslog, "xyz") # => fail
+        """
+        self.assert_callable(callable_object)
+
+        log_file = "/var/log/messages"
+        messages = open(log_file)
+        messages.seek(0, os.SEEK_END)
+
+        mark = 'Pikzie: %20f' % random.random()
+        syslog.syslog(mark)
+
+        def search(pattern):
+            if isinstance(pattern, str):
+                pattern = re.compile(pattern)
+            lines = []
+            while len(select.select([messages], [], [], 1)[0]) > 0:
+                line = messages.readline()
+                if len(line) == 0:
+                    break
+                lines.append(line)
+                if re.search(pattern, line):
+                    return
+            message = \
+                "expected: <%s> is found in <%s>\n" \
+                "  target: <%s>" % \
+                (self._pformat_re(pattern),
+                 pprint.pformat(log_file),
+                 pprint.pformat(''.join(lines)))
+            self.fail(message)
+
+        search(re.escape(mark))
+        result = callable_object(*args, **kw_args)
+        search(pattern)
