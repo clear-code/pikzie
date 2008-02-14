@@ -10,18 +10,24 @@ import gettext
 
 from distutils.core import setup
 from distutils.cmd import Command
+from distutils.dist import DistributionMetadata
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "lib"))
 
 import pikzie
 
-package_name = "pikzie"
+package_name = "Pikzie"
+distribution_name = package_name.lower()
 version = pikzie.version
-sf_project_name = "pikzie"
+sf_project_name = "Pikzie"
 sf_user = "ktou"
 sf_host = "%s@shell.sourceforge.net" % sf_user
 sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
+
+def get_fullname(self):
+    return "%s-%s" % (distribution_name, self.get_version())
+DistributionMetadata.get_fullname = get_fullname
 
 def _run(*command):
     return_code = _run_without_check(*command)
@@ -138,8 +144,8 @@ class release(Command):
     def run(self):
         sdist = self.reinitialize_command("sdist")
         self.run_command("sdist")
-        _run("misc/release.rb", sf_user, sf_project_name, version,
-             "dist/%s-%s.tar.gz" % (package_name, version),
+        _run("misc/release.rb", sf_user, sf_project_name, package_name,
+             version, "dist/%s.tar.gz" % self.distribution.get_fullname(),
              "README", "NEWS")
 
 class tag(Command):
