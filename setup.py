@@ -8,6 +8,10 @@ import subprocess
 import pydoc
 import shutil
 import gettext
+try:
+    import setuptools
+except ImportError:
+    pass
 
 from distutils.core import setup
 from distutils.cmd import Command
