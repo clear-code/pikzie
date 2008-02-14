@@ -3,6 +3,7 @@ import re
 import pprint
 import difflib
 import traceback
+import subprocess
 
 class Assertions(object):
     def fail(self, message):
@@ -276,8 +277,8 @@ class Assertions(object):
         try:
             result = callable_object(*args, **kw_args)
         except:
-            actual = sys.exc_info()
-            actual_exception_class, actual_exception_value = actual[:2]
+            actual = sys.exc_info()[:2]
+            actual_exception_class, actual_exception_value = actual
             message = \
                 "expected: %s(*%s, **%s) nothing raised\n" \
                 " but was: <%s>(%s) is raised" % \
@@ -289,3 +290,36 @@ class Assertions(object):
             self._fail(message)
         self._pass_assertion()
         return result
+
+    def assert_run_command(self, command, **kw_args):
+        """Passes if command is successfully ran and returns subprocess.Popen.
+
+        process = self.assert_run_command(["echo", "123"])    # => pass
+        self.assert_equal("123\n", process.stdout.read())     # => pass
+        self.assert_run_command("false")                      # => fail
+        self.assert_run_command("unknown-command")            # => fail
+        """
+        popen_kw_args = {
+            "stdin": subprocess.PIPE,
+            "stdout": subprocess.PIPE,
+            "stderr": subprocess.PIPE,
+        }
+        popen_kw_args.update(kw_args)
+        try:
+            process = subprocess.Popen(command, **popen_kw_args)
+        except OSError:
+            exception_class, exception_value = sys.exc_info()[:2]
+            message = "expected: %s is successfully ran\n" \
+                " but was: <%s>(%s) is raised and failed to ran" % \
+                (pprint.pformat(command),
+                 self._pformat_exception_class(exception_class),
+                 str(exception_value))
+            self._fail(message)
+        return_code = process.wait()
+        if return_code != 0:
+            message = "expected: %s is successfully finished\n" \
+                " but was: failed with %d return code" % \
+                (pprint.pformat(command), return_code)
+            self._fail(message)
+        self._pass_assertion()
+        return process

@@ -162,6 +162,14 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                 1 / 0
             self.assert_call_nothing_raised(raise_zero_division_error)
 
+        def test_assert_run_command(self):
+            process = self.assert_run_command(["echo", "12345"])
+            self.assert_equal("12345\n", process.stdout.read())
+            self.assert_run_command("false")
+
+        def test_assert_run_command_unknown(self):
+            self.assert_run_command(["unknown", "arg1", "arg2"])
+
     def test_fail(self):
         """Test for fail"""
         self.assert_result(False, 1, 0, 1, 0, 0, 0,
@@ -400,3 +408,22 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                                   "integer division or modulo by zero"),
                              None)],
                            ["test_assert_call_nothing_raised"])
+
+    def test_assert_run_command(self):
+        self.assert_result(False, 2, 2, 2, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_run_command",
+                             "expected: %s is successfully finished\n"
+                             " but was: failed with %d return code" % \
+                                 ("'false'", 1),
+                             None),
+                            ('F',
+                             "TestCase.test_assert_run_command_unknown",
+                             "expected: %s is successfully ran\n"
+                             " but was: <%s>(%s) is raised and failed to ran" \
+                                 % ("['unknown', 'arg1', 'arg2']",
+                                    "exceptions.OSError",
+                                    "[Errno 2] No such file or directory"),
+                             None)],
+                           ["test_assert_run_command",
+                            "test_assert_run_command_unknown"])
