@@ -9,6 +9,16 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         def test_fail(self):
             self.fail("Failed!!!")
 
+        def test_pend(self):
+            self.assert_equal(3, 1 + 2)
+            self.pend("Pending!!!")
+            self.assert_equal(5, 3 + 2)
+
+        def test_notify(self):
+            self.assert_equal(3, 1 + 2)
+            self.notify("Notification!!!")
+            self.assert_equal(5, 3 + 2)
+
         def test_assert_none(self):
             self.assert_none(None)
             self.assert_none(False)
@@ -152,21 +162,27 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                 1 / 0
             self.assert_call_nothing_raised(raise_zero_division_error)
 
-        def test_pend(self):
-            self.assert_equal(3, 1 + 2)
-            self.pend("Pending!!!")
-            self.assert_equal(5, 3 + 2)
-
-        def test_notify(self):
-            self.assert_equal(3, 1 + 2)
-            self.notify("Notification!!!")
-            self.assert_equal(5, 3 + 2)
-
     def test_fail(self):
         """Test for fail"""
         self.assert_result(False, 1, 0, 1, 0, 0, 0,
                            [("F", "TestCase.test_fail", "Failed!!!", None)],
                            ["test_fail"])
+
+    def test_pend(self):
+        self.assert_result(True, 1, 1, 0, 0, 1, 0,
+                           [('P',
+                             "TestCase.test_pend",
+                             "Pending!!!",
+                             None)],
+                           ["test_pend"])
+
+    def test_notify(self):
+        self.assert_result(True, 1, 2, 0, 0, 0, 1,
+                           [('N',
+                             "TestCase.test_notify",
+                             "Notification!!!",
+                             None)],
+                           ["test_notify"])
 
     def test_assert_none(self):
         self.assert_result(False, 1, 1, 1, 0, 0, 0,
@@ -384,19 +400,3 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                                   "integer division or modulo by zero"),
                              None)],
                            ["test_assert_call_nothing_raised"])
-
-    def test_pend(self):
-        self.assert_result(True, 1, 1, 0, 0, 1, 0,
-                           [('P',
-                             "TestCase.test_pend",
-                             "Pending!!!",
-                             None)],
-                           ["test_pend"])
-
-    def test_notify(self):
-        self.assert_result(True, 1, 2, 0, 0, 0, 1,
-                           [('N',
-                             "TestCase.test_notify",
-                             "Notification!!!",
-                             None)],
-                           ["test_notify"])
