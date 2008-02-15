@@ -171,9 +171,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         def test_assert_run_command_unknown(self):
             self.assert_run_command(["unknown", "arg1", "arg2"])
 
-        def test_assert_search_syslog(self):
-            self.assert_search_syslog("find me!+", syslog.syslog, "find me!!!")
-            self.assert_search_syslog("fix me!", syslog.syslog, "FIXME!!!")
+        def test_assert_search_syslog_in_calling(self):
+            self.assert_search_syslog_in_calling("find me!+",
+                                                 syslog.syslog, "find me!!!")
+            self.assert_search_syslog_in_calling("fix me!",
+                                                 syslog.syslog, "FIXME!!!")
 
     def test_fail(self):
         """Test for fail"""
@@ -433,14 +435,14 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_run_command",
                             "test_assert_run_command_unknown"])
 
-    def test_assert_search_syslog(self):
+    def test_assert_search_syslog_in_calling(self):
         detail = \
             "expected: <%s> is found in <%s>\n" \
             "  target: <'.*FIXME!!!.*'>" % \
             ("/fix me!/", "'/var/log/messages'")
         self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
-                             "TestCase.test_assert_search_syslog",
+                             "TestCase.test_assert_search_syslog_in_calling",
                              re.compile(detail),
                              None)],
-                           ["test_assert_search_syslog"])
+                           ["test_assert_search_syslog_in_calling"])
