@@ -5,7 +5,6 @@ import os
 import glob
 import types
 import time
-import pprint
 
 from pikzie.color import *
 from pikzie.faults import *
@@ -238,66 +237,6 @@ class TestCase(TestCaseTemplate, Assertions):
         tracebacks = self._prepare_frame(frame, True)
         notification = Notification(self, message, tracebacks)
         self.__result.add_notification(self, notification)
-
-    def _pformat_exception_class(self, exception_class):
-        if issubclass(exception_class, Exception) or \
-                issubclass(exception_class, types.ClassType):
-            return str(exception_class)
-        else:
-            return pprint.pformat(exception_class)
-
-    def _pformat_callable_object(self, callable_object):
-        if hasattr(callable_object, "im_class"):
-            cls = callable_object.im_class
-            return "%s.%s.%s" % (cls.__module__,
-                                 cls.__class__.__name__,
-                                 callable_object.__name__)
-        else:
-            return "%s.%s" % (callable_object.__module__,
-                              callable_object.__name__)
-
-    def _pformat_re(self, pattern):
-        re_flags = self._re_flags(pattern)
-        if hasattr(pattern, "pattern"):
-            pattern = pattern.pattern
-        pattern = pprint.pformat(pattern)
-        return "/%s/%s" % (pattern[1:-1], re_flags)
-
-    def _pformat_re_repr(self, pattern):
-        re_flags_repr = self._re_flags_repr(pattern)
-        if hasattr(pattern, "pattern"):
-            pattern = pattern.pattern
-        pattern = pprint.pformat(pattern)
-        if re_flags_repr:
-            return "re.compile(%s, %s)" % (pattern, re_flags_repr)
-        else:
-            return pattern
-
-    _re_class = type(re.compile(""))
-    def _re_flags(self, pattern):
-        result = ""
-        if isinstance(pattern, self._re_class):
-            if pattern.flags & re.IGNORECASE: result += "i"
-            if pattern.flags & re.LOCALE: result += "l"
-            if pattern.flags & re.MULTILINE: result += "m"
-            if pattern.flags & re.DOTALL: result += "d"
-            if pattern.flags & re.UNICODE: result += "u"
-            if pattern.flags & re.VERBOSE: result += "x"
-        return result
-
-    def _re_flags_repr(self, pattern):
-        flags = []
-        if isinstance(pattern, self._re_class):
-            if pattern.flags & re.IGNORECASE: flags.append("re.IGNORECASE")
-            if pattern.flags & re.LOCALE: flags.append("re.LOCALE")
-            if pattern.flags & re.MULTILINE: flags.append("re.MULTILINE")
-            if pattern.flags & re.DOTALL: flags.append("re.DOTALL")
-            if pattern.flags & re.UNICODE: flags.append("re.UNICODE")
-            if pattern.flags & re.VERBOSE: flags.append("re.VERBOSE")
-        if len(flags) == 0:
-            return None
-        else:
-            return " | ".join(flags)
 
     def _add_failure(self, result):
         exception_type, detail, traceback = sys.exc_info()

@@ -1,7 +1,6 @@
 import os
 import sys
 import re
-import pprint
 import difflib
 import traceback
 import subprocess
@@ -11,6 +10,8 @@ import select
 
 if not hasattr(os, "SEEK_END"):
     os.SEEK_END = 2
+
+import pikzie.pretty_print as pp
 
 class Assertions(object):
     def fail(self, message):
@@ -89,8 +90,8 @@ class Assertions(object):
         if expected == actual:
             self._pass_assertion()
         else:
-            expected = pprint.pformat(expected)
-            actual = pprint.pformat(actual)
+            expected = pp.format(expected)
+            actual = pp.format(actual)
             diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
             system_message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
                 (expected, actual, "\n".join(diff))
@@ -104,8 +105,8 @@ class Assertions(object):
         if not_expected != actual:
             self._pass_assertion()
         else:
-            not_expected = pprint.pformat(not_expected)
-            actual = pprint.pformat(actual)
+            not_expected = pp.format(not_expected)
+            actual = pp.format(actual)
             system_message = "not expected: <%s>\n     but was: <%s>" % \
                 (not_expected, actual)
             if not_expected != actual:
@@ -125,10 +126,10 @@ class Assertions(object):
         if lower <= actual <= upper:
             self._pass_assertion()
         else:
-            expected = pprint.pformat(expected)
-            actual = pprint.pformat(actual)
-            delta = pprint.pformat(delta)
-            range = pprint.pformat([lower, upper])
+            expected = pp.format(expected)
+            actual = pp.format(actual)
+            delta = pp.format(delta)
+            range = pp.format([lower, upper])
             system_message = "expected: <%s+-%s %s>\n but was: <%s>" % \
                 (expected, delta, range, actual)
             self._fail(system_message, message)
@@ -142,9 +143,9 @@ class Assertions(object):
         if re.match(pattern, target):
             self._pass_assertion()
         else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
+            pattern_repr = pp.format_re_repr(pattern)
+            pattern = pp.format_re(pattern)
+            target = pp.format(target)
             format = \
                 "expected: re.match(%s, %s) doesn't return None\n" \
                 " pattern: <%s>\n" \
@@ -161,9 +162,9 @@ class Assertions(object):
         if re.match(pattern, target) is None:
             self._pass_assertion()
         else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
+            pattern_repr = pp.format_re_repr(pattern)
+            pattern = pp.format_re(pattern)
+            target = pp.format(target)
             format = \
                 "expected: re.match(%s, %s) returns None\n" \
                 " pattern: <%s>\n" \
@@ -180,9 +181,9 @@ class Assertions(object):
         if re.search(pattern, target):
             self._pass_assertion()
         else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
+            pattern_repr = pp.format_re_repr(pattern)
+            pattern = pp.format_re(pattern)
+            target = pp.format(target)
             format = \
                 "expected: re.search(%s, %s) doesn't return None\n" \
                 " pattern: <%s>\n" \
@@ -199,9 +200,9 @@ class Assertions(object):
         if re.search(pattern, target) is None:
             self._pass_assertion()
         else:
-            pattern_repr = self._pformat_re_repr(pattern)
-            pattern = self._pformat_re(pattern)
-            target = pprint.pformat(target)
+            pattern_repr = pp.format_re_repr(pattern)
+            pattern = pp.format_re(pattern)
+            target = pp.format(target)
             format = \
                 "expected: re.search(%s, %s) returns None\n" \
                 " pattern: <%s>\n" \
@@ -218,8 +219,8 @@ class Assertions(object):
         if hasattr(object, name):
             self._pass_assertion()
         else:
-            object = pprint.pformat(object)
-            name = pprint.pformat(name)
+            object = pp.format(object)
+            name = pp.format(name)
             system_message = "expected: hasattr(%s, %s)" % (object, name)
             self._fail(system_message, message)
 
@@ -232,7 +233,7 @@ class Assertions(object):
         if callable(object):
             self._pass_assertion()
         else:
-            object = pprint.pformat(object)
+            object = pp.format(object)
             system_message = "expected: callable(%s)" % (object)
             self._fail(system_message, message)
 
@@ -258,18 +259,18 @@ class Assertions(object):
             message = \
                 "expected: <%s> is raised\n" \
                 " but was: <%s>(%s)" % \
-                (self._pformat_exception_class(exception),
-                 self._pformat_exception_class(actual_exception_class),
+                (pp.format_exception_class(exception),
+                 pp.format_exception_class(actual_exception_class),
                  str(actual_exception_value))
             self._fail(message)
         else:
             message = \
                 "expected: <%s> is raised\n" \
                 " but was: %s(*%s, **%s) nothing raised" % \
-                (self._pformat_exception_class(exception),
-                 self._pformat_callable_object(callable_object),
-                 pprint.pformat(args),
-                 pprint.pformat(kw_args))
+                (pp.format_exception_class(exception),
+                 pp.format_callable_object(callable_object),
+                 pp.format(args),
+                 pp.format(kw_args))
             self._fail(message)
 
     def assert_call_nothing_raised(self, callable_object, *args, **kw_args):
@@ -289,10 +290,10 @@ class Assertions(object):
             message = \
                 "expected: %s(*%s, **%s) nothing raised\n" \
                 " but was: <%s>(%s) is raised" % \
-                (self._pformat_callable_object(callable_object),
-                 pprint.pformat(args),
-                 pprint.pformat(kw_args),
-                 self._pformat_exception_class(actual_exception_class),
+                (pp.format_callable_object(callable_object),
+                 pp.format(args),
+                 pp.format(kw_args),
+                 pp.format_exception_class(actual_exception_class),
                  str(actual_exception_value))
             self._fail(message)
         self._pass_assertion()
@@ -318,15 +319,15 @@ class Assertions(object):
             exception_class, exception_value = sys.exc_info()[:2]
             message = "expected: <%s> is successfully ran\n" \
                 " but was: <%s>(%s) is raised and failed to ran" % \
-                (pprint.pformat(command),
-                 self._pformat_exception_class(exception_class),
+                (pp.format(command),
+                 pp.format_exception_class(exception_class),
                  str(exception_value))
             self._fail(message)
         return_code = process.wait()
         if return_code != 0:
             message = "expected: <%s> is successfully finished\n" \
                 " but was: failed with %d return code" % \
-                (pprint.pformat(command), return_code)
+                (pp.format(command), return_code)
             self._fail(message)
         self._pass_assertion()
         return process
@@ -343,7 +344,7 @@ class Assertions(object):
         messages = open(log_file)
         messages.seek(0, os.SEEK_END)
 
-        mark = 'Pikzie: %20f' % random.random()
+        mark = 'Pikzie: %.20f' % random.random()
         syslog.syslog(mark)
 
         def search(pattern):
@@ -360,9 +361,9 @@ class Assertions(object):
             message = \
                 "expected: <%s> is found in <%s>\n" \
                 "  target: <%s>" % \
-                (self._pformat_re(pattern),
-                 pprint.pformat(log_file),
-                 pprint.pformat(''.join(lines)))
+                (pp.format_re(pattern),
+                 pp.format(log_file),
+                 pp.format(''.join(lines)))
             self.fail(message)
 
         search(re.escape(mark))
