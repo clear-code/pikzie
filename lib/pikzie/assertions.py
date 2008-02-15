@@ -371,3 +371,25 @@ class Assertions(object):
         search(re.escape(mark))
         result = callable_object(*args, **kw_args)
         search(pattern)
+
+    def assert_open_file(self, name, *args):
+        """Passes if open(name, *args) succeeds.
+
+        file = self.assert_open_file("/tmp/exist", "w") # => pass
+        self.assert_open_file("/tmp/nonexistence")      # => fail
+        """
+        try:
+            result = open(name, *args)
+        except IOError:
+            exception_class, exception_value = sys.exc_info()[:2]
+            formatted_args = [pp.format(name)]
+            formatted_args.extend(map(lambda arg: pp.format(arg), args))
+            message = \
+                "expected: open(%s) succeeds\n" \
+                " but was: <%s>(%s) is raised" % \
+                (", ".join(formatted_args),
+                 pp.format_exception_class(exception_class),
+                 str(exception_value))
+            self._fail(message)
+        self._pass_assertion
+        return result

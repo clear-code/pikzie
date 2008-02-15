@@ -1,12 +1,22 @@
+import os
 import re
+import shutil
 import syslog
 import pikzie
 import test.utils
+
+base_path = os.path.dirname(__file__)
+tmp_path = os.path.join(base_path, "tmp")
+nonexistent_path = os.path.join(base_path, "nonexistent")
 
 class TestAssertions(pikzie.TestCase, test.utils.Assertions):
     """Tests for assertions."""
 
     class TestCase(pikzie.TestCase):
+        def setup(self):
+            shutil.rmtree(tmp_path, True)
+            shutil.rmtree(nonexistent_path, True)
+
         def test_fail(self):
             self.fail("Failed!!!")
 
@@ -176,6 +186,13 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                                                  syslog.syslog, "find me!!!")
             self.assert_search_syslog_in_calling("fix me!",
                                                  syslog.syslog, "FIXME!!!")
+
+        def test_assert_open_file(self):
+            file = self.assert_open_file(__file__)
+            self.assert_equal("r", file.mode)
+            file = self.assert_open_file(tmp_path, "w")
+            self.assert_equal("w", file.mode)
+            self.assert_open_file(nonexistent_path)
 
     def test_fail(self):
         """Test for fail"""
@@ -446,3 +463,16 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              re.compile(detail),
                              None)],
                            ["test_assert_search_syslog_in_calling"])
+
+    def test_assert_open_file(self):
+        self.assert_result(False, 1, 2, 1, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_open_file",
+                             "expected: open('%s') succeeds\n"
+                             " but was: <%s>(%s) is raised" % \
+                                 (nonexistent_path,
+                                  "exceptions.IOError",
+                                  "[Errno 2] No such file or directory: '%s'" % \
+                                      nonexistent_path),
+                             None)],
+                           ["test_assert_open_file"])
