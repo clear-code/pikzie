@@ -266,11 +266,9 @@ class Assertions(object):
         else:
             message = \
                 "expected: <%s> is raised\n" \
-                " but was: %s(*%s, **%s) nothing raised" % \
+                " but was: %s nothing raised" % \
                 (pp.format_exception_class(exception),
-                 pp.format_callable_object(callable_object),
-                 pp.format(args),
-                 pp.format(kw_args))
+                 pp.format_call(callable_object, args, kw_args))
             self._fail(message)
 
     def assert_call_nothing_raised(self, callable_object, *args, **kw_args):
@@ -288,11 +286,9 @@ class Assertions(object):
             actual = sys.exc_info()[:2]
             actual_exception_class, actual_exception_value = actual
             message = \
-                "expected: %s(*%s, **%s) nothing raised\n" \
+                "expected: %s nothing raised\n" \
                 " but was: <%s>(%s) is raised" % \
-                (pp.format_callable_object(callable_object),
-                 pp.format(args),
-                 pp.format(kw_args),
+                (pp.format_call(callable_object, args, kw_args),
                  pp.format_exception_class(actual_exception_class),
                  str(actual_exception_value))
             self._fail(message)
@@ -382,12 +378,10 @@ class Assertions(object):
             result = open(name, *args)
         except IOError:
             exception_class, exception_value = sys.exc_info()[:2]
-            formatted_args = [pp.format(name)]
-            formatted_args.extend(map(lambda arg: pp.format(arg), args))
             message = \
                 "expected: open(%s) succeeds\n" \
                 " but was: <%s>(%s) is raised" % \
-                (", ".join(formatted_args),
+                (pp.format_call_arguments((name,) + args, {}),
                  pp.format_exception_class(exception_class),
                  str(exception_value))
             self._fail(message)

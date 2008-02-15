@@ -408,7 +408,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            [('F',
                              "TestCase.test_assert_call_raise",
                              "expected: <exceptions.NameError> is raised\n"
-                             " but was: %s(*(), **{}) nothing raised" %
+                             " but was: %s() nothing raised" %
                              ("test.test_assertions.nothing_raised"),
                              None),
                             ('F',
@@ -424,7 +424,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         self.assert_result(False, 1, 4, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_call_nothing_raised",
-                             "expected: %s(*(), **{}) nothing raised\n"
+                             "expected: %s() nothing raised\n"
                              " but was: <%s>(%s) is raised" % \
                                  ("test.test_assertions."
                                   "raise_zero_division_error",

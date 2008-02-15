@@ -58,6 +58,16 @@ def format_callable_object(callable_object):
         return "%s.%s" % (callable_object.__module__,
                           callable_object.__name__)
 
+def format_call_arguments(args, kw_args):
+    formatted_args = map(lambda arg: format(arg), args)
+    formatted_args.extend(["%s=%s" % (format(key), format(value))
+                           for (key, value) in kw_args.items()])
+    return ", ".join(formatted_args)
+
+def format_call(callable_object, args, kw_args):
+    return "%s(%s)" % (format_callable_object(callable_object),
+                       format_call_arguments(args, kw_args))
+
 def format_exception_class(exception_class):
     if issubclass(exception_class, Exception) or \
             issubclass(exception_class, types.ClassType):
