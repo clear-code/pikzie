@@ -7,10 +7,12 @@ import subprocess
 import random
 import syslog
 import select
+import time
 
 if not hasattr(os, "SEEK_END"):
     os.SEEK_END = 2
 
+import pikzie.core
 import pikzie.pretty_print as pp
 
 class Assertions(object):
@@ -385,5 +387,42 @@ class Assertions(object):
                  pp.format_exception_class(exception_class),
                  str(exception_value))
             self._fail(message)
+        self._pass_assertion
+        return result
+
+    def assert_call_succeed_in_seconds(self, timeout, interval,
+                                       callable_object, *args, **kw_args):
+        """Passes if callable_object(*args, **kw_args) doesn't fail any
+        assertions in <timeout> seconds.
+        (It will tried <timeout / interval> times.)
+
+        def random_number():
+            number = random.randint(0, 9)
+            self.assert_in_delta(5, number, 1)
+            return number
+        self.assert_call_succeed_in_seconds(1, 0.1, random_number) # => will pass
+                                                                   # returns
+                                                                   # 4, 5 or 6
+        self.assert_call_succeed_in_seconds(1, 0.1,
+                                            self.fail, "Never succeed") # => fail
+        """
+        rest = timeout
+        while True:
+            try:
+                result = callable_object(*args, **kw_args)
+                break
+            except pikzie.core.AssertionFailure:
+                if rest <= 0:
+                    message = \
+                        "expected: %s succeeds\n" \
+                        " timeout: <%s> seconds\n" \
+                        "interval: <%s> seconds\n" \
+                        " but was:\n%s" % \
+                        (pp.format_call(callable_object, args, kw_args),
+                         timeout, interval,
+                         str(sys.exc_info()[1]))
+                    self._fail(message)
+                time.sleep(interval)
+                rest -= interval
         self._pass_assertion
         return result
