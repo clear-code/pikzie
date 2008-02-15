@@ -438,7 +438,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
     def test_assert_search_syslog_in_calling(self):
         detail = \
             "expected: <%s> is found in <%s>\n" \
-            "  target: <'.*FIXME!!!.*'>" % \
+            " content: <'.*FIXME!!!.*'>" % \
             ("/fix me!/", "'/var/log/messages'")
         self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
