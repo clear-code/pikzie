@@ -369,17 +369,17 @@ class Assertions(object):
         search(pattern)
 
     def assert_open_file(self, name, *args):
-        """Passes if open(name, *args) succeeds.
+        """Passes if file(name, *args) succeeds.
 
         file = self.assert_open_file("/tmp/exist", "w") # => pass
         self.assert_open_file("/tmp/nonexistence")      # => fail
         """
         try:
-            result = open(name, *args)
+            result = file(name, *args)
         except IOError:
             exception_class, exception_value = sys.exc_info()[:2]
             message = \
-                "expected: open(%s) succeeds\n" \
+                "expected: file(%s) succeeds\n" \
                 " but was: <%s>(%s) is raised" % \
                 (pp.format_call_arguments((name,) + args, {}),
                  pp.format_exception_class(exception_class),

@@ -468,7 +468,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_open_file",
-                             "expected: open('%s') succeeds\n"
+                             "expected: file('%s') succeeds\n"
                              " but was: <%s>(%s) is raised" % \
                                  (nonexistent_path,
                                   "exceptions.IOError",
