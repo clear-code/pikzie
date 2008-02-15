@@ -352,20 +352,20 @@ class Assertions(object):
         def search(pattern):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
-            lines = []
+            content = []
             while len(select.select([messages], [], [], 1)[0]) > 0:
-                line = messages.readline()
-                if len(line) == 0:
+                target = messages.read()
+                if len(target) == 0:
                     break
-                lines.append(line)
-                if re.search(pattern, line):
+                content.append(target)
+                if re.search(pattern, target):
                     return
             message = \
                 "expected: <%s> is found in <%s>\n" \
                 "  target: <%s>" % \
                 (pp.format_re(pattern),
                  pp.format(log_file),
-                 pp.format(''.join(lines)))
+                 pp.format(''.join(content)))
             self.fail(message)
 
         search(re.escape(mark))
