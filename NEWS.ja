@@ -6,6 +6,15 @@
 
 Pikzieの歴史
 
+0.4.0: 2008-02-18
+=================
+
+  * assert_run_commandの追加
+  * assert_search_syslog_in_callingの追加
+  * assert_open_fileの追加
+  * assert_call_succeed_in_secondsの追加
+  * pikzie.pretty_printモジュールの追加
+
 0.3.0: 2008-02-14
 =================
 
