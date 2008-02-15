@@ -3,7 +3,6 @@ import sys
 import re
 import difflib
 import traceback
-import subprocess
 import random
 import syslog
 import select
@@ -305,6 +304,7 @@ class Assertions(object):
         self.assert_run_command("false")                      # => fail
         self.assert_run_command("unknown-command")            # => fail
         """
+        import subprocess
         popen_kw_args = {
             "stdin": subprocess.PIPE,
             "stdout": subprocess.PIPE,

@@ -445,6 +445,10 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_call_nothing_raised"])
 
     def test_assert_run_command(self):
+        try:
+            import subprocess
+        except ImportError:
+            self.pend("subprocess module isn't available.")
         self.assert_result(False, 2, 2, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_run_command",
