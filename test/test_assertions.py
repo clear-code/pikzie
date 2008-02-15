@@ -419,7 +419,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            [('F',
                              "TestCase.test_assert_run_command",
                              "expected: <%s> is successfully finished\n"
-                             " but was: failed with %d return code" % \
+                             " but was: <%d> is returned as exit code" % \
                                  ("'false'", 1),
                              None),
                             ('F',

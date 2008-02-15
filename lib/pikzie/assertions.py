@@ -326,7 +326,7 @@ class Assertions(object):
         return_code = process.wait()
         if return_code != 0:
             message = "expected: <%s> is successfully finished\n" \
-                " but was: failed with %d return code" % \
+                " but was: <%d> is returned as exit code" % \
                 (pp.format(command), return_code)
             self._fail(message)
         self._pass_assertion()
