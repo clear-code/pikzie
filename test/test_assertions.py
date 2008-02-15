@@ -468,6 +468,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_run_command_unknown"])
 
     def test_assert_search_syslog_in_calling(self):
+        if not os.access("/var/log/messages", os.R_OK)
+            self.pend("can't read /var/log/messages.")
         detail = \
             "expected: <%s> is found in <%s>\n" \
             " content: <'.*FIXME!!!.*'>" % \
