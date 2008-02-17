@@ -238,15 +238,15 @@ class Assertions(object):
             system_message = "expected: callable(%s)" % (object)
             self._fail(system_message, message)
 
-    def assert_call_raise(self, exception, callable_object, *args, **kw_args):
+    def assert_raise_call(self, exception, callable_object, *args, **kw_args):
         """Passes if callable_object(*args, **kw_args) raises exception and
         returns raised exception value.
 
-        self.assert_call_raise(NameError,
+        self.assert_raise_call(NameError,
                                lambda: unknown_variable) # => pass
                                                          # => returns NameError
                                                          #    value
-        self.assert_call_raise(NameError, lambda: 1)     # => fail
+        self.assert_raise_call(NameError, lambda: 1)     # => fail
         """
         self.assert_callable(callable_object)
         try:
@@ -272,13 +272,19 @@ class Assertions(object):
                  pp.format_call(callable_object, args, kw_args))
             self._fail(message)
 
-    def assert_call_nothing_raised(self, callable_object, *args, **kw_args):
+    def assert_call_raise(self, *args, **kw_args):
+        """Deprecated. Use assert_raise_call()."""
+        self.notify("assert_call_raise() is deprecated. "
+                    "Use assert_raise_call() instead.")
+        return self.assert_raise_call(*args, **kw_args)
+
+    def assert_nothing_raised_call(self, callable_object, *args, **kw_args):
         """Passes if callable_object(*args, **kw_args) raises nothing exception
         and returns called result.
 
-        self.assert_call_nothing_raised(lambda: 1)                # => pass
+        self.assert_nothing_raised_call(lambda: 1)                # => pass
                                                                   # => returns 1
-        self.assert_call_nothing_raised(lambda: unknown_variable) # => fail
+        self.assert_nothing_raised_call(lambda: unknown_variable) # => fail
         """
         self.assert_callable(callable_object)
         try:
@@ -295,6 +301,12 @@ class Assertions(object):
             self._fail(message)
         self._pass_assertion()
         return result
+
+    def assert_call_nothing_raised(self, *args, **kw_args):
+        """Deprecated. Use assert_nothing_raised_call()."""
+        self.notify("assert_call_nothing_raised() is deprecated. "
+                    "Use assert_nothing_raised_call() instead.")
+        return self.assert_nothing_raised_call(*args, **kw_args)
 
     def assert_run_command(self, command, **kw_args):
         """Passes if command is successfully ran and returns subprocess.Popen.

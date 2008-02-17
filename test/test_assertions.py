@@ -151,27 +151,27 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.assert_callable("string")
             self.assert_callable(self.test_assert_callable)
 
-        def test_assert_call_raise(self):
+        def test_assert_raise_call(self):
             def raise_name_error():
                 unknown_name
-            exception = self.assert_call_raise(NameError, raise_name_error)
+            exception = self.assert_raise_call(NameError, raise_name_error)
             self.assert_equal("global name \'unknown_name\' is not defined",
                               str(exception))
 
             def nothing_raised():
                 "nothing raised"
-            self.assert_call_raise(NameError, nothing_raised)
+            self.assert_raise_call(NameError, nothing_raised)
 
-        def test_assert_call_raise_different_error(self):
+        def test_assert_raise_call_different_error(self):
             def raise_zero_division_error():
                 1 / 0
-            self.assert_call_raise(NameError, raise_zero_division_error)
+            self.assert_raise_call(NameError, raise_zero_division_error)
 
-        def test_assert_call_nothing_raised(self):
-            self.assert_equal(123, self.assert_call_nothing_raised(lambda : 123))
+        def test_assert_nothing_raised_call(self):
+            self.assert_equal(123, self.assert_nothing_raised_call(lambda : 123))
             def raise_zero_division_error():
                 1 / 0
-            self.assert_call_nothing_raised(raise_zero_division_error)
+            self.assert_nothing_raised_call(raise_zero_division_error)
 
         def test_assert_run_command(self):
             process = self.assert_run_command(["echo", "12345"])
@@ -414,27 +414,27 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              None)],
                            ["test_assert_callable"])
 
-    def test_assert_call_raise(self):
+    def test_assert_raise_call(self):
         self.assert_result(False, 2, 5, 2, 0, 0, 0,
                            [('F',
-                             "TestCase.test_assert_call_raise",
+                             "TestCase.test_assert_raise_call",
                              "expected: <exceptions.NameError> is raised\n"
                              " but was: %s() nothing raised" %
                              ("test.test_assertions.nothing_raised"),
                              None),
                             ('F',
-                             "TestCase.test_assert_call_raise_different_error",
+                             "TestCase.test_assert_raise_call_different_error",
                              "expected: <exceptions.NameError> is raised\n"
                              " but was: <exceptions.ZeroDivisionError>"
                              "(integer division or modulo by zero)",
                              None)],
-                           ["test_assert_call_raise",
-                            "test_assert_call_raise_different_error"])
+                           ["test_assert_raise_call",
+                            "test_assert_raise_call_different_error"])
 
-    def test_assert_call_nothing_raised(self):
+    def test_assert_nothing_raised_call(self):
         self.assert_result(False, 1, 4, 1, 0, 0, 0,
                            [('F',
-                             "TestCase.test_assert_call_nothing_raised",
+                             "TestCase.test_assert_nothing_raised_call",
                              "expected: %s() nothing raised\n"
                              " but was: <%s>(%s) is raised" % \
                                  ("test.test_assertions."
@@ -442,7 +442,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                                   "exceptions.ZeroDivisionError",
                                   "integer division or modulo by zero"),
                              None)],
-                           ["test_assert_call_nothing_raised"])
+                           ["test_assert_nothing_raised_call"])
 
     def test_assert_run_command(self):
         try:
