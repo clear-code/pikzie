@@ -194,16 +194,16 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.assert_equal("w", file.mode)
             self.assert_open_file(nonexistent_path)
 
-        def test_assert_call_succeed_in_seconds(self):
+        def test_assert_try_call(self):
             self.n = 0
             def succeed_on_5th_try():
                 self.n += 1
                 self.assert_equal(5, self.n)
-            self.assert_call_succeed_in_seconds(1, 0.01, succeed_on_5th_try)
+            self.assert_try_call(1, 0.01, succeed_on_5th_try)
 
             def never_succeed():
                 self.fail("Never succeed")
-            self.assert_call_succeed_in_seconds(0.1, 0.01, never_succeed)
+            self.assert_try_call(0.1, 0.01, never_succeed)
 
     def test_fail(self):
         """Test for fail"""
@@ -494,10 +494,10 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              None)],
                            ["test_assert_open_file"])
 
-    def test_call_succeed_in_seconds(self):
+    def test_try_call(self):
         self.assert_result(False, 1, 1, 1, 0, 0, 0,
                            [('F',
-                             "TestCase.test_assert_call_succeed_in_seconds",
+                             "TestCase.test_assert_try_call",
                              "expected: %s succeeds\n"
                              " timeout: <0.1> seconds\n"
                              "interval: <0.01> seconds\n"
@@ -505,4 +505,4 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "Never succeed" % \
                                  ("test.test_assertions.never_succeed()",),
                              None)],
-                           ["test_assert_call_succeed_in_seconds"])
+                           ["test_assert_try_call"])

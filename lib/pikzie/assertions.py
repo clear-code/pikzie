@@ -390,8 +390,8 @@ class Assertions(object):
         self._pass_assertion
         return result
 
-    def assert_call_succeed_in_seconds(self, timeout, interval,
-                                       callable_object, *args, **kw_args):
+    def assert_try_call(self, timeout, interval,
+                        callable_object, *args, **kw_args):
         """Passes if callable_object(*args, **kw_args) doesn't fail any
         assertions in <timeout> seconds.
         (It will tried <timeout / interval> times.)
@@ -400,11 +400,9 @@ class Assertions(object):
             number = random.randint(0, 9)
             self.assert_in_delta(5, number, 1)
             return number
-        self.assert_call_succeed_in_seconds(1, 0.1, random_number) # => will pass
-                                                                   # returns
-                                                                   # 4, 5 or 6
-        self.assert_call_succeed_in_seconds(1, 0.1,
-                                            self.fail, "Never succeed") # => fail
+        self.assert_try_call(1, 0.1, random_number) # => will pass
+                                                    # returns 4, 5 or 6
+        self.assert_try_call(1, 0.1, self.fail, "Never succeed") # => fail
         """
         rest = timeout
         while True:
