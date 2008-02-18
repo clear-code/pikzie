@@ -10,7 +10,7 @@ The history of Pikzie
 =================
 
   * added assert_run_command
-  * added assert_search_syslog_in_calling
+  * added assert_search_syslog_call
   * added assert_open_file
   * added assert_try_call
   * assert_call_raise -> assert_raise_call

@@ -181,11 +181,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         def test_assert_run_command_unknown(self):
             self.assert_run_command(["unknown", "arg1", "arg2"])
 
-        def test_assert_search_syslog_in_calling(self):
-            self.assert_search_syslog_in_calling("find me!+",
-                                                 syslog.syslog, "find me!!!")
-            self.assert_search_syslog_in_calling("fix me!",
-                                                 syslog.syslog, "FIXME!!!")
+        def test_assert_search_syslog_call(self):
+            self.assert_search_syslog_call("find me!+",
+                                           syslog.syslog, "find me!!!")
+            self.assert_search_syslog_call("fix me!",
+                                           syslog.syslog, "FIXME!!!")
 
         def test_assert_open_file(self):
             file = self.assert_open_file(__file__)
@@ -467,7 +467,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_run_command",
                             "test_assert_run_command_unknown"])
 
-    def test_assert_search_syslog_in_calling(self):
+    def test_assert_search_syslog_call(self):
         if not os.access("/var/log/messages", os.R_OK):
             self.pend("can't read /var/log/messages.")
         detail = \
@@ -476,10 +476,10 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             ("/fix me!/", "'/var/log/messages'")
         self.assert_result(False, 1, 2, 1, 0, 0, 0,
                            [('F',
-                             "TestCase.test_assert_search_syslog_in_calling",
+                             "TestCase.test_assert_search_syslog_call",
                              re.compile(detail),
                              None)],
-                           ["test_assert_search_syslog_in_calling"])
+                           ["test_assert_search_syslog_call"])
 
     def test_assert_open_file(self):
         self.assert_result(False, 1, 2, 1, 0, 0, 0,

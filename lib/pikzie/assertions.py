@@ -342,13 +342,13 @@ class Assertions(object):
         self._pass_assertion()
         return process
 
-    def assert_search_syslog_in_calling(self, pattern,
-                                        callable_object, *args, **kw_args):
+    def assert_search_syslog_call(self, pattern,
+                                  callable_object, *args, **kw_args):
         """Passes if re.search(pattern, SYSLOG_CONTENT) doesn't return None
         after callable_object(*args, **kw_args).
 
-        self.assert_search_syslog_in_calling("X", syslog.syslog, "XYZ") # => pass
-        self.assert_search_syslog_in_calling("X", syslog.syslog, "ABC") # => fail
+        self.assert_search_syslog_call("X", syslog.syslog, "XYZ") # => pass
+        self.assert_search_syslog_call("X", syslog.syslog, "ABC") # => fail
         """
         self.assert_callable(callable_object)
 
