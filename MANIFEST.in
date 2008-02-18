@@ -3,8 +3,8 @@ include README*
 include NEWS*
 include html/*
 include setup.py
-include lib/*/*.py
-include lib/*/*/*.py
+include lib/pikzie/*.py
+include lib/pikzie/*/*.py
 include test/*.py
 include test/*/*.py
 include test/*/*/*.py
