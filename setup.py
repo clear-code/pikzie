@@ -133,11 +133,31 @@ class upload_doc(Command):
     def run(self):
         sdist = self.reinitialize_command("update_doc")
         self.run_command("update_doc")
+        html_files = glob.glob("html/*.html*")
+        for html in filter(lambda file: file != "html/index.html", html_files):
+            self._prepare_html(html)
         commands = ["scp"]
-        commands.extend(glob.glob("html/*.html*"))
+        commands.extend(html_files)
         commands.append("%s:%s/" % (sf_host, sf_htdocs))
         _run(*commands)
         _run_without_check("ssh", sf_host, "chmod", "-R", "g+w", sf_htdocs)
+
+    def _prepare_html(self, html):
+        html_file = file(html, "rw+")
+        content = html_file.read()
+        content = re.sub("</body>",
+                         r"""
+<p style="float: right; margin-top: 3.5em;">
+  <a href="http://sourceforge.net">
+    <img src="http://sflogo.sf.net/sflogo.php?group_id=215708&amp;type=1"
+         width="88" height="31" border="0" alt="SourceForge.net Logo">
+  </a>
+</p>
+</body>""",
+                         content)
+        html_file.seek(0)
+        html_file.write(content)
+        html_file.close
 
 class release(Command):
     description = "release package to SF.net"
