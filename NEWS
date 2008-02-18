@@ -12,7 +12,9 @@ The history of Pikzie
   * added assert_run_command
   * added assert_search_syslog_in_calling
   * added assert_open_file
-  * added assert_call_succeed_in_seconds
+  * added assert_try_call
+  * assert_call_raise -> assert_raise_call
+  * assert_call_nothing_raised -> assert_nothing_raised_call
   * added pikzie.pretty_print module
 
 0.3.0: 2008-02-14
