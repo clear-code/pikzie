@@ -169,5 +169,9 @@ class ConsoleTestRunner(object):
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")
-        if not term: return False
-        return term.endswith("term") or term == "screen"
+        if term and (term.endswith("term") or term == "screen"):
+            return True
+        emacs = os.getenv("EMACS")
+        if emacs and (emacs == "t"):
+            return True
+        return False
