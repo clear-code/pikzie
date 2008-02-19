@@ -8,10 +8,11 @@ def format_metadata(metadata):
     return "\n".join(formatted_metadata) + "\n"
 
 class Notification(object):
+    name = "notification"
+
     def __init__(self, test, detail, tracebacks):
         self.critical = False
         self.single_character_display = "N"
-        self.color = COLORS["cyan"]
         self.test = test
         self.detail = detail
         self.tracebacks = tracebacks
@@ -23,10 +24,11 @@ class Notification(object):
              "\n".join(map(str, self.tracebacks)))
 
 class Pending(object):
+    name = "pending"
+
     def __init__(self, test, detail, tracebacks):
         self.critical = False
         self.single_character_display = "P"
-        self.color = COLORS["yellow"]
         self.test = test
         self.detail = detail
         self.tracebacks = tracebacks
@@ -38,10 +40,11 @@ class Pending(object):
              "\n".join(map(str, self.tracebacks)))
 
 class Failure(object):
+    name = "failure"
+
     def __init__(self, test, detail, tracebacks):
         self.critical = True
         self.single_character_display = "F"
-        self.color = COLORS["red"]
         self.test = test
         self.detail = detail
         self.tracebacks = tracebacks
@@ -56,10 +59,11 @@ class Failure(object):
                  self.detail, "\n".join(map(str, self.tracebacks)))
 
 class Error(object):
+    name = "error"
+
     def __init__(self, test, exception_type, detail, tracebacks):
         self.critical = True
         self.single_character_display = "E"
-        self.color = COLORS["magenta"]
         self.test = test
         self.exception_type = exception_type
         self.detail = detail

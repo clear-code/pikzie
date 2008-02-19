@@ -5,7 +5,7 @@ import re
 
 from optparse import OptionValueError
 
-from pikzie.color import COLORS
+import pikzie.color
 from pikzie.core import *
 from pikzie.faults import *
 
@@ -33,6 +33,14 @@ class ConsoleTestRunner(object):
                          dest="use_color", nargs=1, type="string", help=help)
     setup_color_option = classmethod(setup_color_option)
 
+    def setup_color_scheme_option(cls, group):
+        available_schemes = pikzie.color.SCHEMES.keys()
+        help = "Use color scheme named SCHEME [%s]" % "|".join(available_schemes)
+        group.add_option("--color-scheme", dest="color_scheme",
+                         choices=available_schemes,
+                         metavar="SCHEME", help=help)
+    setup_color_scheme_option = classmethod(setup_color_scheme_option)
+
     def setup_verbose_option(cls, group):
         available_values = "[s|silent|n|normal|v|verbose]"
         def store_verbose_level(option, opt, value, parser):
@@ -55,10 +63,12 @@ class ConsoleTestRunner(object):
     def setup_options(cls, parser):
         group = parser.add_option_group("Console UI", "Options for console UI")
         cls.setup_color_option(group)
+        cls.setup_color_scheme_option(group)
         cls.setup_verbose_option(group)
     setup_options = classmethod(setup_options)
 
-    def __init__(self, output=sys.stdout, use_color=None, verbose_level=None):
+    def __init__(self, output=sys.stdout, use_color=None, verbose_level=None,
+                 color_scheme=None):
         if use_color is None:
             use_color = self._detect_color_availability()
         self.use_color = use_color
@@ -66,7 +76,8 @@ class ConsoleTestRunner(object):
             verbose_level = VERBOSE_LEVEL_NORMAL
         self.verbose_level = verbose_level
         self.output = output
-        self._success_color = COLORS["green"]
+        self.color_scheme = pikzie.color.SCHEMES[color_scheme or "default"]
+        self.reset_color = pikzie.color.COLORS["reset"]
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -118,10 +129,10 @@ class ConsoleTestRunner(object):
                     level=VERBOSE_LEVEL_VERBOSE)
 
     def on_success(self, result, test):
-        self._write(".", self._success_color)
+        self._write(".", self.color_scheme["success"])
 
     def _on_fault(self, result, fault):
-        self._write(fault.single_character_display, fault.color)
+        self._write(fault.single_character_display, self._fault_color(fault))
 
     on_failure = _on_fault
     on_error = _on_fault
@@ -134,13 +145,16 @@ class ConsoleTestRunner(object):
     def on_finish_test_case(self, result, test_case):
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
+    def _fault_color(self, fault):
+        return self.color_scheme[fault.__class__.name]
+
     def _write(self, arg, color=None, level=VERBOSE_LEVEL_NORMAL):
         if self.verbose_level < level:
             return
         if self.use_color and color:
             self.output.write("%s%s%s" % (color.escape_sequence,
                                           arg,
-                                          COLORS["reset"].escape_sequence))
+                                          self.reset_color.escape_sequence))
         else:
             self.output.write(arg)
         self.output.flush()
@@ -158,14 +172,14 @@ class ConsoleTestRunner(object):
         format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
         for i, fault in enumerate(result.faults):
             self._writeln(format % (i + 1, fault.long_display()),
-                          fault.color)
+                          self._fault_color(fault))
             self._writeln()
 
     def _result_color(self, result):
         if len(result.faults) == 0:
-            return self._success_color
+            return self.color_scheme["success"]
         else:
-            return sorted(result.faults, compare_fault)[0].color
+            return self._fault_color(sorted(result.faults, compare_fault)[0])
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")

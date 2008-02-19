@@ -2,7 +2,7 @@ class Color(object):
     names = ["black", "red", "green", "yellow",
              "blue", "magenta", "cyan", "white"]
     def __init__(self, name, foreground=True, intensity=False,
-                 bold=True, italic=False, underline=False):
+                 bold=False, italic=False, underline=False):
         self.name = name
         self.foreground = foreground
         self.intensity = intensity
@@ -10,9 +10,11 @@ class Color(object):
         self.italic = italic
         self.underline = underline
 
-    def escape_sequence(self):
+    def sequence(self):
         sequence = []
-        if self.name == "reset":
+        if self.name == "none":
+            pass
+        elif self.name == "reset":
             sequence.append("0")
         else:
             if self.foreground:
@@ -29,23 +31,48 @@ class Color(object):
             sequence.append("3")
         if self.underline:
             sequence.append("4")
-        return "\033[%sm" % ";".join(sequence)
+        return sequence
+    sequence = property(sequence)
+
+    def escape_sequence(self):
+        return "\033[%sm" % ";".join(self.sequence)
     escape_sequence = property(escape_sequence)
 
     def __add__(self, other):
-        return Color("%s:%s" % (self.name, other.name),
-                     self.escape_sequence + other.escape_sequence)
+        return MixColor([self, other])
+
+class MixColor(object):
+    def __init__(self, colors):
+        self.colors = colors
+
+    def sequence(self):
+        return sum([color.sequence for color in self.colors], [])
+    sequence = property(sequence)
+
+    def escape_sequence(self):
+        return "\033[%sm" % ";".join(self.sequence)
+    escape_sequence = property(escape_sequence)
 
 COLORS = {
-    "red": Color("red"),
+    "red": Color("red", bold=True),
     "red-back": Color("red", foreground=False),
-    "green": Color("green"),
+    "green": Color("green", bold=True),
     "green-back": Color("green", foreground=False),
-    "yellow": Color("yellow"),
-    "blue": Color("blue"),
-    "magenta": Color("magenta"),
-    "cyan": Color("cyan"),
-    "white": Color("white"),
+    "yellow": Color("yellow", bold=True),
+    "blue": Color("blue", bold=True),
+    "magenta": Color("magenta", bold=True),
+    "cyan": Color("cyan", bold=True),
+    "white": Color("white", bold=True),
     "white-back": Color("white", foreground=False),
-    "reset": Color("reset", bold=False),
+    "reset": Color("reset"),
+    }
+
+SCHEMES = {
+    "default": {
+        "success": COLORS["green"],
+        "notification": COLORS["cyan"],
+        "pending": COLORS["magenta"],
+        "failure": COLORS["red"],
+        "error": COLORS["yellow"]
+        }
     }
