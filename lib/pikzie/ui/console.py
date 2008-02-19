@@ -140,7 +140,7 @@ class ConsoleTestRunner(object):
         if self.use_color and color:
             self.output.write("%s%s%s" % (color.escape_sequence,
                                           arg,
-                                          COLORS["normal"].escape_sequence))
+                                          COLORS["reset"].escape_sequence))
         else:
             self.output.write(arg)
         self.output.flush()

@@ -59,7 +59,7 @@ class Error(object):
     def __init__(self, test, exception_type, detail, tracebacks):
         self.critical = True
         self.single_character_display = "E"
-        self.color = COLORS["purple"]
+        self.color = COLORS["magenta"]
         self.test = test
         self.exception_type = exception_type
         self.detail = detail
