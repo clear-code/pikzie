@@ -1,7 +1,6 @@
 import os
 import sys
 import re
-import difflib
 import traceback
 import random
 import syslog
@@ -93,9 +92,8 @@ class Assertions(object):
         else:
             expected = pp.format(expected)
             actual = pp.format(actual)
-            diff = difflib.ndiff(expected.splitlines(), actual.splitlines())
             system_message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
-                (expected, actual, "\n".join(diff))
+                (expected, actual, pp.format_diff(expected, actual))
             self._fail(system_message, message)
 
     def assert_not_equal(self, not_expected, actual, message=None):
@@ -111,10 +109,8 @@ class Assertions(object):
             system_message = "not expected: <%s>\n     but was: <%s>" % \
                 (not_expected, actual)
             if not_expected != actual:
-                diff = difflib.ndiff(not_expected.splitlines(),
-                                     actual.splitlines())
                 system_message = "%s\ndiff:\n%s" % \
-                    (system_message, "\n".join(diff))
+                    (system_message, pp.format_diff(not_expected, actual))
             self._fail(system_message, message)
 
     def assert_in_delta(self, expected, actual, delta, message=None):

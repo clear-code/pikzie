@@ -1,5 +1,6 @@
 import re
 import types
+import difflib
 import pprint
 
 def format(object):
@@ -75,3 +76,12 @@ def format_exception_class(exception_class):
     else:
         return format(exception_class)
 
+def format_diff(string1, string2):
+    def ensure_newline(string):
+        if string.endswith("\n"):
+            return string
+        else:
+            return string + "\n"
+    diff = difflib.ndiff(ensure_newline(string1).splitlines(True),
+                         ensure_newline(string2).splitlines(True))
+    return "".join(diff).rstrip()

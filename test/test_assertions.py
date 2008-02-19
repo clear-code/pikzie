@@ -311,9 +311,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "diff:\n"
                              "- 'abc'\n"
                              "?   ^\n"
-                             "\n"
                              "+ 'aBc'\n"
-                             "?   ^\n",
+                             "?   ^",
                              None)],
                            ["test_assert_not_equal",
                             "test_assert_not_equal_different_repr"])
