@@ -53,6 +53,9 @@ class MixColor(object):
         return "\033[%sm" % ";".join(self.sequence)
     escape_sequence = property(escape_sequence)
 
+    def __add__(self, other):
+        return MixColor([self, other])
+
 COLORS = {
     "red": Color("red", bold=True),
     "red-back": Color("red", foreground=False),

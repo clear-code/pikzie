@@ -19,6 +19,10 @@ class TestColor(pikzie.TestCase, test.utils.Assertions):
         self.assert_escape_sequence(["34", "1"],
                                     mix_color([color("blue"),
                                                color("none", bold=True)]))
+        self.assert_escape_sequence(["34", "1", "4"],
+                                    mix_color([color("blue"),
+                                               color("none", bold=True)]) + \
+                                        color("none", underline=True))
 
     def assert_escape_sequence(self, expected, color):
         self.assert_equal(expected, color.sequence)
