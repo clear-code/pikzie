@@ -117,6 +117,8 @@ class ConsoleTestRunner(object):
             return " %s" % test_case.__doc__
 
     def on_start_test(self, result, test):
+        self._n_notifications = 0
+
         if test.description():
             self._writeln(" %s" % test.description(),
                           level=VERBOSE_LEVEL_VERBOSE)
@@ -130,21 +132,50 @@ class ConsoleTestRunner(object):
                     level=VERBOSE_LEVEL_VERBOSE)
 
     def on_success(self, result, test):
+        self._flood_notifications()
         self._write(".", self.color_scheme["success"])
 
     def _on_fault(self, result, fault):
-        self._write(fault.single_character_display, self._fault_color(fault))
+        self._flood_notifications()
+        self._write_fault(fault)
 
     on_failure = _on_fault
     on_error = _on_fault
     on_pending = _on_fault
-    on_notification = _on_fault
+
+    def on_notification(self, result, notification):
+        self._pool_notification(notification)
+        if self.verbose_level != VERBOSE_LEVEL_VERBOSE:
+            self._write_fault(notification)
+            return
+
+        if self._n_notifications == 1:
+            self._write_fault(notification)
 
     def on_finish_test(self, result, test):
+        self._flood_notifications()
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
     def on_finish_test_case(self, result, test_case):
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
+
+    def _pool_notification(self, notification):
+        self._n_notifications += 1
+        self._last_notification = notification
+
+    def _flood_notifications(self):
+        if self._n_notifications > 1:
+            fault = self._last_notification
+            color = self._fault_color(fault)
+            if self._n_notifications > 3:
+                message = "%d%s" % (self._n_notifications,
+                                    fault.single_character_display)
+            else:
+                n_characters = self._n_notifications - 1
+                message = fault.single_character_display * n_characters
+            self._write(message, color, VERBOSE_LEVEL_VERBOSE)
+        self._n_notifications = 0
+        self._last_notification = None
 
     def _fault_color(self, fault):
         return self.color_scheme[fault.__class__.name]
@@ -159,6 +190,10 @@ class ConsoleTestRunner(object):
         else:
             self.output.write(arg)
         self.output.flush()
+
+    def _write_fault(self, fault, level=VERBOSE_LEVEL_NORMAL):
+        self._write(fault.single_character_display, self._fault_color(fault),
+                    level)
 
     def _writeln(self, arg=None, color=None, level=VERBOSE_LEVEL_NORMAL):
         if arg:
