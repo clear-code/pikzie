@@ -58,6 +58,7 @@ class MixColor(object):
 
 COLORS = {
     "black": Color("black", bold=True),
+    "black-back": Color("black", foreground=False),
     "red": Color("red", bold=True),
     "red-back": Color("red", foreground=False),
     "green": Color("green", bold=True),
@@ -80,6 +81,6 @@ SCHEMES = {
         "pending": COLORS["magenta"],
         "failure": COLORS["red"],
         "error": COLORS["yellow"],
-        "test-case-name": COLORS["green-back"]
+        "test-case-name": COLORS["green-back"] + COLORS["white"]
         }
     }
