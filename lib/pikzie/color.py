@@ -57,6 +57,7 @@ class MixColor(object):
         return MixColor([self, other])
 
 COLORS = {
+    "black": Color("black", bold=True),
     "red": Color("red", bold=True),
     "red-back": Color("red", foreground=False),
     "green": Color("green", bold=True),
@@ -64,7 +65,9 @@ COLORS = {
     "yellow": Color("yellow", bold=True),
     "blue": Color("blue", bold=True),
     "magenta": Color("magenta", bold=True),
+    "magenta-back": Color("magenta", foreground=False),
     "cyan": Color("cyan", bold=True),
+    "cyan-back": Color("cyan", foreground=False),
     "white": Color("white", bold=True),
     "white-back": Color("white", foreground=False),
     "reset": Color("reset"),
@@ -76,6 +79,7 @@ SCHEMES = {
         "notification": COLORS["cyan"],
         "pending": COLORS["magenta"],
         "failure": COLORS["red"],
-        "error": COLORS["yellow"]
+        "error": COLORS["yellow"],
+        "test-case-name": COLORS["green-back"]
         }
     }

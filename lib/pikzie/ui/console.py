@@ -96,6 +96,7 @@ class ConsoleTestRunner(object):
     def on_start_test_case(self, result, test_case):
         description = self._generate_test_case_description(test_case)
         self._writeln("%s:%s" % (test_case.__name__, description),
+                      self.color_scheme["test-case-name"],
                       level=VERBOSE_LEVEL_VERBOSE)
 
     def _generate_test_case_description(self, test_case):
