@@ -71,9 +71,9 @@ class Error(object):
 
     def long_display(self):
         return "Error: %s\n%s%s: %s\n%s" % \
-            (self.test, self.exception_type,
-             format_metadata(self.test.metadata),
-             self.detail, "\n".join(map(str, self.tracebacks)))
+            (self.test, format_metadata(self.test.metadata),
+             self.exception_type, self.detail,
+             "\n".join(map(str, self.tracebacks)))
 
 FAULT_ORDER = [Notification, Pending, Failure, Error]
 

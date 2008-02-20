@@ -71,11 +71,12 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("E", 1, 0, 0, 1, 0, 0, details, [test])
 
-    def test_fail_tests_with_metadata(self):
+    def test_metadata(self):
         class TestCase(pikzie.TestCase):
             def test_error_raised(self):
                 self.unknown_attribute
                 self.assert_equal(3, 1 + 2)
+            test_error_raised = pikzie.bug(123)(test_error_raised)
 
             def test_with_metadata(self):
                 self.assert_equal(3, 1 - 2)
@@ -88,6 +89,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         format = \
             "\n" \
             "1) Error: TestCase.test_error_raised\n" \
+            "  bug: 123\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_attribute'\n" \
             "%s:%d: test_error_raised(): %s\n" \

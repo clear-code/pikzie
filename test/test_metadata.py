@@ -16,6 +16,7 @@ class TestMetadata(pikzie.TestCase, test.utils.Assertions):
             self.assert_equal(1, 1)
         test_with_metadata = pikzie.metadata("key", "value")(test_with_metadata)
 
+
     def test_bug(self):
         """Test for bug 111"""
         self.assert_metadata("bug", 111, "test_for_bug_111")
