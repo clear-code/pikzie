@@ -30,7 +30,8 @@ class ConsoleTestRunner(object):
         help = "Output log with colors %s (default: auto)" % available_values
         group.add_option("-c", "--color",
                          action="callback", callback=store_use_color,
-                         dest="use_color", nargs=1, type="string", help=help)
+                         dest="use_color", nargs=1, type="string",
+                         metavar="MODE", help=help)
     setup_color_option = classmethod(setup_color_option)
 
     def setup_color_scheme_option(cls, group):

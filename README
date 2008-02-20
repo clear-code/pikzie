@@ -153,6 +153,14 @@ Options
 			  UI. (There is only console UI at
 			  present.)
 
+--color-scheme=SCHEME     specifies whether color scheme is
+                          used for output. SCHEME is one of
+                          [default].
+
+			  This option is only for console
+			  UI. (There is only console UI at
+			  present.)
+
 Test result
 ===========
 
