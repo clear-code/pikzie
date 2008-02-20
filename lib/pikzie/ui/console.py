@@ -205,10 +205,10 @@ class ConsoleTestRunner(object):
         if size == 0:
             return
         self._writeln()
-        format = "%%%dd) %%s" % (math.floor(math.log10(size)) + 1)
+        index_format = "%%%dd) " % (math.floor(math.log10(size)) + 1)
         for i, fault in enumerate(result.faults):
-            self._writeln(format % (i + 1, fault.long_display()),
-                          self._fault_color(fault))
+            self._write(index_format % (i + 1))
+            self._writeln(fault.long_display(), self._fault_color(fault))
             self._writeln()
 
     def _result_color(self, result):
