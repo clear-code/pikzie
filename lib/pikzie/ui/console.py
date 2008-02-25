@@ -185,15 +185,15 @@ class ConsoleTestRunner(object):
         if self.verbose_level < level:
             return
         if self.use_color and color:
-            self.output.write("%s%s%s" % (color.escape_sequence,
-                                          arg,
-                                          self.reset_color.escape_sequence))
-        else:
-            self.output.write(arg)
+            arg = "%s%s%s" % (color.escape_sequence,
+                              arg,
+                              self.reset_color.escape_sequence)
+        self.output.write(arg)
         self.output.flush()
 
     def _write_fault(self, fault, level=VERBOSE_LEVEL_NORMAL):
-        self._write(fault.single_character_display, self._fault_color(fault),
+        self._write(fault.single_character_display,
+                    self._fault_color(fault),
                     level)
 
     def _writeln(self, arg=None, color=None, level=VERBOSE_LEVEL_NORMAL):
