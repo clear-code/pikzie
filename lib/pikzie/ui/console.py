@@ -220,7 +220,6 @@ class ConsoleTestRunner(object):
             self._write(traceback.filename, self._file_name_color())
             self._write(":")
             self._write("%d" % traceback.lineno, self._line_number_color())
-            self._write(": %s()" % traceback.name)
             if traceback.line:
                 self._write(": ")
                 self._write(traceback.line, self._line_color())

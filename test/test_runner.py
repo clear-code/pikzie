@@ -45,7 +45,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "diff:\n" \
             "- 'aaaaa'\n" \
             "+ 'a'\n" \
-            "%s:%d: test_fail_assertion(): %s\n" \
+            "%s:%d: %s\n" \
             "\n"
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
         line_no = self._find_target_line_no(target_line)
@@ -64,7 +64,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "1) Error: TestCase.test_error_raised\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_method'\n" \
-            "%s:%d: test_error_raised(): %s\n" \
+            "%s:%d: %s\n" \
             "\n"
         target_line = "self.unknown_method(12345)"
         line_no = self._find_target_line_no(target_line)
@@ -92,7 +92,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "  bug: 123\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_attribute'\n" \
-            "%s:%d: test_error_raised(): %s\n" \
+            "%s:%d: %s\n" \
             "\n" \
             "2) Failure: TestCase.test_with_metadata: %s\n" \
             "  bug: 999\n" \
@@ -102,7 +102,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "diff:\n" \
             "- 3\n" \
             "+ -1\n" \
-            "%s:%d: test_with_metadata(): %s\n" \
+            "%s:%d: %s\n" \
             "\n"
         target_line1 = "self.unknown_attribute"
         line_no1 = self._find_target_line_no(target_line1)
@@ -121,7 +121,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         format = \
             "\n" \
             "1) Pending: TestCase.test_pend: just a minute!\n" \
-            "%s:%d: test_pend(): %s\n" \
+            "%s:%d: %s\n" \
             "\n"
         target_line = "self.pend(\"just a minute!\")"
         line_no = self._find_target_line_no(target_line)
@@ -139,7 +139,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         format = \
             "\n" \
             "1) Notification: TestCase.test_notify: Call me!\n" \
-            "%s:%d: test_notify(): %s\n" \
+            "%s:%d: %s\n" \
             "\n"
         target_line = "self.notify(\"Call me!\")"
         line_no = self._find_target_line_no(target_line)
