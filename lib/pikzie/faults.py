@@ -13,12 +13,12 @@ def format_metadata(metadata, need_newline=False):
 class Notification(object):
     name = "notification"
 
-    def __init__(self, test, detail, tracebacks):
+    def __init__(self, test, detail, traceback):
         self.critical = False
         self.single_character_display = "N"
         self.test = test
         self.detail = detail
-        self.tracebacks = tracebacks
+        self.traceback = traceback
 
     def long_display(self):
         result = "Notification: %s: %s" % (self.test, self.detail)
@@ -30,12 +30,12 @@ class Notification(object):
 class Pending(object):
     name = "pending"
 
-    def __init__(self, test, detail, tracebacks):
+    def __init__(self, test, detail, traceback):
         self.critical = False
         self.single_character_display = "P"
         self.test = test
         self.detail = detail
-        self.tracebacks = tracebacks
+        self.traceback = traceback
 
     def long_display(self):
         result = "Pending: %s: %s" % (self.test, self.detail)
@@ -47,31 +47,31 @@ class Pending(object):
 class Failure(object):
     name = "failure"
 
-    def __init__(self, test, detail, tracebacks):
+    def __init__(self, test, detail, traceback):
         self.critical = True
         self.single_character_display = "F"
         self.test = test
         self.detail = detail
-        self.tracebacks = tracebacks
+        self.traceback = traceback
 
     def long_display(self):
         metadata = format_metadata(self.test.metadata, True)
-        if len(self.tracebacks) == 0:
+        if len(self.traceback) == 0:
             return "Failure: %s\n%s%s" % (self.test, metadata, self.detail)
         else:
             return "Failure: %s: %s\n%s%s" % \
-                (self.test, self.tracebacks[0].line, metadata, self.detail)
+                (self.test, self.traceback[0].content, metadata, self.detail)
 
 class Error(object):
     name = "error"
 
-    def __init__(self, test, exception_type, detail, tracebacks):
+    def __init__(self, test, exception_type, detail, traceback):
         self.critical = True
         self.single_character_display = "E"
         self.test = test
         self.exception_type = exception_type
         self.detail = detail
-        self.tracebacks = tracebacks
+        self.traceback = traceback
 
     def long_display(self):
         return "Error: %s\n%s%s: %s" % \

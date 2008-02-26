@@ -45,17 +45,17 @@ class TestSuite(object):
             if result.need_interrupt():
                 break
 
-class Traceback(object):
-    def __init__(self, filename, lineno, name, line):
-        self.filename = filename
-        self.lineno = lineno
+class TracebackEntry(object):
+    def __init__(self, file_name, line_number, name, content):
+        self.file_name = file_name
+        self.line_number = line_number
         self.name = name
-        self.line = line
+        self.content = content
 
     def __str__(self):
-        result = '%s:%d: %s()' % (self.filename, self.lineno, self.name)
-        if self.line:
-            result = "%s: %s" % (result, self.line)
+        result = '%s:%d: %s()' % (self.file_name, self.line_number, self.name)
+        if self.content:
+            result = "%s: %s" % (result, self.content)
         return result
 
 class AssertionFailure(Exception):
@@ -234,26 +234,26 @@ class TestCase(TestCaseTemplate, Assertions):
             raise ZeroDivisionError
         except ZeroDivisionError:
             frame = sys.exc_info()[2].tb_frame.f_back.f_back
-        tracebacks = self._prepare_frame(frame, True)
-        notification = Notification(self, message, tracebacks)
+        traceback = self._prepare_frame(frame, True)
+        notification = Notification(self, message, traceback)
         self.__result.add_notification(self, notification)
 
     def _add_failure(self, result):
         exception_type, detail, traceback = sys.exc_info()
-        tracebacks = self._prepare_traceback(traceback, True)
-        failure = Failure(self, detail, tracebacks)
+        traceback = self._prepare_traceback(traceback, True)
+        failure = Failure(self, detail, traceback)
         result.add_failure(self, failure)
 
     def _add_error(self, result):
         exception_type, detail, traceback = sys.exc_info()
-        tracebacks = self._prepare_traceback(traceback, False)
-        error = Error(self, exception_type, detail, tracebacks)
+        traceback = self._prepare_traceback(traceback, False)
+        error = Error(self, exception_type, detail, traceback)
         result.add_error(self, error)
 
     def _pend_test(self, result):
         exception_type, detail, traceback = sys.exc_info()
-        tracebacks = self._prepare_traceback(traceback, True)
-        pending = Pending(self, detail, tracebacks)
+        traceback = self._prepare_traceback(traceback, True)
+        pending = Pending(self, detail, traceback)
         result.pend_test(self, pending)
 
     def _prepare_traceback(self, tb, compute_length):
@@ -263,7 +263,7 @@ class TestCase(TestCaseTemplate, Assertions):
         if compute_length:
             length = self._count_relevant_frame_levels(tb.tb_frame)
         stack_infos = traceback.extract_tb(tb, length)
-        return self._create_traceback_objects(stack_infos)
+        return self._create_traceback_entries(stack_infos)
 
     def _prepare_frame(self, frame, compute_length):
         while frame and self._is_relevant_frame_level(frame):
@@ -272,14 +272,14 @@ class TestCase(TestCaseTemplate, Assertions):
         if compute_length:
             length = self._count_relevant_frame_levels(frame)
         stack_infos = traceback.extract_stack(frame, length)
-        return self._create_traceback_objects(stack_infos)
+        return self._create_traceback_entries(stack_infos)
 
-    def _create_traceback_objects(self, stack_infos):
-        tracebacks = []
+    def _create_traceback_entries(self, stack_infos):
+        entries = []
         for stack_info in stack_infos:
             filename, lineno, name, line = stack_info
-            tracebacks.append(Traceback(filename, lineno, name, line))
-        return tracebacks
+            entries.append(TracebackEntry(filename, lineno, name, line))
+        return entries
 
     def _is_relevant_frame_level(self, frame):
         globals = frame.f_globals

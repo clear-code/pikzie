@@ -210,19 +210,19 @@ class ConsoleTestRunner(object):
         for i, fault in enumerate(result.faults):
             self._write(index_format % (i + 1))
             self._writeln(fault.long_display(), self._fault_color(fault))
-            self._print_tracebacks(fault.tracebacks)
+            self._print_traceback(fault.traceback)
             self._writeln()
 
-    def _print_tracebacks(self, tracebacks):
-        if len(tracebacks) == 0:
+    def _print_traceback(self, traceback):
+        if len(traceback) == 0:
             return
-        for traceback in tracebacks:
-            self._write(traceback.filename, self._file_name_color())
+        for entry in traceback:
+            self._write(entry.file_name, self._file_name_color())
             self._write(":")
-            self._write("%d" % traceback.lineno, self._line_number_color())
-            if traceback.line:
+            self._write("%d" % entry.line_number, self._line_number_color())
+            if entry.content:
                 self._write(": ")
-                self._write(traceback.line, self._line_color())
+                self._write(entry.content, self._line_color())
             self._writeln()
 
     def _result_color(self, result):
