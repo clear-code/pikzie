@@ -34,6 +34,9 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.assert_none(None)
             self.assert_none(False)
 
+        def test_assert_none_with_message(self):
+            self.assert_none(True, "Message")
+
         def test_assert_not_none(self):
             self.assert_not_none(False)
             self.assert_not_none(None)
@@ -228,12 +231,18 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_notify"])
 
     def test_assert_none(self):
-        self.assert_result(False, 1, 1, 1, 0, 0, 0,
+        self.assert_result(False, 2, 1, 2, 0, 0, 0,
                            [("F",
                              "TestCase.test_assert_none",
                              "expected: <False> is None",
+                             None),
+                            ("F",
+                             "TestCase.test_assert_none_with_message",
+                             "expected: <True> is None\n"
+                             "Message",
                              None)],
-                           ["test_assert_none"])
+                           ["test_assert_none",
+                            "test_assert_none_with_message"])
 
     def test_assert_not_none(self):
         self.assert_result(False, 1, 1, 1, 0, 0, 0,
