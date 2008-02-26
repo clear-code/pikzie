@@ -222,7 +222,7 @@ class ConsoleTestRunner(object):
             self._write("%d" % entry.line_number, self._line_number_color())
             if entry.content:
                 self._write(": ")
-                self._write(entry.content, self._line_color())
+                self._write(entry.content, self._content_color())
             self._writeln()
 
     def _result_color(self, result):
@@ -237,8 +237,8 @@ class ConsoleTestRunner(object):
     def _line_number_color(self):
         return self.color_scheme["line-number"]
 
-    def _line_color(self):
-        return self.color_scheme["line"]
+    def _content_color(self):
+        return self.color_scheme["content"]
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")

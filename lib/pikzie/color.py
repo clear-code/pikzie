@@ -84,6 +84,6 @@ SCHEMES = {
         "test-case-name": COLORS["green-back"] + COLORS["white"],
         "file-name": COLORS["cyan"],
         "line-number": COLORS["yellow"],
-        "line": None,
+        "content": None,
         }
     }
