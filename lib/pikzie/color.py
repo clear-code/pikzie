@@ -81,6 +81,9 @@ SCHEMES = {
         "pending": COLORS["magenta"],
         "failure": COLORS["red"],
         "error": COLORS["yellow"],
-        "test-case-name": COLORS["green-back"] + COLORS["white"]
+        "test-case-name": COLORS["green-back"] + COLORS["white"],
+        "file-name": COLORS["cyan"],
+        "line-number": COLORS["yellow"],
+        "line": None,
         }
     }

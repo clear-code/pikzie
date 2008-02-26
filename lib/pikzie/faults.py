@@ -1,11 +1,14 @@
 from pikzie.color import *
 
-def format_metadata(metadata):
+def format_metadata(metadata, need_newline=False):
     if metadata is None or len(metadata) == 0:
         return ""
     formatted_metadata = map(lambda key: "  %s: %s" % (key, metadata[key]),
                              metadata)
-    return "\n".join(formatted_metadata) + "\n"
+    result = "\n".join(formatted_metadata)
+    if need_newline:
+        result += "\n"
+    return result
 
 class Notification(object):
     name = "notification"
@@ -18,10 +21,11 @@ class Notification(object):
         self.tracebacks = tracebacks
 
     def long_display(self):
+        result = "Notification: %s: %s" % (self.test, self.detail)
         metadata = format_metadata(self.test.metadata)
-        return "Notification: %s: %s\n%s%s" % \
-            (self.test, self.detail, metadata,
-             "\n".join(map(str, self.tracebacks)))
+        if metadata:
+            result += "\n" + metadata
+        return result
 
 class Pending(object):
     name = "pending"
@@ -34,10 +38,11 @@ class Pending(object):
         self.tracebacks = tracebacks
 
     def long_display(self):
+        result = "Pending: %s: %s" % (self.test, self.detail)
         metadata = format_metadata(self.test.metadata)
-        return "Pending: %s: %s\n%s%s" % \
-            (self.test, self.detail, metadata,
-             "\n".join(map(str, self.tracebacks)))
+        if metadata:
+            result += "\n" + metadata
+        return result
 
 class Failure(object):
     name = "failure"
@@ -50,13 +55,12 @@ class Failure(object):
         self.tracebacks = tracebacks
 
     def long_display(self):
-        metadata = format_metadata(self.test.metadata)
+        metadata = format_metadata(self.test.metadata, True)
         if len(self.tracebacks) == 0:
             return "Failure: %s\n%s%s" % (self.test, metadata, self.detail)
         else:
-            return "Failure: %s: %s\n%s%s\n%s" % \
-                (self.test, self.tracebacks[0].line, metadata,
-                 self.detail, "\n".join(map(str, self.tracebacks)))
+            return "Failure: %s: %s\n%s%s" % \
+                (self.test, self.tracebacks[0].line, metadata, self.detail)
 
 class Error(object):
     name = "error"
@@ -70,10 +74,9 @@ class Error(object):
         self.tracebacks = tracebacks
 
     def long_display(self):
-        return "Error: %s\n%s%s: %s\n%s" % \
-            (self.test, format_metadata(self.test.metadata),
-             self.exception_type, self.detail,
-             "\n".join(map(str, self.tracebacks)))
+        return "Error: %s\n%s%s: %s" % \
+            (self.test, format_metadata(self.test.metadata, True),
+             self.exception_type, self.detail)
 
 FAULT_ORDER = [Notification, Pending, Failure, Error]
 

@@ -210,6 +210,20 @@ class ConsoleTestRunner(object):
         for i, fault in enumerate(result.faults):
             self._write(index_format % (i + 1))
             self._writeln(fault.long_display(), self._fault_color(fault))
+            self._print_tracebacks(fault.tracebacks)
+            self._writeln()
+
+    def _print_tracebacks(self, tracebacks):
+        if len(tracebacks) == 0:
+            return
+        for traceback in tracebacks:
+            self._write(traceback.filename, self._file_name_color())
+            self._write(":")
+            self._write("%d" % traceback.lineno, self._line_number_color())
+            self._write(": %s()" % traceback.name)
+            if traceback.line:
+                self._write(": ")
+                self._write(traceback.line, self._line_color())
             self._writeln()
 
     def _result_color(self, result):
@@ -217,6 +231,15 @@ class ConsoleTestRunner(object):
             return self.color_scheme["success"]
         else:
             return self._fault_color(sorted(result.faults, compare_fault)[0])
+
+    def _file_name_color(self):
+        return self.color_scheme["file-name"]
+
+    def _line_number_color(self):
+        return self.color_scheme["line-number"]
+
+    def _line_color(self):
+        return self.color_scheme["line"]
 
     def _detect_color_availability(self):
         term = os.getenv("TERM")
