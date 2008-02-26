@@ -66,7 +66,7 @@ class AssertionFailure(Exception):
     def __str__(self):
         result = self.message
         if self.user_message:
-            result += "\n" + self.user_message
+            result = "%s\n%s" % (self.user_message.rstrip(), result)
         return result
 
 class PendingTestError(Exception):

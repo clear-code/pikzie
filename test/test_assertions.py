@@ -238,8 +238,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              None),
                             ("F",
                              "TestCase.test_assert_none_with_message",
-                             "expected: <True> is None\n"
-                             "Message",
+                             "Message\n"
+                             "expected: <True> is None",
                              None)],
                            ["test_assert_none",
                             "test_assert_none_with_message"])
