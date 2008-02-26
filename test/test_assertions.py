@@ -208,6 +208,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                 self.fail("Never succeed")
             self.assert_try_call(0.1, 0.01, never_succeed)
 
+        def test_assert_kernel_symbol(self):
+            address = self.assert_kernel_symbol("printk")
+            self.assert_not_none(address)
+            self.assert_kernel_symbol("non_existent")
+
     def test_fail(self):
         """Test for fail"""
         self.assert_result(False, 1, 0, 1, 0, 0, 0,
@@ -514,3 +519,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                                  ("test.test_assertions.never_succeed()",),
                              None)],
                            ["test_assert_try_call"])
+
+    def test_kernel_symbol(self):
+        self.assert_result(False, 1, 1, 1, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_kernel_symbol",
+                             "expected: <'non_existent'> is in kernel symbols",
+                             None)],
+                           ["test_assert_kernel_symbol"])

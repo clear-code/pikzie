@@ -432,3 +432,19 @@ class Assertions(object):
                 rest -= interval
         self._pass_assertion
         return result
+
+    def assert_kernel_symbol(self, name):
+        """Passes if /proc/kallsyms can be opened and name is in the list.
+
+        self.assert_kernel_symbol("printk")       # => pass
+                                                  # returns an address of printk
+        self.assert_kernel_symbol("non_existent") # => fail
+        """
+        for line in self.assert_open_file("/proc/kallsyms"):
+            symbol_info = line.split()
+            address = symbol_info[0]
+            symbol_name = symbol_info[2]
+            if name == symbol_name:
+                self._pass_assertion
+                return address
+        self._fail("expected: <%r> is in kernel symbols" % name)
