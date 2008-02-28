@@ -41,7 +41,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "\n" \
             "1) Failure: TestCase.test_fail_assertion: %s\n" \
             "%s:%d: %s\n" \
-            " expected: <'aaaaa'>\n" \
+            "expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
             "diff:\n" \
             "- aaaaa\n" \
