@@ -209,8 +209,14 @@ class ConsoleTestRunner(object):
         index_format = "%%%dd) " % (math.floor(math.log10(size)) + 1)
         for i, fault in enumerate(result.faults):
             self._write(index_format % (i + 1))
-            self._writeln(fault.long_display(), self._fault_color(fault))
+            self._writeln(fault.title(), self._fault_color(fault))
+            metadata = pikzie.faults.format_metadata(fault.test.metadata)
+            if metadata:
+                self._writeln(metadata, self._fault_color(fault))
             self._print_traceback(fault.traceback)
+            long_display = fault.long_display()
+            if long_display:
+                self._writeln(long_display, self._fault_color(fault))
             self._writeln()
 
     def _print_traceback(self, traceback):

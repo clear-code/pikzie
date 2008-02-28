@@ -20,12 +20,11 @@ class Notification(object):
         self.detail = detail
         self.traceback = traceback
 
+    def title(self):
+        return "Notification: %s: %s" % (self.test, self.detail)
+
     def long_display(self):
-        result = "Notification: %s: %s" % (self.test, self.detail)
-        metadata = format_metadata(self.test.metadata)
-        if metadata:
-            result += "\n" + metadata
-        return result
+        return ""
 
 class Pending(object):
     name = "pending"
@@ -37,12 +36,11 @@ class Pending(object):
         self.detail = detail
         self.traceback = traceback
 
+    def title(self):
+        return "Pending: %s: %s" % (self.test, self.detail)
+
     def long_display(self):
-        result = "Pending: %s: %s" % (self.test, self.detail)
-        metadata = format_metadata(self.test.metadata)
-        if metadata:
-            result += "\n" + metadata
-        return result
+        return ""
 
 class Failure(object):
     name = "failure"
@@ -54,13 +52,14 @@ class Failure(object):
         self.detail = detail
         self.traceback = traceback
 
-    def long_display(self):
-        metadata = format_metadata(self.test.metadata, True)
+    def title(self):
         if len(self.traceback) == 0:
-            return "Failure: %s\n%s%s" % (self.test, metadata, self.detail)
+            return "Failure: %s" % self.test
         else:
-            return "Failure: %s: %s\n%s%s" % \
-                (self.test, self.traceback[0].content, metadata, self.detail)
+            return "Failure: %s: %s" % (self.test, self.traceback[0].content)
+
+    def long_display(self):
+        return self.detail
 
 class Error(object):
     name = "error"
@@ -73,10 +72,11 @@ class Error(object):
         self.detail = detail
         self.traceback = traceback
 
+    def title(self):
+        return "Error: %s" % self.test
+
     def long_display(self):
-        return "Error: %s\n%s%s: %s" % \
-            (self.test, format_metadata(self.test.metadata, True),
-             self.exception_type, self.detail)
+        return "%s: %s" % (self.exception_type, self.detail)
 
 FAULT_ORDER = [Notification, Pending, Failure, Error]
 

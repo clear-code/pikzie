@@ -40,12 +40,12 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         format = \
             "\n" \
             "1) Failure: TestCase.test_fail_assertion: %s\n" \
-            "expected: <'aaaaa'>\n" \
+            "%s:%d: %s\n" \
+            " expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
             "diff:\n" \
             "- aaaaa\n" \
             "+ a\n" \
-            "%s:%d: %s\n" \
             "\n"
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
         line_no = self._find_target_line_no(target_line)
@@ -62,9 +62,9 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
         format = \
             "\n" \
             "1) Error: TestCase.test_error_raised\n" \
+            "%s:%d: %s\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_method'\n" \
-            "%s:%d: %s\n" \
             "\n"
         target_line = "self.unknown_method(12345)"
         line_no = self._find_target_line_no(target_line)
@@ -90,19 +90,19 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "\n" \
             "1) Error: TestCase.test_error_raised\n" \
             "  bug: 123\n" \
+            "%s:%d: %s\n" \
             "exceptions.AttributeError: " \
             "'TestCase' object has no attribute 'unknown_attribute'\n" \
-            "%s:%d: %s\n" \
             "\n" \
             "2) Failure: TestCase.test_with_metadata: %s\n" \
             "  bug: 999\n" \
             "  key: value\n" \
+            "%s:%d: %s\n" \
             "expected: <3>\n" \
             " but was: <-1>\n" \
             "diff:\n" \
             "- 3\n" \
             "+ -1\n" \
-            "%s:%d: %s\n" \
             "\n"
         target_line1 = "self.unknown_attribute"
         line_no1 = self._find_target_line_no(target_line1)
