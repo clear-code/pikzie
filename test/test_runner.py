@@ -43,8 +43,8 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
             "diff:\n" \
-            "- 'aaaaa'\n" \
-            "+ 'a'\n" \
+            "- aaaaa\n" \
+            "+ a\n" \
             "%s:%d: %s\n" \
             "\n"
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"

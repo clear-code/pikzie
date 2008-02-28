@@ -90,10 +90,11 @@ class Assertions(object):
         if expected == actual:
             self._pass_assertion()
         else:
-            expected = pp.format(expected)
-            actual = pp.format(actual)
+            formatted_expected = pp.format(expected)
+            formatted_actual = pp.format(actual)
             system_message = "expected: <%s>\n but was: <%s>\ndiff:\n%s" % \
-                (expected, actual, pp.format_diff(expected, actual))
+                (formatted_expected, formatted_actual,
+                 pp.format_diff(expected, actual))
             self._fail(system_message, message)
 
     def assert_not_equal(self, not_expected, actual, message=None):
@@ -104,11 +105,11 @@ class Assertions(object):
         if not_expected != actual:
             self._pass_assertion()
         else:
-            not_expected = pp.format(not_expected)
-            actual = pp.format(actual)
+            formatted_not_expected = pp.format(not_expected)
+            formatted_actual = pp.format(actual)
             system_message = "not expected: <%s>\n     but was: <%s>" % \
-                (not_expected, actual)
-            if not_expected != actual:
+                (formatted_not_expected, formatted_actual)
+            if formatted_not_expected != formatted_actual:
                 system_message = "%s\ndiff:\n%s" % \
                     (system_message, pp.format_diff(not_expected, actual))
             self._fail(system_message, message)

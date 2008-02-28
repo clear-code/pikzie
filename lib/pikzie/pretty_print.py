@@ -82,6 +82,10 @@ def format_diff(string1, string2):
             return string
         else:
             return string + "\n"
+    if not isinstance(string1, str):
+        string1 = format(string1)
+    if not isinstance(string2, str):
+        string2 = format(string2)
     diff = difflib.ndiff(ensure_newline(string1).splitlines(True),
                          ensure_newline(string2).splitlines(True))
     return "".join(diff).rstrip()
