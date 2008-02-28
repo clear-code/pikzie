@@ -54,9 +54,9 @@ class Assertions(object):
             self.TestCase(test_name).run(result)
 
         def collect_fault_info(fault):
-            return (fault.single_character_display,
+            return (fault.symbol,
                     str(fault.test),
-                    str(fault.detail),
+                    str(fault.message),
                     fault.test.metadata)
 
         self.assert_equal(self.RegexpMatchResult(succeeded,

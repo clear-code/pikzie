@@ -13,43 +13,43 @@ def format_metadata(metadata, need_newline=False):
 class Notification(object):
     name = "notification"
 
-    def __init__(self, test, detail, traceback):
+    def __init__(self, test, message, traceback):
         self.critical = False
-        self.single_character_display = "N"
+        self.symbol = "N"
         self.test = test
-        self.detail = detail
+        self.message = message
         self.traceback = traceback
 
     def title(self):
-        return "Notification: %s: %s" % (self.test, self.detail)
+        return "Notification: %s: %s" % (self.test, self.message)
 
-    def long_display(self):
+    def detail(self):
         return ""
 
 class Pending(object):
     name = "pending"
 
-    def __init__(self, test, detail, traceback):
+    def __init__(self, test, message, traceback):
         self.critical = False
-        self.single_character_display = "P"
+        self.symbol = "P"
         self.test = test
-        self.detail = detail
+        self.message = message
         self.traceback = traceback
 
     def title(self):
-        return "Pending: %s: %s" % (self.test, self.detail)
+        return "Pending: %s: %s" % (self.test, self.message)
 
-    def long_display(self):
+    def detail(self):
         return ""
 
 class Failure(object):
     name = "failure"
 
-    def __init__(self, test, detail, traceback):
+    def __init__(self, test, message, traceback):
         self.critical = True
-        self.single_character_display = "F"
+        self.symbol = "F"
         self.test = test
-        self.detail = detail
+        self.message = message
         self.traceback = traceback
 
     def title(self):
@@ -58,25 +58,25 @@ class Failure(object):
         else:
             return "Failure: %s: %s" % (self.test, self.traceback[0].content)
 
-    def long_display(self):
-        return self.detail
+    def detail(self):
+        return self.message
 
 class Error(object):
     name = "error"
 
-    def __init__(self, test, exception_type, detail, traceback):
+    def __init__(self, test, exception_type, message, traceback):
         self.critical = True
-        self.single_character_display = "E"
+        self.symbol = "E"
         self.test = test
         self.exception_type = exception_type
-        self.detail = detail
+        self.message = message
         self.traceback = traceback
 
     def title(self):
         return "Error: %s" % self.test
 
-    def long_display(self):
-        return "%s: %s" % (self.exception_type, self.detail)
+    def detail(self):
+        return "%s: %s" % (self.exception_type, self.message)
 
 FAULT_ORDER = [Notification, Pending, Failure, Error]
 

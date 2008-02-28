@@ -239,21 +239,21 @@ class TestCase(TestCaseTemplate, Assertions):
         self.__result.add_notification(self, notification)
 
     def _add_failure(self, result):
-        exception_type, detail, traceback = sys.exc_info()
+        exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, True)
-        failure = Failure(self, detail, traceback)
+        failure = Failure(self, message, traceback)
         result.add_failure(self, failure)
 
     def _add_error(self, result):
-        exception_type, detail, traceback = sys.exc_info()
+        exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, False)
-        error = Error(self, exception_type, detail, traceback)
+        error = Error(self, exception_type, message, traceback)
         result.add_error(self, error)
 
     def _pend_test(self, result):
-        exception_type, detail, traceback = sys.exc_info()
+        exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, True)
-        pending = Pending(self, detail, traceback)
+        pending = Pending(self, message, traceback)
         result.pend_test(self, pending)
 
     def _prepare_traceback(self, tb, compute_length):

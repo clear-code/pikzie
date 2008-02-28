@@ -169,11 +169,10 @@ class ConsoleTestRunner(object):
             fault = self._last_notification
             color = self._fault_color(fault)
             if self._n_notifications > 3:
-                message = "%d%s" % (self._n_notifications,
-                                    fault.single_character_display)
+                message = "%d%s" % (self._n_notifications, fault.symbol)
             else:
                 n_characters = self._n_notifications - 1
-                message = fault.single_character_display * n_characters
+                message = fault.symbol * n_characters
             self._write(message, color, VERBOSE_LEVEL_VERBOSE)
         self._n_notifications = 0
         self._last_notification = None
@@ -192,9 +191,7 @@ class ConsoleTestRunner(object):
         self.output.flush()
 
     def _write_fault(self, fault, level=VERBOSE_LEVEL_NORMAL):
-        self._write(fault.single_character_display,
-                    self._fault_color(fault),
-                    level)
+        self._write(fault.symbol, self._fault_color(fault), level)
 
     def _writeln(self, arg=None, color=None, level=VERBOSE_LEVEL_NORMAL):
         if arg:
@@ -214,9 +211,9 @@ class ConsoleTestRunner(object):
             if metadata:
                 self._writeln(metadata, self._fault_color(fault))
             self._print_traceback(fault.traceback)
-            long_display = fault.long_display()
-            if long_display:
-                self._writeln(long_display, self._fault_color(fault))
+            detail = fault.detail()
+            if detail:
+                self._writeln(detail, self._fault_color(fault))
             self._writeln()
 
     def _print_traceback(self, traceback):
