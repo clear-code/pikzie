@@ -39,7 +39,7 @@ class Tester(object):
         runner = ConsoleTestRunner(**options)
         listeners = []
         if xml_report:
-            listeners.push(pikzie.report.XML(xml_report))
+            listeners.append(pikzie.report.XML(xml_report))
         result = runner.run(test, listeners)
         if result.succeeded:
             return 0

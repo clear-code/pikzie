@@ -13,11 +13,11 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 
     class TestCase(pikzie.TestCase, Assertions):
         def _test_success(self):
-            self.assert_true(true)
+            self.assert_true(True)
 
         TEST_FAILURE_LINE = Source.current_line_no() + 2
         def _test_failure(self):
-            self.assert_false(false)
+            self.assert_false(False)
         _test_failure = pikzie.bug(1234)(_test_failure)
 
         TEST_ERROR_LINE = Source.current_line_no() + 2
@@ -25,7 +25,32 @@ class TestXMLReport(pikzie.TestCase, Assertions):
             self.non_existence_method()
 
     def test_empty_test(self):
-    	self.assert_xml("<report/>", pikzie.TestSuite())
+    	self.assert_xml("<report/>\n", self._suite())
+
+    def test_success_result(self):
+        elapsed = "0.001"
+        xml = """
+<report>
+  <result>
+    <test_case>
+      <name>test.test_xml_report.TestCase</name>
+      <description/>
+    </test_case>
+    <test>
+      <name>_test_success</name>
+      <description/>
+    </test>
+    <status>success</status>
+    <detail/>
+    <elapsed>%s</elapsed>
+  </result>
+</report>
+"""
+        xml = (xml.strip() + "\n") % elapsed
+        self.assert_xml(xml, self._suite(["_test_success"]), elapsed)
+
+    def _suite(self, names=[]):
+        return pikzie.TestSuite([self.TestCase(name) for name in names])
 
     TEST_RUN_LINE = Source.current_line_no() + 3
     def assert_xml(self, expected, suite, normalized_elapsed=None):
