@@ -6,6 +6,13 @@
 
 The history of Pikzie
 
+0.8.0: 2008-03-24
+=================
+
+  * added --xml-report option for reporting test result as XML
+  * improved diff format
+  * improved test result output
+
 0.7.0: 2008-02-26
 =================
 
