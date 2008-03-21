@@ -411,12 +411,12 @@ class TestResult(object):
         self.n_assertions = 0
         self.n_tests = 0
         self.faults = []
-        self.listners = []
+        self.listeners = []
         self.interrupted = False
         self.elapsed = 0
 
-    def add_listner(self, listener):
-        self.listners.append(listener)
+    def add_listener(self, listener):
+        self.listeners.append(listener)
 
     def n_faults(self):
         return len(self.faults)
@@ -499,10 +499,10 @@ class TestResult(object):
     succeeded = property(succeeded)
 
     def _notify(self, name, *args):
-        for listner in self.listners:
+        for listener in self.listeners:
             callback_name = "on_%s" % name
-            if hasattr(listner, callback_name):
-                getattr(listner, callback_name)(self, *args)
+            if hasattr(listener, callback_name):
+                getattr(listener, callback_name)(self, *args)
 
     def summary(self):
         return ("%d test(s), %d assertion(s), %d failure(s), %d error(s), " \
