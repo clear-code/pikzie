@@ -80,10 +80,10 @@ class ConsoleTestRunner(object):
         self.color_scheme = pikzie.color.SCHEMES[color_scheme or "default"]
         self.reset_color = pikzie.color.COLORS["reset"]
 
-    def run(self, test):
+    def run(self, test, listeners=[]):
         "Run the given test case or test suite."
         result = TestResult()
-        result.add_listner(self)
+        result.add_listeners([self] + listeners)
         test.run(result)
         if self.verbose_level == VERBOSE_LEVEL_NORMAL:
             self._writeln()

@@ -418,6 +418,9 @@ class TestResult(object):
     def add_listener(self, listener):
         self.listeners.append(listener)
 
+    def add_listeners(self, listeners):
+        self.listeners.extend(listeners)
+
     def n_faults(self):
         return len(self.faults)
     n_faults = property(n_faults)
