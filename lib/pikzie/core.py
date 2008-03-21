@@ -11,7 +11,7 @@ from pikzie.faults import *
 from pikzie.assertions import Assertions
 from pikzie.decorators import metadata
 
-__all__ = ["TestSuite", "TestCase", "TestResult", "TestLoader"]
+__all__ = ["TestSuite", "TestCase", "TestRunnerContext", "TestLoader"]
 
 class TestSuite(object):
     """A test suite is a composite test consisting of a number of TestCases.
@@ -39,13 +39,13 @@ class TestSuite(object):
         for test in tests:
             self.add_test(test)
 
-    def run(self, result):
-        result.on_start_test_suite(self)
+    def run(self, context):
+        context.on_start_test_suite(self)
         for test in self._tests:
-            test.run(result)
-            if result.need_interrupt():
+            test.run(context)
+            if context.need_interrupt():
                 break
-        result.on_finish_test_suite(self)
+        context.on_finish_test_suite(self)
 
 class TracebackEntry(object):
     def __init__(self, file_name, line_number, name, content):
@@ -86,14 +86,14 @@ class TestCaseRunner(object):
     def tests(self):
         return map(lambda test_name: self.test_case(test_name), self.test_names)
 
-    def run(self, result):
+    def run(self, context):
         if len(self.test_names) == 0:
             return
 
-        result.on_start_test_case(self.test_case)
+        context.on_start_test_case(self.test_case)
         for test in self.tests():
-            test.run(result)
-        result.on_finish_test_case(self.test_case)
+            test.run(context)
+        context.on_finish_test_case(self.test_case)
 
 class TestCaseTemplate(object):
     def setup(self):
@@ -172,58 +172,58 @@ class TestCase(TestCaseTemplate, Assertions):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
 
-    def run(self, result):
+    def run(self, context):
         try:
-            self.__result = result
-            result.on_start_test(self)
+            self.__context = context
+            context.on_start_test(self)
 
             success = False
             try:
                 try:
                     self.setup()
                 except PendingTestError:
-                    self._pend_test(result)
+                    self._pend_test(context)
                 except KeyboardInterrupt:
-                    result.interrupted()
+                    context.interrupted()
                     return
                 except:
-                    self._add_error(result)
+                    self._add_error(context)
                     return
 
                 try:
                     self._test_method()()
                     success = True
                 except AssertionFailure:
-                    self._add_failure(result)
+                    self._add_failure(context)
                 except PendingTestError:
-                    self._pend_test(result)
+                    self._pend_test(context)
                 except KeyboardInterrupt:
-                    result.interrupted()
+                    context.interrupted()
                     return
                 except:
-                    self._add_error(result)
+                    self._add_error(context)
             finally:
                 try:
                     self.teardown()
                 except PendingTestError:
-                    self._pend_test(result)
+                    self._pend_test(context)
                 except KeyboardInterrupt:
-                    result.interrupted()
+                    context.interrupted()
                 except:
-                    self._add_error(result)
+                    self._add_error(context)
                     success = False
 
             if success:
-                result.add_success(self)
+                context.add_success(self)
         finally:
-            result.on_finish_test(self)
-            self.__result = None
+            context.on_finish_test(self)
+            self.__context = None
 
     def _test_method(self):
         return getattr(self, self.__method_name)
 
     def _pass_assertion(self):
-        self.__result.pass_assertion(self)
+        self.__context.pass_assertion(self)
 
     def _fail(self, message, user_message=None):
         raise AssertionFailure(message, user_message)
@@ -238,25 +238,25 @@ class TestCase(TestCaseTemplate, Assertions):
             frame = sys.exc_info()[2].tb_frame.f_back.f_back
         traceback = self._prepare_frame(frame, True)
         notification = Notification(self, message, traceback)
-        self.__result.add_notification(self, notification)
+        self.__context.add_notification(self, notification)
 
-    def _add_failure(self, result):
+    def _add_failure(self, context):
         exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, True)
         failure = Failure(self, message, traceback)
-        result.add_failure(self, failure)
+        context.add_failure(self, failure)
 
-    def _add_error(self, result):
+    def _add_error(self, context):
         exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, False)
         error = Error(self, exception_type, message, traceback)
-        result.add_error(self, error)
+        context.add_error(self, error)
 
-    def _pend_test(self, result):
+    def _pend_test(self, context):
         exception_type, message, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, True)
         pending = Pending(self, message, traceback)
-        result.pend_test(self, pending)
+        context.pend_test(self, pending)
 
     def _prepare_traceback(self, tb, compute_length):
         while tb and self._is_relevant_frame_level(tb.tb_frame):
@@ -398,8 +398,8 @@ class TestLoader(object):
             return name
         return map(prepare, names)
 
-class TestResult(object):
-    """Holder for test result information.
+class TestRunnerContext(object):
+    """Context for running test.
 
     Test results are automatically managed by the TestCase and TestSuite
     classes, and do not need to be explicitly manipulated by writers of tests.

@@ -82,25 +82,25 @@ class ConsoleTestRunner(object):
 
     def run(self, test, listeners=[]):
         "Run the given test case or test suite."
-        result = TestResult()
-        result.add_listener(self)
-        result.add_listeners(listeners)
-        test.run(result)
-        return result
+        context = TestRunnerContext()
+        context.add_listener(self)
+        context.add_listeners(listeners)
+        test.run(context)
+        return context
 
-    def on_start_test_case(self, result, test_case):
+    def on_start_test_case(self, context, test_case):
         description = self._generate_test_case_description(test_case)
         self._writeln("%s:%s" % (test_case.__name__, description),
                       self.color_scheme["test-case-name"],
                       level=VERBOSE_LEVEL_VERBOSE)
 
-    def on_finish_test_suite(self, result, test_suite):
+    def on_finish_test_suite(self, context, test_suite):
         if self.verbose_level == VERBOSE_LEVEL_NORMAL:
             self._writeln()
-        self._print_faults(result)
-        self._writeln("Finished in %.3f seconds" % result.elapsed)
+        self._print_faults(context)
+        self._writeln("Finished in %.3f seconds" % context.elapsed)
         self._writeln()
-        self._writeln(result.summary(), self._result_color(result))
+        self._writeln(context.summary(), self._result_color(context))
 
     def _generate_test_case_description(self, test_case):
         if not test_case.__doc__:
@@ -120,7 +120,7 @@ class ConsoleTestRunner(object):
         else:
             return " %s" % test_case.__doc__
 
-    def on_start_test(self, result, test):
+    def on_start_test(self, context, test):
         self._n_notifications = 0
 
         if test.description():
@@ -129,17 +129,17 @@ class ConsoleTestRunner(object):
 
         test_name = test.short_name()
         indent = "  "
-        result_mark = "."
-        spaces = len(indent) + len(":") + len(result_mark)
+        context_mark = "."
+        spaces = len(indent) + len(":") + len(context_mark)
         tab = "\t" * ((8 * 9 + spaces - len(test_name)) / 8)
         self._write("%s%s:%s" % (indent, test_name, tab),
                     level=VERBOSE_LEVEL_VERBOSE)
 
-    def on_success(self, result, test):
+    def on_success(self, context, test):
         self._flood_notifications()
         self._write(".", self.color_scheme["success"])
 
-    def _on_fault(self, result, fault):
+    def _on_fault(self, context, fault):
         self._flood_notifications()
         self._write_fault(fault)
 
@@ -147,7 +147,7 @@ class ConsoleTestRunner(object):
     on_error = _on_fault
     on_pending = _on_fault
 
-    def on_notification(self, result, notification):
+    def on_notification(self, context, notification):
         self._pool_notification(notification)
         if self.verbose_level != VERBOSE_LEVEL_VERBOSE:
             self._write_fault(notification)
@@ -156,11 +156,11 @@ class ConsoleTestRunner(object):
         if self._n_notifications == 1:
             self._write_fault(notification)
 
-    def on_finish_test(self, result, test):
+    def on_finish_test(self, context, test):
         self._flood_notifications()
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
-    def on_finish_test_case(self, result, test_case):
+    def on_finish_test_case(self, context, test_case):
         self._writeln(level=VERBOSE_LEVEL_VERBOSE)
 
     def _pool_notification(self, notification):
@@ -201,13 +201,13 @@ class ConsoleTestRunner(object):
             self._write(arg, color, level)
         self._write("\n", level=level)
 
-    def _print_faults(self, result):
-        size = len(result.faults)
+    def _print_faults(self, context):
+        size = len(context.faults)
         if size == 0:
             return
         self._writeln()
         index_format = "%%%dd) " % (math.floor(math.log10(size)) + 1)
-        for i, fault in enumerate(result.faults):
+        for i, fault in enumerate(context.faults):
             self._write(index_format % (i + 1))
             self._writeln(fault.title(), self._fault_color(fault))
             metadata = pikzie.faults.format_metadata(fault.test.metadata)
@@ -231,11 +231,11 @@ class ConsoleTestRunner(object):
                 self._write(entry.content, self._content_color())
             self._writeln()
 
-    def _result_color(self, result):
-        if len(result.faults) == 0:
+    def _result_color(self, context):
+        if len(context.faults) == 0:
             return self.color_scheme["success"]
         else:
-            return self._fault_color(sorted(result.faults, compare_fault)[0])
+            return self._fault_color(sorted(context.faults, compare_fault)[0])
 
     def _file_name_color(self):
         return self.color_scheme["file-name"]

@@ -40,8 +40,8 @@ class Tester(object):
         listeners = []
         if xml_report:
             listeners.append(pikzie.report.XML(xml_report))
-        result = runner.run(test, listeners)
-        if result.succeeded:
+        context = runner.run(test, listeners)
+        if context.succeeded:
             return 0
         else:
             return 1
