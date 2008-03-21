@@ -83,14 +83,9 @@ class ConsoleTestRunner(object):
     def run(self, test, listeners=[]):
         "Run the given test case or test suite."
         result = TestResult()
-        result.add_listeners([self] + listeners)
+        result.add_listener(self)
+        result.add_listeners(listeners)
         test.run(result)
-        if self.verbose_level == VERBOSE_LEVEL_NORMAL:
-            self._writeln()
-        self._print_faults(result)
-        self._writeln("Finished in %.3f seconds" % result.elapsed)
-        self._writeln()
-        self._writeln(result.summary(), self._result_color(result))
         return result
 
     def on_start_test_case(self, result, test_case):
@@ -98,6 +93,14 @@ class ConsoleTestRunner(object):
         self._writeln("%s:%s" % (test_case.__name__, description),
                       self.color_scheme["test-case-name"],
                       level=VERBOSE_LEVEL_VERBOSE)
+
+    def on_finish_test_suite(self, result, test_suite):
+        if self.verbose_level == VERBOSE_LEVEL_NORMAL:
+            self._writeln()
+        self._print_faults(result)
+        self._writeln("Finished in %.3f seconds" % result.elapsed)
+        self._writeln()
+        self._writeln(result.summary(), self._result_color(result))
 
     def _generate_test_case_description(self, test_case):
         if not test_case.__doc__:

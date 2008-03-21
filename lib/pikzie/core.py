@@ -40,10 +40,12 @@ class TestSuite(object):
             self.add_test(test)
 
     def run(self, result):
+        result.on_start_test_suite(self)
         for test in self._tests:
             test.run(result)
             if result.need_interrupt():
                 break
+        result.on_finish_test_suite(self)
 
 class TracebackEntry(object):
     def __init__(self, file_name, line_number, name, content):
@@ -260,7 +262,7 @@ class TestCase(TestCaseTemplate, Assertions):
         while tb and self._is_relevant_frame_level(tb.tb_frame):
             tb = tb.tb_next
         length = None
-        if compute_length:
+        if tb and compute_length:
             length = self._count_relevant_frame_levels(tb.tb_frame)
         stack_infos = traceback.extract_tb(tb, length)
         return self._create_traceback_entries(stack_infos)
@@ -465,6 +467,14 @@ class TestResult(object):
     def on_finish_test_case(self, test_case):
         "Called when the given test case has been run"
         self._notify("finish_test_case", test_case)
+
+    def on_start_test_suite(self, test_suite):
+        "Called when the given test suite is about to be run"
+        self._notify("start_test_suite", test_suite)
+
+    def on_finish_test_suite(self, test_suite):
+        "Called when the given test suite has been run"
+        self._notify("finish_test_suite", test_suite)
 
     def add_error(self, test, error):
         """Called when an error has occurred."""

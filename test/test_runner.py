@@ -4,9 +4,9 @@ import re
 import pikzie
 from pikzie.ui.console import ConsoleTestRunner
 
-import test.utils
+from test.utils import *
 
-class TestRunner(pikzie.TestCase, test.utils.Assertions):
+class TestRunner(pikzie.TestCase, Assertions):
     def setup(self):
         self.output = StringIO()
         self.runner = ConsoleTestRunner(self.output, use_color=False)
@@ -48,7 +48,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "+ a\n" \
             "\n"
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
-        line_no = self._find_target_line_no(target_line)
+        line_no = Source.find_target_line_no(target_line)
         details = format % (target_line, self.file_name, line_no, target_line)
         self.assert_output("F", 1, 1, 1, 0, 0, 0, details, [test])
 
@@ -67,7 +67,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "'TestCase' object has no attribute 'unknown_method'\n" \
             "\n"
         target_line = "self.unknown_method(12345)"
-        line_no = self._find_target_line_no(target_line)
+        line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("E", 1, 0, 0, 1, 0, 0, details, [test])
 
@@ -105,9 +105,9 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "+ -1\n" \
             "\n"
         target_line1 = "self.unknown_attribute"
-        line_no1 = self._find_target_line_no(target_line1)
+        line_no1 = Source.find_target_line_no(target_line1)
         target_line2 = "self.assert_equal(3, 1 - 2)"
-        line_no2 = self._find_target_line_no(target_line2)
+        line_no2 = Source.find_target_line_no(target_line2)
         details = format % (self.file_name, line_no1, target_line1,
                             target_line2, self.file_name, line_no2, target_line2)
         self.assert_output("EF", 2, 0, 1, 1, 0, 0, details, tests)
@@ -124,7 +124,7 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "%s:%d: %s\n" \
             "\n"
         target_line = "self.pend(\"just a minute!\")"
-        line_no = self._find_target_line_no(target_line)
+        line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("P", 1, 0, 0, 0, 1, 0, details, [test])
 
@@ -142,20 +142,6 @@ class TestRunner(pikzie.TestCase, test.utils.Assertions):
             "%s:%d: %s\n" \
             "\n"
         target_line = "self.notify(\"Call me!\")"
-        line_no = self._find_target_line_no(target_line)
+        line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("N.", 1, 2, 0, 0, 0, 1, details, [test])
-
-    def _find_target_line_no(self, pattern):
-        line_no = -1
-        if type(pattern) == type(""):
-            pattern = re.compile(re.escape(pattern))
-        try:
-            f = file(self.file_name)
-            for i, line in enumerate(f):
-                if pattern.search(line):
-                    line_no = i + 1
-                    break
-        finally:
-            f.close()
-        return line_no

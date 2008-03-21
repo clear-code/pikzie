@@ -4,6 +4,7 @@ from optparse import OptionParser
 
 from pikzie.core import *
 from pikzie.ui.console import *
+import pikzie.report
 
 class Tester(object):
     """A command-line program that runs a set of tests; this is primarily
@@ -33,9 +34,13 @@ class Tester(object):
             "test_case_names": options.pop("test_case_names"),
             "target_modules": self.target_modules
         }
+        xml_report = options.pop("xml_report")
         test = TestLoader(**test_suite_create_options).create_test_suite(args)
         runner = ConsoleTestRunner(**options)
-        result = runner.run(test)
+        listeners = []
+        if xml_report:
+            listeners.push(pikzie.report.XML(xml_report))
+        result = runner.run(test, listeners)
         if result.succeeded:
             return 0
         else:
@@ -55,6 +60,9 @@ class Tester(object):
         group.add_option("-t", "--test-case", metavar="TEST_CASE_NAME",
                          action="append", dest="test_case_names",
                          help="Specify test cases")
+        group.add_option("--xml-report", metavar="FILE",
+                         dest="xml_report",
+                         help="Report test result as XML to FILE")
         ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)
 

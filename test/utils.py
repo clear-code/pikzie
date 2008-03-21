@@ -1,3 +1,4 @@
+import sys
 import re
 import pikzie
 
@@ -104,3 +105,31 @@ class Assertions(object):
                                     n_errors, n_pendings, n_notifications),
                           message)
 
+class Source(object):
+    def current_line_no(self):
+        try:
+            raise ZeroDivisionError
+        except ZeroDivisionError:
+            return sys.exc_info()[2].tb_frame.f_back.f_lineno
+    current_line_no = classmethod(current_line_no)
+
+    def find_target_line_no(self, pattern, file_name=None):
+        if file_name is None:
+            try:
+                raise ZeroDivisionError
+            except ZeroDivisionError:
+                frame = sys.exc_info()[2].tb_frame.f_back
+                file_name = frame.f_code.co_filename
+        line_no = -1
+        if type(pattern) == type(""):
+            pattern = re.compile(re.escape(pattern))
+        try:
+            f = file(file_name)
+            for i, line in enumerate(f):
+                if pattern.search(line):
+                    line_no = i + 1
+                    break
+        finally:
+            f.close()
+        return line_no
+    find_target_line_no = classmethod(find_target_line_no)
