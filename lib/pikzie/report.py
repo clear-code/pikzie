@@ -13,8 +13,8 @@ class XML(object):
             self.have_test = True
             self._write("<report>\n")
 
-    def on_success(self, report, test):
-        self._write_result(test, "success")
+    def on_success(self, report, success):
+        self._write_result(success)
 
     def on_finish_test_suite(self, report, test_suite):
         if self.have_test:
@@ -35,13 +35,13 @@ class XML(object):
         else:
             self._write("%s<%s/>\n" % (indent, name))
 
-    def _write_result(self, test, status):
+    def _write_result(self, result):
         self._write("  <result>\n")
-        self._write_test_case(test.__class__)
-        self._write_test(test)
-        self._write_tag("    ", "status", status)
-        self._write_tag("    ", "detail", None)
-        self._write_tag("    ", "elapsed", "0.001")
+        self._write_test_case(result.test.__class__)
+        self._write_test(result.test)
+        self._write_tag("    ", "status", result.name)
+        self._write_tag("    ", "detail", result.detail())
+        self._write_tag("    ", "elapsed", "%.4f" % result.elapsed)
         self._write("  </result>\n")
 
     def _write_test_case(self, test_case):

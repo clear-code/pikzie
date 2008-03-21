@@ -7,7 +7,7 @@ import types
 import time
 
 from pikzie.color import *
-from pikzie.faults import *
+from pikzie.results import *
 from pikzie.assertions import Assertions
 from pikzie.decorators import metadata
 
@@ -412,7 +412,7 @@ class TestRunnerContext(object):
     def __init__(self):
         self.n_assertions = 0
         self.n_tests = 0
-        self.faults = []
+        self.results = []
         self.listeners = []
         self.interrupted = False
         self.elapsed = 0
@@ -422,6 +422,10 @@ class TestRunnerContext(object):
 
     def add_listeners(self, listeners):
         self.listeners.extend(listeners)
+
+    def faults(self):
+        return filter(lambda result: result.fault, self.results)
+    faults = property(faults)
 
     def n_faults(self):
         return len(self.faults)
@@ -478,26 +482,33 @@ class TestRunnerContext(object):
 
     def add_error(self, test, error):
         """Called when an error has occurred."""
-        self.faults.append(error)
+        error.elapsed = time.time() - self._start_at
+        self.results.append(error)
         self._notify("error", error)
 
     def add_failure(self, test, failure):
         """Called when a failure has occurred."""
-        self.faults.append(failure)
+        failure.elapsed = time.time() - self._start_at
+        self.results.append(failure)
         self._notify("failure", failure)
 
     def add_notification(self, test, notification):
         """Called when a notification has occurred."""
-        self.faults.append(notification)
+        notification.elapsed = time.time() - self._start_at
+        self.results.append(notification)
         self._notify("notification", notification)
 
     def add_success(self, test):
         "Called when a test has completed successfully"
-        self._notify("success", test)
+        success = Success(test)
+        success.elapsed = time.time() - self._start_at
+        self.results.append(success)
+        self._notify("success", success)
 
     def pend_test(self, test, pending):
         """Called when a test is pended."""
-        self.faults.append(pending)
+        pending.elapsed = time.time() - self._start_at
+        self.results.append(pending)
         self._notify("pending", pending)
 
     def interrupt(self):

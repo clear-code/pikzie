@@ -7,7 +7,7 @@ from optparse import OptionValueError
 
 import pikzie.color
 from pikzie.core import *
-from pikzie.faults import *
+from pikzie.results import *
 
 VERBOSE_LEVEL_SILENT = 0
 VERBOSE_LEVEL_NORMAL = 1
@@ -210,7 +210,7 @@ class ConsoleTestRunner(object):
         for i, fault in enumerate(context.faults):
             self._write(index_format % (i + 1))
             self._writeln(fault.title(), self._fault_color(fault))
-            metadata = pikzie.faults.format_metadata(fault.test.metadata)
+            metadata = format_metadata(fault.test.metadata)
             if metadata:
                 self._writeln(metadata, self._fault_color(fault))
             self._print_traceback(fault.traceback)

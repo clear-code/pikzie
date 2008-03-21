@@ -10,10 +10,26 @@ def format_metadata(metadata, need_newline=False):
         result += "\n"
     return result
 
-class Notification(object):
+class TestResult(object):
+    pass
+
+class Success(TestResult):
+    name = "success"
+
+    def __init__(self, test):
+        self.fault = False
+        self.critical = False
+        self.symbol = "."
+        self.test = test
+
+    def detail(self):
+        return ""
+
+class Notification(TestResult):
     name = "notification"
 
     def __init__(self, test, message, traceback):
+        self.fault = True
         self.critical = False
         self.symbol = "N"
         self.test = test
@@ -26,10 +42,11 @@ class Notification(object):
     def detail(self):
         return ""
 
-class Pending(object):
+class Pending(TestResult):
     name = "pending"
 
     def __init__(self, test, message, traceback):
+        self.fault = True
         self.critical = False
         self.symbol = "P"
         self.test = test
@@ -42,10 +59,11 @@ class Pending(object):
     def detail(self):
         return ""
 
-class Failure(object):
+class Failure(TestResult):
     name = "failure"
 
     def __init__(self, test, message, traceback):
+        self.fault = True
         self.critical = True
         self.symbol = "F"
         self.test = test
@@ -61,10 +79,11 @@ class Failure(object):
     def detail(self):
         return self.message
 
-class Error(object):
+class Error(TestResult):
     name = "error"
 
     def __init__(self, test, exception_type, message, traceback):
+        self.fault = True
         self.critical = True
         self.symbol = "E"
         self.test = test
