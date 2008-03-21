@@ -17,7 +17,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 
         TEST_FAILURE_LINE = Source.current_line_no() + 2
         def _test_failure(self):
-            self.assert_false(False)
+            self.assert_true(False)
         _test_failure = pikzie.bug(1234)(_test_failure)
 
         TEST_ERROR_LINE = Source.current_line_no() + 2
@@ -48,6 +48,42 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 """
         xml = (xml.strip() + "\n") % elapsed
         self.assert_xml(xml, self._suite(["_test_success"]), elapsed)
+
+    def test_failure_result(self):
+        elapsed = "0.001"
+        backtrace_line = Source.current_line_no() + 1
+        xml = """
+<report>
+  <result>
+    <test_case>
+      <name>test.test_xml_report.TestCase</name>
+      <description/>
+    </test_case>
+    <test>
+      <name>_test_failure</name>
+      <description/>
+      <option>
+        <name>bug</name>
+        <value>1234</value>
+      </option>
+    </test>
+    <status>failure</status>
+    <detail>expected: &lt;False&gt; is a true value</detail>
+    <elapsed>%s</elapsed>
+    <backtrace>
+      <entry>
+        <file>%s</file>
+        <line>%s</line>
+        <info>self.assert_true(False)</info>
+      </entry>
+    </backtrace>
+  </result>
+</report>
+"""
+        file = Source.current_file()
+        xml = xml % (elapsed, file, self.TestCase.TEST_FAILURE_LINE)
+        xml = xml.strip() + "\n"
+        self.assert_xml(xml, self._suite(["_test_failure"]), elapsed)
 
     def _suite(self, names=[]):
         return pikzie.TestSuite([self.TestCase(name) for name in names])

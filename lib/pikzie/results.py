@@ -21,6 +21,7 @@ class Success(TestResult):
         self.critical = False
         self.symbol = "."
         self.test = test
+        self.traceback = None
 
     def detail(self):
         return ""

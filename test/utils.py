@@ -106,6 +106,13 @@ class Assertions(object):
                           message)
 
 class Source(object):
+    def current_file(self):
+        try:
+            raise ZeroDivisionError
+        except ZeroDivisionError:
+            return sys.exc_info()[2].tb_frame.f_back.f_code.co_filename
+    current_file = classmethod(current_file)
+
     def current_line_no(self):
         try:
             raise ZeroDivisionError

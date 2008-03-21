@@ -13,8 +13,11 @@ class XML(object):
             self.have_test = True
             self._write("<report>\n")
 
-    def on_success(self, report, success):
-        self._write_result(success)
+    def _on_result(self, report, result):
+        self._write_result(result)
+
+    on_success = _on_result
+    on_failure = _on_result
 
     def on_finish_test_suite(self, report, test_suite):
         if self.have_test:
@@ -31,7 +34,8 @@ class XML(object):
     def _write_tag(self, indent, name, content):
         if content:
             self._write("%s<%s>%s</%s>\n" % (indent, name,
-                                             cgi.escape(content), name))
+                                             cgi.escape(str(content)),
+                                             name))
         else:
             self._write("%s<%s/>\n" % (indent, name))
 
@@ -41,7 +45,8 @@ class XML(object):
         self._write_test(result.test)
         self._write_tag("    ", "status", result.name)
         self._write_tag("    ", "detail", result.detail())
-        self._write_tag("    ", "elapsed", "%.4f" % result.elapsed)
+        self._write_tag("    ", "elapsed", "%f" % result.elapsed)
+        self._write_traceback(result.traceback)
         self._write("  </result>\n")
 
     def _write_test_case(self, test_case):
@@ -56,4 +61,26 @@ class XML(object):
         self._write("    <test>\n")
         self._write_tag("      ", "name", test.short_name())
         self._write_tag("      ", "description", test.description())
+        self._write_test_metadata(test.metadata)
         self._write("    </test>\n")
+
+    def _write_test_metadata(self, metadata):
+        if not metadata:
+            return
+        for key in metadata:
+            self._write("      <option>\n")
+            self._write_tag("        ", "name", key)
+            self._write_tag("        ", "value", metadata[key])
+            self._write("      </option>\n")
+
+    def _write_traceback(self, traceback):
+        if not traceback:
+            return
+        self._write("    <backtrace>\n")
+        self._write("      <entry>\n")
+        for entry in traceback:
+            self._write_tag("        ", "file", entry.file_name)
+            self._write_tag("        ", "line", entry.line_number)
+            self._write_tag("        ", "info", entry.content)
+        self._write("      </entry>\n")
+        self._write("    </backtrace>\n")
