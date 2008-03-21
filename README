@@ -132,6 +132,9 @@ Options
 					      any
 					      TEST_CASE_NAME.
 
+--xml-report=FILE         outputs test result in XML format
+                          to FILE.
+
 -vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
                           one of [s|silent|n|normal|v|verbose].
 

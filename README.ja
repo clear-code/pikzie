@@ -121,6 +121,9 @@ test/run-test.pyは以下の通りです。::
                                               スすべてが実行
                                               されます。
 
+--xml-report=FILE         テスト結果をXML形式でFILEに出力し
+                          ます。
+
 -vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
                           [s|silent|n|normal|v|verbose]のう
 	 		  ちのどれかです。
