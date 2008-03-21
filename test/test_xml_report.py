@@ -12,6 +12,8 @@ class TestXMLReport(pikzie.TestCase, Assertions):
     """Tests for XML report."""
 
     class TestCase(pikzie.TestCase, Assertions):
+        """A test case for test"""
+
         def _test_success(self):
             self.assert_true(True)
 
@@ -20,8 +22,9 @@ class TestXMLReport(pikzie.TestCase, Assertions):
             self.assert_true(False)
         _test_failure = pikzie.bug(1234)(_test_failure)
 
-        TEST_ERROR_LINE = Source.current_line_no() + 2
+        TEST_ERROR_LINE = Source.current_line_no() + 3
         def _test_error(self):
+            """Should error!!!"""
             self.non_existence_method()
 
     def test_empty_test(self):
@@ -34,7 +37,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
   <result>
     <test_case>
       <name>test.test_xml_report.TestCase</name>
-      <description/>
+      <description>A test case for test</description>
     </test_case>
     <test>
       <name>_test_success</name>
@@ -51,13 +54,12 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 
     def test_failure_result(self):
         elapsed = "0.001"
-        backtrace_line = Source.current_line_no() + 1
         xml = """
 <report>
   <result>
     <test_case>
       <name>test.test_xml_report.TestCase</name>
-      <description/>
+      <description>A test case for test</description>
     </test_case>
     <test>
       <name>_test_failure</name>
@@ -80,10 +82,45 @@ class TestXMLReport(pikzie.TestCase, Assertions):
   </result>
 </report>
 """
-        file = Source.current_file()
-        xml = xml % (elapsed, file, self.TestCase.TEST_FAILURE_LINE)
+        xml = xml % (elapsed,
+                     Source.current_file(),
+                     self.TestCase.TEST_FAILURE_LINE)
         xml = xml.strip() + "\n"
         self.assert_xml(xml, self._suite(["_test_failure"]), elapsed)
+
+    def test_error_result(self):
+        elapsed = "0.001"
+        xml = """
+<report>
+  <result>
+    <test_case>
+      <name>test.test_xml_report.TestCase</name>
+      <description>A test case for test</description>
+    </test_case>
+    <test>
+      <name>_test_error</name>
+      <description>Should error!!!</description>
+    </test>
+    <status>error</status>
+    <detail>%s</detail>
+    <elapsed>%s</elapsed>
+    <backtrace>
+      <entry>
+        <file>%s</file>
+        <line>%s</line>
+        <info>self.non_existence_method()</info>
+      </entry>
+    </backtrace>
+  </result>
+</report>
+"""
+        xml = xml % ("exceptions.AttributeError: " +
+                     "'TestCase' object has no attribute 'non_existence_method'",
+                     elapsed,
+                     Source.current_file(),
+                     self.TestCase.TEST_ERROR_LINE)
+        xml = xml.strip() + "\n"
+        self.assert_xml(xml, self._suite(["_test_error"]), elapsed)
 
     def _suite(self, names=[]):
         return pikzie.TestSuite([self.TestCase(name) for name in names])

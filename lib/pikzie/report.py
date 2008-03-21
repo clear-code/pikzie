@@ -18,6 +18,9 @@ class XML(object):
 
     on_success = _on_result
     on_failure = _on_result
+    on_error = _on_result
+    on_pending = _on_result
+    on_notification = _on_result
 
     def on_finish_test_suite(self, report, test_suite):
         if self.have_test:
