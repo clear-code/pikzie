@@ -1,4 +1,4 @@
-version = "0.8.0"
+version = "0.9.0"
 
 if not hasattr(__builtins__, "sorted"):
     def sorted(iterable, cmd=None, key=None, reverse=False):
