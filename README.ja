@@ -90,6 +90,17 @@ test/run-test.pyは以下の通りです。::
 オプション
 ==========
 
+--version                バージョンを表示して終了します。
+
+-pPATTERN, --test-file-name-pattern=PATTERN テストファイル名
+                                            にマッチするグロ
+                                            ブパターンを指定
+                                            します。
+
+					    デフォルトは
+					    test/test_*.pyで
+					    す。
+
 -nTEST_NAME, --name=TEST_NAME  TEST_NAMEにマッチしたテストを実
                                行します。もし、TEST_NAMEが
                                "/"で囲まれていた場合は（例:
@@ -282,6 +293,50 @@ n notification(s)
 この例では35個のテストケースを実行し、55個の表明にパスし、1
 個の表明に失敗したということになります。異常事態や保留にした
 テストケースなどはありませんでした。
+
+XML出力
+-------
+
+オプションで--xml-reportを指定するとテスト結果をXML形式で出力
+することができます。出力されるXMLは以下のような構造になってい
+ます。
+
+  <report>
+    <result>
+      <test-case>
+        <name>テストケース名</name>
+        <description>テストケースの説明（もしあれば）</description>
+      </test-case>
+      <test>
+        <name>テスト名</name>
+        <description>テストの説明（もしあれば）</description>
+        <option><!-- 属性情報（もしあれば） -->
+          <name>属性名（例: bug）</name>
+          <value>属性値（例: 1234）</value>
+        </option>
+        <option>
+          ...
+        </option>
+      </test>
+      <status>テスト結果（[success|failure|error|pending|notification]）</status>
+      <detail>テスト結果の詳細（もしあれば）</detail>
+      <backtrace><!-- バックトレース（もしあれば） -->
+        <entry>
+          <file>ファイル名</file>
+          <line>行</line>
+          <info>付加情報</info>
+        </entry>
+        <entry>
+          ...
+        </entry>
+      </backtrace>
+      <elapsed>実行時間（例: 0.000010）</elapsed>
+    </result>
+    <result>
+      ...
+    </result>
+    ...
+  </report>
 
 リファレンス
 ============

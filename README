@@ -95,6 +95,16 @@ are ran by invoking run-test.py like the following::
 Options
 -------
 
+--version               shows its own version and exits.
+
+-pPATTERN, --test-file-name-pattern=PATTERN collects test
+                                            files that
+                                            matches with the
+                                            specified glob
+                                            pattern.
+
+					    Default: test/test_*.py
+
 -nTEST_NAME, --name=TEST_NAME  runs tests that are matched
                                with TEST_NAME. If TEST_NAME
                                is surrounded by "/"
@@ -291,6 +301,50 @@ n notification(s)
 In the example, 35 test cases are run, 55 assertions are
 passed and an assertion is failed. There are no error,
 pending, notification.
+
+XML report
+----------
+
+Pikzie reports test result as XML format if --xml-report
+option is specified. A reported XML has the following
+structure:
+
+  <report>
+    <result>
+      <test-case>
+        <name>TEST CASE NAME</name>
+        <description>DESCRIPTION OF TEST CASE (if exists)</description>
+      </test-case>
+      <test>
+        <name>TEST NAME</name>
+        <description>DESCRIPTION OF TEST CASE (if exists)</description>
+        <option><!-- ATTRIBUTE INFORMATION (if exists) -->
+          <name>ATTRIBUTE NAME (e.g.: bug)</name>
+          <value>ATTRIBUTE VALUE (e.g.: 1234)</value>
+        </option>
+        <option>
+          ...
+        </option>
+      </test>
+      <status>TEST RESULT ([success|failure|error|pending|notification])</status>
+      <detail>DETAIL OF TEST RESULT (if exists)</detail>
+      <backtrace><!-- BACKTRACE (if exists) -->
+        <entry>
+          <file>FILE NAME</file>
+          <line>LINE</line>
+          <info>ADDITIONAL INFORMATION</info>
+        </entry>
+        <entry>
+          ...
+        </entry>
+      </backtrace>
+      <elapsed>ELAPSED TIME (e.g.: 0.000010)</elapsed>
+    </result>
+    <result>
+      ...
+    </result>
+    ...
+  </report>
 
 References
 ==========
