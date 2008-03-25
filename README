@@ -359,10 +359,10 @@ Use pydoc::
 Or you can see HTML version on the Web:
 http://pikzie.sourceforge.net/assertions.html
 
-Metadata
---------
+Attribute
+---------
 
-You can add metadata to your test to get more useful
+You can add attributes to your test to get more useful
 information on failure. For example, you can add Bug ID like
 the following::
 
@@ -373,7 +373,7 @@ the following::
       def test_invalid_input(self):
           self.assert_call_raise(IndexError, ().__getitem__, 0)
 
-In the above example, test_invalid_input test has a metadata
+In the above example, test_invalid_input test has an attribute
 that the test is for Bug #123.
 
 And the above example uses decorator that is introduced since
@@ -384,7 +384,7 @@ write like the following::
       self.assert_call_raise(IndexError, ().__getitem__, 0)
   test_invalid_input = pikzie.bug(123)(test_invalid_input)
 
-Here is a list of available metadata:
+Here is a list of available attributes:
 
 pikzie.bug(id)
   Set id as Bug ID.

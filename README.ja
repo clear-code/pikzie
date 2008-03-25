@@ -351,12 +351,12 @@ pydocを見てください。::
 あるいはHTML化されたものをWeb上で見ることもできます。
 http://pikzie.sourceforge.net/assertions.html
 
-付加情報
---------
+属性
+----
 
-テストに付加情報を加えて、テスト失敗時により有益な情報を利用
-することができます。例えば、以下のようにテストにBug IDの情報
-を付加することができます。::
+テストに属性を加えて、テスト失敗時により有益な情報を利用する
+ことができます。例えば、以下のようにテストにBug IDの情報を付
+加することができます。::
 
   import pikzie
   
@@ -366,7 +366,7 @@ http://pikzie.sourceforge.net/assertions.html
           self.assert_call_raise(IndexError, ().__getitem__, 0)
 
 この例では、test_invalid_inputテストがBug #123のテストである
-という情報を付加しています。
+という属性を付加しています。
 
 また、この例ではPython 2.4から導入されたデコレータ機能を利用
 しています。Python 2.3で使用する場合は以下のように書いてくだ
@@ -376,7 +376,7 @@ http://pikzie.sourceforge.net/assertions.html
       self.assert_call_raise(IndexError, ().__getitem__, 0)
   test_invalid_input = pikzie.bug(123)(test_invalid_input)
 
-現在利用可能な付加情報は以下の通りです。
+現在利用可能な属性は以下の通りです。
 
 pikzie.bug(id)
   Bug ID情報としてidを設定します。
