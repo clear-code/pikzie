@@ -85,14 +85,17 @@ class TestCaseRunner(object):
         self.test_names = test_names
 
     def tests(self):
-        return map(lambda test_name: self.test_case(test_name), self.test_names)
+        return [test for test
+                in [self.test_case(test_name) for test_name in self.test_names]
+                if test.need_to_run()]
 
     def run(self, context):
-        if len(self.test_names) == 0:
+        tests = self.tests()
+        if len(tests) == 0:
             return
 
         context.on_start_test_case(self.test_case)
-        for test in self.tests():
+        for test in tests:
             test.run(context)
         context.on_finish_test_case(self.test_case)
 
@@ -173,10 +176,11 @@ class TestCase(TestCaseTemplate, Assertions):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
 
+    default_priority = "normal"
     def need_to_run(self):
         priority = self.get_metadata("priority")
         if priority is None:
-            return True
+            priority = self.default_priority
         if hasattr(PriorityChecker, priority):
             return getattr(PriorityChecker, priority)()
         else:

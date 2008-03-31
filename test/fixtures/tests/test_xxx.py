@@ -1,6 +1,7 @@
 import pikzie
 
 class TestXXX1(pikzie.TestCase):
+    default_priority = "must"
     def no_test(self):
         pass
 
@@ -11,4 +12,5 @@ class TestXXX1(pikzie.TestCase):
         pass
 
 class TestXXX2(pikzie.TestCase):
+    default_priority = "must"
     pass
