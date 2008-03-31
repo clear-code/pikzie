@@ -10,6 +10,7 @@ from pikzie.color import *
 from pikzie.results import *
 from pikzie.assertions import Assertions
 from pikzie.decorators import metadata
+from pikzie.priority import PriorityChecker
 
 __all__ = ["TestSuite", "TestCase", "TestRunnerContext", "TestLoader"]
 
@@ -171,6 +172,15 @@ class TestCase(TestCaseTemplate, Assertions):
     def __repr__(self):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
+
+    def need_to_run(self):
+        priority = self.get_metadata("priority")
+        if priority is None:
+            return True
+        if hasattr(PriorityChecker, priority):
+            return getattr(PriorityChecker, priority)()
+        else:
+            return True
 
     def run(self, context):
         try:

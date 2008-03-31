@@ -11,3 +11,7 @@ metadata.container_key = "__metadata__"
 def bug(id):
     """Set Bug ID to a method."""
     return metadata("bug", id)
+
+def priority(priority):
+    """Set priority of test."""
+    return metadata("priority", priority)
