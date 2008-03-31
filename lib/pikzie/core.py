@@ -2,9 +2,11 @@ import re
 import sys
 import traceback
 import os
+import errno
 import glob
 import types
 import time
+import tempfile
 
 from pikzie.color import *
 from pikzie.results import *
@@ -163,10 +165,12 @@ class TestCase(TestCaseTemplate, Assertions):
         else:
             return None
 
+    def _test_case_name(self):
+        return "%s.%s" % (self.__class__.__module__,
+                          self.__class__.__name__)
+
     def id(self):
-        return "%s.%s.%s" % (self.__class__.__module__,
-                             self.__class__.__name__,
-                             self.__method_name)
+        return "%s.%s" % (self._test_case_name(), self.__method_name)
 
     def __str__(self):
         return "%s.%s" % (self.__class__.__name__, self.__method_name)
@@ -178,22 +182,15 @@ class TestCase(TestCaseTemplate, Assertions):
         return "<%s method_name=%s description=%s>" % \
                (str(self.__class__), self.__method_name, self.__description)
 
-    default_priority = "normal"
     def need_to_run(self):
-        priority = self.get_metadata("priority")
-        if priority is None:
-            priority = self.default_priority
-        if hasattr(PriorityChecker, priority):
-            return getattr(PriorityChecker, priority)()
-        else:
-            return True
+        return not self._is_previous_test_success() or \
+            self._need_to_run_according_to_priority()
 
     def run(self, context):
+        success = False
         try:
-            self.__context = context
-            context.on_start_test(self)
+            self._started(context)
 
-            success = False
             try:
                 try:
                     self.setup()
@@ -229,11 +226,8 @@ class TestCase(TestCaseTemplate, Assertions):
                     self._add_error(context)
                     success = False
 
-            if success:
-                context.add_success(self)
         finally:
-            context.on_finish_test(self)
-            self.__context = None
+            self._finished(success, context)
 
     def _test_method(self):
         return getattr(self, self.__method_name)
@@ -255,6 +249,22 @@ class TestCase(TestCaseTemplate, Assertions):
         traceback = self._prepare_frame(frame, True)
         notification = Notification(self, message, traceback)
         self.__context.add_notification(self, notification)
+
+    def _started(self, context):
+        self.__context = context
+        context.on_start_test(self)
+        if os.path.exists(self._passed_file()):
+            os.remove(self._passed_file())
+
+    def _finished(self, success, context):
+        if success:
+            self._add_success(context)
+        context.on_finish_test(self)
+        self.__context = None
+
+    def _add_success(self, context):
+        file(self._passed_file(), "w").close()
+        context.add_success(self)
 
     def _add_failure(self, context):
         exception_type, message, traceback = sys.exc_info()
@@ -313,6 +323,42 @@ class TestCase(TestCaseTemplate, Assertions):
             length += 1
             frame = frame.f_back
         return length
+
+    def _is_previous_test_success(self):
+        return os.path.exists(self._passed_file())
+
+    def _passed_file(self):
+        return os.path.join(self._result_dir(), "passed")
+
+    def _result_dir(self):
+        components = [".test-result", self._test_case_name(), self.short_name()]
+        parent_directories = [os.path.dirname(sys.argv[0]),
+                              os.getcwd(),
+                              os.path.join(os.path.dirname(__file__), ".."),
+                              os.path.join(tempfile.gettempdir(),
+                                           str(os.getuid()))]
+        for parent_directory in parent_directories:
+            dir = os.path.abspath(os.path.join(parent_directory, *components))
+            if os.path.isdir(dir):
+                return dir
+            try:
+                os.makedirs(dir)
+                return dir
+            except OSError, e:
+                pass
+
+        raise OSError(errno.EACCES, "Permission denied",
+                      ", ".join(parent_directories))
+
+    default_priority = "normal"
+    def _need_to_run_according_to_priority(self):
+        priority = self.get_metadata("priority")
+        if priority is None:
+            priority = self.default_priority
+        if hasattr(PriorityChecker, priority):
+            return getattr(PriorityChecker, priority)()
+        else:
+            return True
 
 
 class TestLoader(object):
