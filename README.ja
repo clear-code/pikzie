@@ -12,7 +12,7 @@ Pikzie（ピクジー）
 ライセンス
 ==========
 
-LGPL
+LGPLv3 or later
 
 Pikzie?
 =======
@@ -307,7 +307,7 @@ XML出力
 
 オプションで--xml-reportを指定するとテスト結果をXML形式で出力
 することができます。出力されるXMLは以下のような構造になってい
-ます。
+ます。::
 
   <report>
     <result>

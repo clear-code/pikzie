@@ -10,6 +10,7 @@ The history of Pikzie
 =================
 
   * added priority mode (--priority/--no-priority options)
+  * clearly specified LGPLv3 or later
 
 0.8.0: 2008-03-24
 =================
