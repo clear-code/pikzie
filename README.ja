@@ -135,6 +135,14 @@ test/run-test.pyは以下の通りです。::
 --xml-report=FILE         テスト結果をXML形式でFILEに出力し
                           ます。
 
+--priority                優先度に応じて実行するテストを選択
+                          します。優先度が低いテストでも、前
+                          回のテストでパスしていないテストは
+                          実行します。（デフォルト）
+
+--no-priority             優先度に関係なく全てのテストを実行
+                          します。
+
 -vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
                           [s|silent|n|normal|v|verbose]のう
 	 		  ちのどれかです。
@@ -380,6 +388,29 @@ http://pikzie.sourceforge.net/assertions.html
 
 pikzie.bug(id)
   Bug ID情報としてidを設定します。
+
+pikzie.priority(priority)
+  優先度priorityに応じてそのテストが実行されるかどうかが決定
+  します。優先度は以下の通りです。コマンドラインオプション
+  で--no-priorityが指定された場合は優先度は利用されません。
+
+  must
+    必ず実行する。
+
+  important
+    9割の確率で実行する。
+
+  high
+    7割の確率で実行する。
+
+  normal
+    5割の確率で実行する。（デフォルト）
+
+  low
+    2.5割の確率で実行する。
+
+  never
+    実行しない。
 
 雛型
 ----

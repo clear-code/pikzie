@@ -32,7 +32,8 @@ class Tester(object):
             "pattern": options.pop("test_file_name_pattern"),
             "test_names": options.pop("test_names"),
             "test_case_names": options.pop("test_case_names"),
-            "target_modules": self.target_modules
+            "target_modules": self.target_modules,
+            "priority_mode": options.pop("priority_mode")
         }
         xml_report = options.pop("xml_report")
         test = TestLoader(**test_suite_create_options).create_test_suite(args)
@@ -62,7 +63,11 @@ class Tester(object):
                          help="Specify test cases")
         group.add_option("--xml-report", metavar="FILE",
                          dest="xml_report",
-                         help="Report test result as XML to FILE")
+                         help="Report test result to FILE as XML")
+        group.add_option("--priority", action="store_true", default=True,
+                         dest="priority_mode", help="Use priority mode")
+        group.add_option("--no-priority", action="store_false",
+                         dest="priority_mode", help="Not use priority mode")
         ConsoleTestRunner.setup_options(parser)
         return parser.parse_args(args)
 

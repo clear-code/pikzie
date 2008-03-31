@@ -145,6 +145,14 @@ Options
 --xml-report=FILE         outputs test result in XML format
                           to FILE.
 
+--priority                selects tests to run according to
+                          their priority. If a test is not
+                          passed in the previous test, the
+                          test is ran. (default)
+
+--no-priority             runs all tests regardless of their
+                          priority.
+
 -vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
                           one of [s|silent|n|normal|v|verbose].
 
@@ -388,6 +396,30 @@ Here is a list of available attributes:
 
 pikzie.bug(id)
   Set id as Bug ID.
+
+pikzie.priority(priority)
+  Decide to whether run the test or not according to the
+  priority. Here are the available priorities. If
+  --no-priority command line option is specified, the
+  priority is not used.
+
+  must
+    must run the test.
+
+  important
+    run the test at the probability of 90 percent.
+
+  high
+    run the test at the probability of 70 percent.
+
+  normal
+    run the test at the probability of 50 percent. (default)
+
+  low
+    run the test at the probability of 25 percent.
+
+  never
+    never run the test.
 
 Template
 --------

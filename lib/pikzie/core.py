@@ -80,14 +80,16 @@ class PendingTestError(Exception):
         return self.message
 
 class TestCaseRunner(object):
-    def __init__(self, test_case, test_names):
+    def __init__(self, test_case, test_names, priority_mode=True):
         self.test_case = test_case
         self.test_names = test_names
+        self.priority_mode = priority_mode
 
     def tests(self):
-        return [test for test
-                in [self.test_case(test_name) for test_name in self.test_names]
-                if test.need_to_run()]
+        tests = [self.test_case(test_name) for test_name in self.test_names]
+        if self.priority_mode:
+            tests = [test for test in tests if test.need_to_run()]
+        return tests
 
     def run(self, context):
         tests = self.tests()
@@ -317,11 +319,12 @@ class TestLoader(object):
     default_pattern = "test/test_*.py"
 
     def __init__(self, pattern=None, test_names=None, test_case_names=None,
-                 target_modules=None):
+                 target_modules=None, priority_mode=True):
         self.pattern = pattern
         self.test_names = test_names
         self.test_case_names = test_case_names
         self.target_modules = target_modules or []
+        self.priority_mode = priority_mode
 
     def _get_test_names(self):
         return self._test_names
@@ -361,7 +364,8 @@ class TestLoader(object):
                 return self._is_test_method(test_case, name)
             target_tests = filter(_is_test_method, dir(test_case))
             if len(target_tests) > 0:
-                tests.append(TestCaseRunner(test_case, target_tests))
+                tests.append(TestCaseRunner(test_case, target_tests,
+                                            self.priority_mode))
         return TestSuite(tests)
 
     def _find_targets(self):
