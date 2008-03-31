@@ -6,6 +6,11 @@
 
 The history of Pikzie
 
+0.9.0: 2008-03-31
+=================
+
+  * added priority mode (--priority/--no-priority options)
+
 0.8.0: 2008-03-24
 =================
 
