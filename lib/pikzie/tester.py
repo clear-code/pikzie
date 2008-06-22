@@ -64,7 +64,7 @@ class Tester(object):
         group.add_option("--xml-report", metavar="FILE",
                          dest="xml_report",
                          help="Report test result to FILE as XML")
-        group.add_option("--priority", action="store_true", default=True,
+        group.add_option("--priority", action="store_true", default=False,
                          dest="priority_mode", help="Use priority mode")
         group.add_option("--no-priority", action="store_false",
                          dest="priority_mode", help="Not use priority mode")
