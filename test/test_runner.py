@@ -1,5 +1,6 @@
 from StringIO import StringIO
 import re
+import exceptions
 
 import pikzie
 from pikzie.ui.console import ConsoleTestRunner
@@ -43,6 +44,7 @@ class TestRunner(pikzie.TestCase, Assertions):
             "%s:%d: %s\n" \
             "expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
+            "\n" \
             "diff:\n" \
             "- aaaaa\n" \
             "+ a\n" \
@@ -63,12 +65,13 @@ class TestRunner(pikzie.TestCase, Assertions):
             "\n" \
             "1) Error: TestCase.test_error_raised\n" \
             "%s:%d: %s\n" \
-            "exceptions.AttributeError: " \
+            "%s: " \
             "'TestCase' object has no attribute 'unknown_method'\n" \
             "\n"
         target_line = "self.unknown_method(12345)"
         line_no = Source.find_target_line_no(target_line)
-        details = format % (self.file_name, line_no, target_line)
+        details = format % (self.file_name, line_no, target_line,
+                            exceptions.AttributeError)
         self.assert_output("E", 1, 0, 0, 1, 0, 0, details, [test])
 
     def test_metadata(self):
@@ -91,7 +94,7 @@ class TestRunner(pikzie.TestCase, Assertions):
             "1) Error: TestCase.test_error_raised\n" \
             "  bug: 123\n" \
             "%s:%d: %s\n" \
-            "exceptions.AttributeError: " \
+            "%s: " \
             "'TestCase' object has no attribute 'unknown_attribute'\n" \
             "\n" \
             "2) Failure: TestCase.test_with_metadata: %s\n" \
@@ -100,6 +103,7 @@ class TestRunner(pikzie.TestCase, Assertions):
             "%s:%d: %s\n" \
             "expected: <3>\n" \
             " but was: <-1>\n" \
+            "\n" \
             "diff:\n" \
             "- 3\n" \
             "+ -1\n" \
@@ -109,6 +113,7 @@ class TestRunner(pikzie.TestCase, Assertions):
         target_line2 = "self.assert_equal(3, 1 - 2)"
         line_no2 = Source.find_target_line_no(target_line2)
         details = format % (self.file_name, line_no1, target_line1,
+                            exceptions.AttributeError,
                             target_line2, self.file_name, line_no2, target_line2)
         self.assert_output("EF", 2, 0, 1, 1, 0, 0, details, tests)
 

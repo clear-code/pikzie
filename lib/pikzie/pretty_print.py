@@ -89,3 +89,8 @@ def format_diff(string1, string2):
     diff = difflib.ndiff(ensure_newline(string1).splitlines(True),
                          ensure_newline(string2).splitlines(True))
     return "".join(diff).rstrip()
+
+def fold(string):
+    def fold_line(line):
+        return re.subn("(.{78})", "\\1\n", line)[0]
+    return "\n".join([fold_line(line) for line in string.split("\n")])

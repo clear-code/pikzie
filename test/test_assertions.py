@@ -1,5 +1,6 @@
 import os
 import re
+import exceptions
 import shutil
 import syslog
 import pikzie
@@ -305,6 +306,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              'TestCase.test_assert_equal',
                              "expected: <2>\n"
                              " but was: <3>\n"
+                             "\n"
                              "diff:\n"
                              "- 2\n"
                              "+ 3",
@@ -431,15 +433,18 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
         self.assert_result(False, 2, 5, 2, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_raise_call",
-                             "expected: <exceptions.NameError> is raised\n"
+                             "expected: <%s> is raised\n"
                              " but was: %s() nothing raised" %
-                             ("test.test_assertions.nothing_raised"),
+                             (exceptions.NameError,
+                              "test.test_assertions.nothing_raised"),
                              None),
                             ('F',
                              "TestCase.test_assert_raise_call_different_error",
-                             "expected: <exceptions.NameError> is raised\n"
-                             " but was: <exceptions.ZeroDivisionError>"
-                             "(integer division or modulo by zero)",
+                             "expected: <%s> is raised\n"
+                             " but was: <%s>"
+                             "(integer division or modulo by zero)" %
+                             (exceptions.NameError,
+                              exceptions.ZeroDivisionError),
                              None)],
                            ["test_assert_raise_call",
                             "test_assert_raise_call_different_error"])
@@ -452,7 +457,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              " but was: <%s>(%s) is raised" % \
                                  ("test.test_assertions."
                                   "raise_zero_division_error",
-                                  "exceptions.ZeroDivisionError",
+                                  exceptions.ZeroDivisionError,
                                   "integer division or modulo by zero"),
                              None)],
                            ["test_assert_nothing_raised_call"])
@@ -474,7 +479,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: <%s> is successfully ran\n"
                              " but was: <%s>(%s) is raised and failed to ran" \
                                  % ("['unknown', 'arg1', 'arg2']",
-                                    "exceptions.OSError",
+                                    exceptions.OSError,
                                     "[Errno 2] No such file or directory"),
                              None)],
                            ["test_assert_run_command",
@@ -503,7 +508,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: file('%s') succeeds\n"
                              " but was: <%s>(%s) is raised" % \
                                  (nonexistent_path,
-                                  "exceptions.IOError",
+                                  exceptions.IOError,
                                   "[Errno 2] No such file or directory: '%s'" % \
                                       nonexistent_path),
                              None)],

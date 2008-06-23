@@ -1,4 +1,6 @@
 import re
+import exceptions
+import cgi
 from StringIO import StringIO
 import pikzie
 import pikzie.report
@@ -114,8 +116,9 @@ class TestXMLReport(pikzie.TestCase, Assertions):
   </result>
 </report>
 """
-        xml = xml % ("exceptions.AttributeError: " +
-                     "'TestCase' object has no attribute 'non_existence_method'",
+        xml = xml % (("%s: 'TestCase' object has no attribute " +
+                      "'non_existence_method'") % \
+                         cgi.escape(str(exceptions.AttributeError)),
                      elapsed,
                      Source.current_file(),
                      self.TestCase.TEST_ERROR_LINE)
