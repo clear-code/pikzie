@@ -324,6 +324,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "TestCase.test_assert_not_equal_different_repr",
                              "not expected: <'abc'>\n"
                              "     but was: <'aBc'>\n"
+                             "\n"
                              "diff:\n"
                              "- 'abc'\n"
                              "?   ^\n"

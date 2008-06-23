@@ -95,9 +95,8 @@ class Assertions(object):
             diff = pp.format_diff(expected, actual)
             system_message = "expected: <%s>\n but was: <%s>\n\ndiff:\n%s" % \
                 (formatted_expected, formatted_actual, diff)
-            if re.match("^[\\?\\-\\+].{79}", diff):
-                folded_diff = pp.format_diff(pp.fold(formatted_expected),
-                                             pp.fold(formatted_actual))
+            if pp.is_need_fold(diff):
+                folded_diff = pp.format_folded_diff(expected, actual)
                 system_message = "%s\n\nfolded diff:\n%s" % \
                     (system_message, folded_diff)
             self._fail(system_message, message)
@@ -116,7 +115,11 @@ class Assertions(object):
                 (formatted_not_expected, formatted_actual)
             if formatted_not_expected != formatted_actual:
                 diff = pp.format_diff(not_expected, actual)
-                system_message = "%s\ndiff:\n%s" % (system_message, diff)
+                system_message = "%s\n\ndiff:\n%s" % (system_message, diff)
+                if pp.is_need_fold(diff):
+                    folded_diff = pp.format_folded_diff(not_expected, actual)
+                    system_message = "%s\n\nfolded diff:\n%s" % \
+                        (system_message, folded_diff)
             self._fail(system_message, message)
 
     def assert_in_delta(self, expected, actual, delta, message=None):

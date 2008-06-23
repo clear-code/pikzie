@@ -90,7 +90,13 @@ def format_diff(string1, string2):
                          ensure_newline(string2).splitlines(True))
     return "".join(diff).rstrip()
 
+def is_need_fold(diff):
+    return re.match("^[\\?\\-\\+].{79}", diff)
+
 def fold(string):
     def fold_line(line):
         return re.subn("(.{78})", "\\1\n", line)[0]
     return "\n".join([fold_line(line) for line in string.split("\n")])
+
+def format_folded_diff(string1, string2):
+    return format_diff(fold(string1), fold(string2))
