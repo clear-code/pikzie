@@ -148,10 +148,10 @@ Options
 --priority                selects tests to run according to
                           their priority. If a test is not
                           passed in the previous test, the
-                          test is ran. (default)
+                          test is ran.
 
 --no-priority             runs all tests regardless of their
-                          priority.
+                          priority. (default)
 
 -vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
                           one of [s|silent|n|normal|v|verbose].
