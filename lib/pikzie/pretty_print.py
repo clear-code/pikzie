@@ -76,22 +76,34 @@ def format_exception_class(exception_class):
     else:
         return format(exception_class)
 
+def format_for_diff(object):
+    if not isinstance(object, str):
+        object = format(object)
+    return object
+
 def format_diff(string1, string2):
     def ensure_newline(string):
         if string.endswith("\n"):
             return string
         else:
             return string + "\n"
-    if not isinstance(string1, str):
-        string1 = format(string1)
-    if not isinstance(string2, str):
-        string2 = format(string2)
     diff = difflib.ndiff(ensure_newline(string1).splitlines(True),
                          ensure_newline(string2).splitlines(True))
     return "".join(diff).rstrip()
 
+def is_interested_diff(diff):
+    if not diff:
+        return False
+    if not re.search("^[-+]", diff, re.MULTILINE):
+        return False
+    if re.search("^[ ?]", diff, re.MULTILINE):
+        return True
+    if re.search("(?:.*\n){2,}", diff):
+        return True
+    return False
+
 def is_need_fold(diff):
-    return re.match("^[\\?\\-\\+].{79}", diff)
+    return re.search("^[-?+].{79}", diff, re.MULTILINE)
 
 def fold(string):
     def fold_line(line):
@@ -100,3 +112,15 @@ def fold(string):
 
 def format_folded_diff(string1, string2):
     return format_diff(fold(string1), fold(string2))
+
+def append_diff(message, target1, target2):
+    formatted_target1 = format_for_diff(target1)
+    formatted_target2 = format_for_diff(target2)
+    diff = format_diff(formatted_target1, formatted_target2)
+    if is_interested_diff(diff):
+        message = "%s\n\ndiff:\n%s" % (message, diff)
+    if is_need_fold(diff):
+        folded_diff = format_folded_diff(formatted_target1, formatted_target2)
+        message = "%s\n\nfolded diff:\n%s" % (message, folded_diff)
+    return message
+

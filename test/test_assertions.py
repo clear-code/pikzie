@@ -305,11 +305,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            [('F',
                              'TestCase.test_assert_equal',
                              "expected: <2>\n"
-                             " but was: <3>\n"
-                             "\n"
-                             "diff:\n"
-                             "- 2\n"
-                             "+ 3",
+                             " but was: <3>",
                              None)],
                            ["test_assert_equal"])
 

@@ -44,10 +44,6 @@ class TestRunner(pikzie.TestCase, Assertions):
             "%s:%d: %s\n" \
             "expected: <'aaaaa'>\n" \
             " but was: <'a'>\n" \
-            "\n" \
-            "diff:\n" \
-            "- aaaaa\n" \
-            "+ a\n" \
             "\n"
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
         line_no = Source.find_target_line_no(target_line)
@@ -103,10 +99,6 @@ class TestRunner(pikzie.TestCase, Assertions):
             "%s:%d: %s\n" \
             "expected: <3>\n" \
             " but was: <-1>\n" \
-            "\n" \
-            "diff:\n" \
-            "- 3\n" \
-            "+ -1\n" \
             "\n"
         target_line1 = "self.unknown_attribute"
         line_no1 = Source.find_target_line_no(target_line1)
