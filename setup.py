@@ -40,7 +40,8 @@ DistributionMetadata.get_fullname = get_fullname
 def _run(*command):
     return_code = _run_without_check(*command)
     if return_code != 0:
-        raise "failed to run <%d>: %s" % (return_code, " ".join(command))
+        raise RuntimeError, \
+            "failed to run <%d>: %s" % (return_code, " ".join(command))
 
 def _run_without_check(*command):
     print " ".join(command)
