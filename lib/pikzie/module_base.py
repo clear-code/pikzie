@@ -6,14 +6,21 @@ from pikzie.assertions import Assertions
 
 __all__ = []
 
+__current_test_case__ = None
 current_module = sys.modules[__name__]
 assertions = {}
 for assertion in filter(lambda name: not name.startswith("_"), dir(Assertions)):
     def wrap_assertion(assertion):
         _assertion = getattr(Assertions, assertion)
         def run_assertion(*args, **kw_args):
-            current_test_case = ModuleBasedTestCase.__current_test_case__
-            return _assertion(current_test_case, *args, **kw_args)
+            if __current_test_case__ is None:
+                def inspect_kw_arg(arg):
+                    return arg + ("=%s" % kw_args[arg])
+                inspected_args = ", ".join(map(str, args) +
+                                           map(inspect_kw_arg, kw_args))
+                raise TypeError, \
+                      "did you mean: self.%s(%s)" % (assertion, inspected_args)
+            return _assertion(__current_test_case__, *args, **kw_args)
         return run_assertion
     wrapped_assertion = wrap_assertion(assertion)
     assertions[assertion] = wrapped_assertion
@@ -75,9 +82,10 @@ class ModuleBasedTestCase(TestCase):
             teardown()
 
     def _run_test(self, context):
-        before_test_case = ModuleBasedTestCase.__current_test_case__
+        global __current_test_case__
+        before_test_case = __current_test_case__
         try:
-            ModuleBasedTestCase.__current_test_case__ = self
+            __current_test_case__ = self
             return TestCase._run_test(self, context)
         finally:
-            ModuleBasedTestCase.__current_test_case__ = before_test_case
+            __current_test_case__ = before_test_case
