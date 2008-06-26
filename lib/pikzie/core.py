@@ -7,6 +7,7 @@ import glob
 import types
 import time
 import tempfile
+from new import classobj
 
 from pikzie.color import *
 from pikzie.results import *
@@ -82,13 +83,13 @@ class PendingTestError(Exception):
         return self.message
 
 class TestCaseRunner(object):
-    def __init__(self, test_case, test_names, priority_mode=True):
+    def __init__(self, test_case, tests, priority_mode=True):
         self.test_case = test_case
-        self.test_names = test_names
+        self._tests = tests
         self.priority_mode = priority_mode
 
     def tests(self):
-        tests = [self.test_case(test_name) for test_name in self.test_names]
+        tests = self._tests
         if self.priority_mode:
             tests = [test for test in tests if test.need_to_run()]
         return tests
@@ -112,6 +113,9 @@ class TestCaseTemplate(object):
         "Hook method for deconstructing the test fixture after testing it."
         pass
 
+def _is_test_method_name(name):
+    return name.startswith("test_")
+
 class TestCase(TestCaseTemplate, Assertions):
     """A class whose instances are single test cases.
 
@@ -131,9 +135,17 @@ class TestCase(TestCaseTemplate, Assertions):
     in order to be run.
     """
 
+    def collect_test(cls):
+        def _is_test_method(name):
+            object = getattr(cls, name)
+            return callable(object) and object.func_code.co_argcount == 1
+        return map(cls, filter(_is_test_method,
+                               filter(_is_test_method_name, dir(cls))))
+    collect_test = classmethod(collect_test)
+
     def __init__(self, method_name):
         self.__method_name = method_name
-        self.__description = getattr(self, method_name).__doc__
+        self.__description = self._test_method().__doc__
 
     def __len__(self):
         return 1
@@ -170,10 +182,10 @@ class TestCase(TestCaseTemplate, Assertions):
                           self.__class__.__name__)
 
     def id(self):
-        return "%s.%s" % (self._test_case_name(), self.__method_name)
+        return "%s.%s" % (self._test_case_name(), self._method_name())
 
     def __str__(self):
-        return "%s.%s" % (self.__class__.__name__, self.__method_name)
+        return "%s.%s" % (self.__class__.__name__, self._method_name())
 
     def short_name(self):
         return self.__method_name
@@ -229,8 +241,11 @@ class TestCase(TestCaseTemplate, Assertions):
         finally:
             self._finished(success, context)
 
+    def _method_name(self):
+        return self.__method_name
+
     def _test_method(self):
-        return getattr(self, self.__method_name)
+        return getattr(self, self._method_name())
 
     def _pass_assertion(self):
         self.__context.pass_assertion(self)
@@ -360,6 +375,42 @@ class TestCase(TestCaseTemplate, Assertions):
         else:
             return True
 
+class ModuleBasedTestCase(TestCase):
+    def collect_test(cls):
+        def _is_test_method(name):
+            object = getattr(cls.target_module, name)
+            return callable(object) and object.func_code.co_argcount == 0
+        return map(cls, filter(_is_test_method,
+                               filter(_is_test_method_name,
+                                      dir(cls.target_module))))
+    collect_test = classmethod(collect_test)
+
+    def __init__(self, method_name):
+        TestCase.__init__(self, method_name)
+
+    def _test_method(self):
+        return getattr(self.__class__.target_module, self._method_name())
+
+    def _test_case_name(self):
+        return self.__class__.target_module.__name__
+
+    def __str__(self):
+        return self.id()
+
+    def __repr__(self):
+        return "<%s method_name=%s description=%s>" % \
+               (str(self.__class__.target_module),
+                self._method_name(), self.__description)
+
+    def setup(self):
+        setup = getattr(self.__class__.target_module, "setup", None)
+        if setup:
+            setup()
+
+    def teardown(self):
+        teardown = getattr(self.__class__.target_module, "teardown", None)
+        if teardown:
+            teardown()
 
 class TestLoader(object):
     default_pattern = "test/test_*.py"
@@ -386,29 +437,39 @@ class TestLoader(object):
 
     def collect_test_cases(self, files=[]):
         test_cases = []
+        pikzie_module = sys.modules["pikzie"]
         for module in self._load_modules(files):
+            module_based_test_case_is_appended = False
             for name in dir(module):
                 object = getattr(module, name)
                 def is_target_test_case_name():
-                    if self.test_case_names is None: return True
+                    if self.test_case_names is None:
+                        return True
                     def is_target_name(test_case_name):
                         if type(test_case_name) == str:
                             return test_case_name == name
                         else:
                             return test_case_name.search(name)
                     return len(filter(is_target_name, self.test_case_names)) > 0
-                if (is_target_test_case_name() and
-                    isinstance(object, (type, types.ClassType)) and
+                if not is_target_test_case_name():
+                    continue
+                if (isinstance(object, (type, types.ClassType)) and
                     issubclass(object, TestCase)):
                     test_cases.append(object)
+                elif (not module_based_test_case_is_appended and
+                      pikzie_module is not None and
+                      object == pikzie_module):
+                    test_cases.append(classobj(module.__name__,
+                                               (ModuleBasedTestCase,),
+                                               {"target_module": module}))
         return test_cases
 
     def create_test_suite(self, files=[]):
         tests = []
         for test_case in self.collect_test_cases(files):
-            def _is_test_method(name):
-                return self._is_test_method(test_case, name)
-            target_tests = filter(_is_test_method, dir(test_case))
+            def _is_target_test(test):
+                return self._is_target_test(test)
+            target_tests = filter(_is_target_test, test_case.collect_test())
             if len(target_tests) > 0:
                 tests.append(TestCaseRunner(test_case, target_tests,
                                             self.priority_mode))
@@ -440,8 +501,8 @@ class TestLoader(object):
                 modules.append(module)
         return modules
 
-    def _is_test_method(self, test_case, name):
-        if not name.startswith("test_"): return False
+    def _is_target_test(self, test):
+        name = test.short_name()
         if self.test_names is not None:
             def is_target_name(test_name):
                 if type(test_name) == str:
@@ -450,7 +511,7 @@ class TestLoader(object):
                     return test_name.search(name)
             if len(filter(is_target_name, self.test_names)) == 0:
                 return False
-        return callable(getattr(test_case, name))
+        return True
 
     def _prepare_target_names(self, names):
         if names is None: return names

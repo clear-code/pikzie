@@ -2,8 +2,8 @@ import pikzie
 
 class TestYYY(pikzie.TestCase):
     default_priority = "must"
-    def TEST_abc():
+    def TEST_abc(self):
         pass
 
-    def test_xyz():
+    def test_xyz(self):
         pass
