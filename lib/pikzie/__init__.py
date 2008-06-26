@@ -12,3 +12,4 @@ if not hasattr(__builtins__, "sorted"):
 from pikzie.tester import Tester
 from pikzie.core import *
 from pikzie.decorators import *
+from pikzie.module_base import *
