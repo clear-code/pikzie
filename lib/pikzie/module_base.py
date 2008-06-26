@@ -64,12 +64,12 @@ class ModuleBasedTestCase(TestCase):
                (str(self.__class__.target_module),
                 self._method_name(), self.__description)
 
-    def setup(self):
+    def _run_setup(self, context):
         setup = getattr(self.__class__.target_module, "setup", None)
         if setup:
             setup()
 
-    def teardown(self):
+    def _run_teardown(self, context):
         teardown = getattr(self.__class__.target_module, "teardown", None)
         if teardown:
             teardown()

@@ -201,7 +201,7 @@ class TestCase(TestCaseTemplate, Assertions):
 
             try:
                 try:
-                    self.setup()
+                    self._run_setup(context)
                 except PendingTestError:
                     self._pend_test(context)
                 except KeyboardInterrupt:
@@ -225,7 +225,7 @@ class TestCase(TestCaseTemplate, Assertions):
                     self._add_error(context)
             finally:
                 try:
-                    self.teardown()
+                    self._run_teardown(context)
                 except PendingTestError:
                     self._pend_test(context)
                 except KeyboardInterrupt:
@@ -237,8 +237,14 @@ class TestCase(TestCaseTemplate, Assertions):
         finally:
             self._finished(success, context)
 
+    def _run_setup(self, context):
+        self.setup()
+
     def _run_test(self, context):
         self._test_method()()
+
+    def _run_teardown(self, context):
+        self.teardown()
 
     def _method_name(self):
         return self.__method_name
