@@ -435,34 +435,47 @@ class TestLoader(object):
         self._test_case_names = self._prepare_target_names(names)
     test_case_names = property(_get_test_case_names, _set_test_case_names)
 
-    def collect_test_cases(self, files=[]):
+    test_case_collectors = []
+    def _collect_test_case_from_module(self, module):
+        test_cases = []
+        for name in dir(module):
+            object = getattr(module, name)
+            if (isinstance(object, (type, types.ClassType)) and
+                issubclass(object, TestCase)):
+                test_cases.append(object)
+        return test_cases
+    test_case_collectors.append(_collect_test_case_from_module)
+
+    def _collect_module_based_test_case_from_module(self, module):
         test_cases = []
         pikzie_module = sys.modules["pikzie"]
-        for module in self._load_modules(files):
-            module_based_test_case_is_appended = False
-            for name in dir(module):
-                object = getattr(module, name)
-                def is_target_test_case_name():
-                    if self.test_case_names is None:
-                        return True
-                    def is_target_name(test_case_name):
-                        if type(test_case_name) == str:
-                            return test_case_name == name
-                        else:
-                            return test_case_name.search(name)
-                    return len(filter(is_target_name, self.test_case_names)) > 0
-                if not is_target_test_case_name():
-                    continue
-                if (isinstance(object, (type, types.ClassType)) and
-                    issubclass(object, TestCase)):
-                    test_cases.append(object)
-                elif (not module_based_test_case_is_appended and
-                      pikzie_module is not None and
-                      object == pikzie_module):
-                    test_cases.append(classobj(module.__name__,
-                                               (ModuleBasedTestCase,),
-                                               {"target_module": module}))
+        if (pikzie_module is not None and
+            pikzie_module in map(lambda name: getattr(module, name),
+                                 dir(module))):
+            test_cases.append(classobj(module.__name__,
+                                       (ModuleBasedTestCase,),
+                                       {"target_module": module}))
         return test_cases
+    test_case_collectors.append(_collect_module_based_test_case_from_module)
+
+    def collect_test_cases(self, files=[]):
+        test_cases = []
+        for module in self._load_modules(files):
+            for test_case_collector in self.test_case_collectors:
+                test_cases.extend(test_case_collector(self, module))
+
+        def is_target_test_case_name(test_case):
+            name = test_case.__name__
+            if self.test_case_names is None:
+                return True
+            def is_target_name(test_case_name):
+                if type(test_case_name) == str:
+                    return test_case_name == name
+                else:
+                    return test_case_name.search(name)
+            return len(filter(is_target_name, self.test_case_names)) > 0
+
+        return filter(is_target_test_case_name, test_cases)
 
     def create_test_suite(self, files=[]):
         tests = []
