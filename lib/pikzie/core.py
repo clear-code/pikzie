@@ -212,7 +212,7 @@ class TestCase(TestCaseTemplate, Assertions):
                     return
 
                 try:
-                    self._test_method()()
+                    self._run_test(context)
                     success = True
                 except AssertionFailure:
                     self._add_failure(context)
@@ -236,6 +236,9 @@ class TestCase(TestCaseTemplate, Assertions):
 
         finally:
             self._finished(success, context)
+
+    def _run_test(self, context):
+        self._test_method()()
 
     def _method_name(self):
         return self.__method_name
@@ -445,7 +448,7 @@ class TestLoader(object):
 
     def _load_modules(self, files=[]):
         modules = self.target_modules[:]
-        targets = files
+        targets = files[:]
         if (len(files) == 0 and len(modules) == 0) or self.pattern is not None:
             targets += self._find_targets()
         for target in targets:

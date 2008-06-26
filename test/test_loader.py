@@ -6,7 +6,7 @@ class TestLoader(pikzie.TestCase):
     def setup(self):
         self.fixture_dir = "test/fixtures/tests"
         pattern = self.fixture_dir + "/test_*.py"
-        self.loader = pikzie.TestLoader(pattern)
+        self.loader = pikzie.TestLoader(pattern, priority_mode=False)
 
     def test_find_targets(self):
         def build_full_path(name):
