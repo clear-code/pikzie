@@ -102,7 +102,7 @@ def is_interested_diff(diff):
         return True
     return False
 
-def is_need_fold(diff):
+def need_fold(diff):
     return re.search("^[-?+].{79}", diff, re.MULTILINE)
 
 def fold(string):
@@ -119,7 +119,7 @@ def append_diff(message, target1, target2):
     diff = format_diff(formatted_target1, formatted_target2)
     if is_interested_diff(diff):
         message = "%s\n\ndiff:\n%s" % (message, diff)
-    if is_need_fold(diff):
+    if need_fold(diff):
         folded_diff = format_folded_diff(formatted_target1, formatted_target2)
         message = "%s\n\nfolded diff:\n%s" % (message, folded_diff)
     return message
