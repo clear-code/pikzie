@@ -7,6 +7,8 @@ pattern = fixture_dir + "/test_*.py"
 
 def test_assertions():
     prefix = 'test.fixtures.module_based_test_cases.test_assertions'
+    assert_result(True, 0, 0, 0, 0, 0, 0, [],
+                  test_case_names=["/test_never_match/"])
     assert_result(False, 2, 2, 1, 0, 0, 0,
                   [['F',
                     prefix + '.test_assert_equal_fail',
@@ -20,7 +22,9 @@ def assert_result(succeeded, n_tests, n_assertions, n_failures,
                   **kw_args):
     context = pikzie.TestRunnerContext()
     _kw_args = {"pattern": pattern, "priority_mode": False}
-    _kw_args.update(**kw_args)
+    for name in kw_args:
+        _kw_args[name] = kw_args[name]
+    # _kw_args.update(**kw_args) # require Python >= 2.4
     loader = pikzie.TestLoader(**_kw_args)
     test_suite = loader.create_test_suite()
     test_suite.run(context)
