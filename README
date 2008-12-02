@@ -438,3 +438,11 @@ Here is a template of a test case::
   
       def test_condition(self): # starts with "test_"
           self.assert_true(self.setup_called)
+
+Thanks
+------
+
+  * aztm:
+    * reports a bug.
+    * makes a ebuild.
+      http://diary.atzm.org/20081201.html#p01

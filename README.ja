@@ -431,3 +431,11 @@ pikzie.priority(priority)
   
       def test_condition(self): # "test_"から始める
           self.assert_true(self.setup_called)
+
+謝辞
+----
+
+  * aztmさん:
+    * バグレポートをしてくれました。
+    * ebuildを作ってくれました。
+      http://diary.atzm.org/20081201.html#p01

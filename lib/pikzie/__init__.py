@@ -1,6 +1,6 @@
 version = "0.9.3"
 
-if not hasattr(__builtins__, "sorted"):
+if not "sorted" in __builtins__:
     def sorted(iterable, cmd=None, key=None, reverse=False):
         list = iterable[:]
         list.sort(cmd)
