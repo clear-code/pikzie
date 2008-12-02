@@ -362,7 +362,7 @@ class Assertions(object):
             content = ''
             while len(select.select([messages], [], [], 1)[0]) > 0:
                 added_content = messages.read()
-                if len(added_content) == 0:
+                if not added_content:
                     break
                 content += added_content
                 if re.search(pattern, content):
