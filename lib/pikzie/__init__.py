@@ -1,13 +1,15 @@
+import __builtin__
+
 version = "0.9.3"
 
-if not "sorted" in __builtins__:
+if not hasattr(__builtin__, "sorted"):
     def sorted(iterable, cmd=None, key=None, reverse=False):
         list = iterable[:]
         list.sort(cmd)
         if reverse:
             list.reverse()
         return list
-    __builtins__["sorted"] = sorted
+    __builtin__.sorted = sorted
 
 from pikzie.tester import Tester
 from pikzie.core import *
