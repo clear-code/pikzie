@@ -6,9 +6,9 @@ import random
 import syslog
 import select
 import time
-
-if not hasattr(os, "SEEK_END"):
-    os.SEEK_END = 2
+import popen2
+import signal
+import fcntl
 
 import pikzie.core
 import pikzie.pretty_print as pp
@@ -349,19 +349,21 @@ class Assertions(object):
         """
         self.assert_callable(callable_object)
 
-        log_file = "/var/log/messages"
-        messages = open(log_file)
-        messages.seek(0, os.SEEK_END)
-
         mark = 'Pikzie: %.20f' % random.random()
         syslog.syslog(mark)
+
+        log_file = "/var/log/messages"
+        messages = popen2.Popen4(["tail", "-F", log_file])
+        fd = messages.fromchild.fileno()
+        fcntl.fcntl(fd, fcntl.F_SETFL,
+                    os.O_NONBLOCK | fcntl.fcntl(fd, fcntl.F_GETFL))
 
         def search(pattern):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
             content = ''
-            while len(select.select([messages], [], [], 1)[0]) > 0:
-                added_content = messages.read()
+            while len(select.select([fd], [], [], 1)[0]) > 0:
+                added_content = messages.fromchild.read()
                 if not added_content:
                     break
                 content += added_content
@@ -375,9 +377,13 @@ class Assertions(object):
                  pp.format(content))
             self.fail(message)
 
-        search(re.escape(mark))
-        result = callable_object(*args, **kw_args)
-        search(pattern)
+        try:
+            search(re.escape(mark))
+            result = callable_object(*args, **kw_args)
+            search(pattern)
+        finally:
+            os.kill(messages.pid, signal.SIGINT)
+            messages.wait()
 
     def assert_open_file(self, name, *args):
         """Passes if file(name, *args) succeeds.
