@@ -489,14 +489,12 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             "expected: <%s> is found in <%s>\n" \
             " content: <'.*FIXME!!!.*'>" % \
             ("/fix me!/", "'/var/log/messages'")
-        def assert_search_syslog_call_result():
-            self.assert_result(False, 1, 2, 1, 0, 0, 0,
-                               [('F',
-                                 "TestCase.test_assert_search_syslog_call",
-                                 re.compile(detail),
-                                 None)],
-                               ["test_assert_search_syslog_call"])
-        self.assert_try_call(0.5, 0.1, assert_search_syslog_call_result)
+        self.assert_result(False, 1, 2, 1, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_search_syslog_call",
+                             re.compile(detail),
+                             None)],
+                           ["test_assert_search_syslog_call"])
 
     def test_assert_open_file(self):
         self.assert_result(False, 1, 2, 1, 0, 0, 0,

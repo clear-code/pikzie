@@ -362,7 +362,7 @@ class Assertions(object):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
             content = ''
-            while len(select.select([fd], [], [], 1)[0]) > 0:
+            while len(select.select([fd], [], [], 1.5)[0]) > 0:
                 added_content = messages.fromchild.read()
                 if not added_content:
                     break
@@ -421,6 +421,7 @@ class Assertions(object):
         """
         rest = timeout
         while True:
+            before = time.time()
             try:
                 result = callable_object(*args, **kw_args)
                 break
@@ -435,8 +436,11 @@ class Assertions(object):
                          timeout, interval,
                          str(sys.exc_info()[1]))
                     self._fail(message)
-                time.sleep(interval)
-                rest -= interval
+                runtime = time.time() - before
+                wait_time = interval - runtime
+                if wait_time > 0:
+                    time.sleep(wait_time)
+                rest -= max(runtime, interval)
         self._pass_assertion
         return result
 
