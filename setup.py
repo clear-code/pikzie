@@ -26,7 +26,7 @@ distribution_name = package_name.lower()
 version = pikzie.version
 sf_project_name = "Pikzie"
 sf_user = "ktou"
-sf_host = "%s@shell.sourceforge.net" % sf_user
+sf_host = "%s,pikzie@shell.sourceforge.net" % sf_user
 sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
