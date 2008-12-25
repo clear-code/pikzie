@@ -362,7 +362,9 @@ class Assertions(object):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
             content = ''
-            while len(select.select([fd], [], [], 1.5)[0]) > 0:
+            timeout = 1.5
+            while len(select.select([fd], [], [], timeout)[0]) > 0:
+                timeout = 0.1
                 added_content = messages.fromchild.read()
                 if not added_content:
                     break
