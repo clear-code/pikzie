@@ -32,7 +32,7 @@ sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
 long_description = re.split("\n.+\n=+", open("README").read())[5].strip()
-description = long_description.split("\n")[0]
+description = re.sub("\n", " ", long_description.split("\n\n")[0])
 
 def get_fullname(self):
     return "%s-%s" % (distribution_name, self.get_version())
