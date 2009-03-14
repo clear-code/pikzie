@@ -27,7 +27,7 @@ version = pikzie.version
 sf_project_name = "Pikzie"
 sf_package_name = package_name.lower()
 sf_user = "ktou"
-sf_host = "%s,pikzie@shell.sourceforge.net" % sf_user
+sf_host = "%s@web.sourceforge.net" % sf_user
 sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
@@ -59,12 +59,31 @@ class update_po(Command):
         pass
 
     def run(self):
+        import textwrap
         command = ["pygettext", "--extract-all", "--default-domain", "pikzie",
                    "--docstrings", "--output-dir", "po"]
         command.extend(glob.glob("lib/*.py"))
         command.extend(glob.glob("lib/*/*.py"))
         command.extend(glob.glob("lib/*/*/*.py"))
         _run(*command)
+
+        pot = file("po/pikzie.pot", "r").read()
+        docstring_msgid_re = re.compile("^#, docstring\nmsgid(.+?)^msgstr",
+                                        re.M | re.DOTALL)
+        def strip_spaces(match_object):
+            docstring = match_object.group(1).strip()
+            docstring = re.compile("^\"|\"$", re.M).sub("", docstring)
+            docstring = re.sub("\n", "", docstring)
+            docstring = re.sub(r"(?<!\\)\\n", "\n", docstring)
+            docstring = textwrap.dedent(docstring).strip()
+            docstring = re.compile("^(.*?)$", re.M).sub(r'"\1\\n"', docstring)
+            docstring = re.sub("\\\\n\"$", "\"", docstring)
+            return "#, docstring\nmsgid \"\"\n%s\nmsgstr" % docstring
+        pot = docstring_msgid_re.sub(strip_spaces, pot)
+        pot_file = file("po/pikzie.pot", "w")
+        pot_file.write(pot)
+        pot_file.close()
+
         for po in glob.glob("po/*.po"):
             _run("msgmerge", "--update", po, "po/pikzie.pot")
 
@@ -99,6 +118,7 @@ class update_doc(Command):
 
     def run(self):
         self._generate_assertions_html(None)
+        self._generate_assertions_html("ja")
         _run("rst2html", "README", "html/readme.html")
         _run("rst2html", "README.ja", "html/readme.html.ja")
         _run("rst2html", "NEWS", "html/news.html")
@@ -107,19 +127,28 @@ class update_doc(Command):
     def _generate_assertions_html(self, lang):
         object = pikzie.assertions.Assertions
         html_name = "html/assertions.html"
+        translation = None
         if lang:
             html_name = "%s.%s" % (html_name, lang)
-            _ = gettext.translation("pikzie", "data/locale",[lang]).gettext
-            for name in dir(object):
-                if name.startswith("_"):
-                    continue
-                method = getattr(object, name)
-                method.__doc__ = _(method.__doc__) # Not work :<
+            translation = gettext.translation("pikzie", "data/locale", [lang])
 
+        print html_name
+
+        original_getdoc = pydoc.getdoc
+        def getdoc(object):
+            document = original_getdoc(object)
+            if document == "":
+                return document
+            else:
+                return translation.gettext(document)
+        if translation:
+            pydoc.getdoc = getdoc
         page = pydoc.html.page(pydoc.describe(object),
                                pydoc.html.document(object, "assertions"))
+        pydoc.getdoc = original_getdoc
+
         html = file(html_name, "w")
-        html.write(page)
+        html.write(page.strip())
         html.close()
 
 class upload_doc(Command):
@@ -142,7 +171,6 @@ class upload_doc(Command):
         commands.extend(html_files)
         commands.append("%s:%s/" % (sf_host, sf_htdocs))
         _run(*commands)
-        _run_without_check("ssh", sf_host, "chmod", "-R", "g+w", sf_htdocs)
 
     def _prepare_html(self, html):
         html_file = file(html, "rw+")
@@ -150,10 +178,21 @@ class upload_doc(Command):
         content = re.sub("</body>",
                          r"""
 <p style="float: right; margin-top: 3.5em;">
-  <a href="http://sourceforge.net">
-    <img src="http://sflogo.sf.net/sflogo.php?group_id=215708&amp;type=1"
-         width="88" height="31" border="0" alt="SourceForge.net Logo">
+  <a href="http://sourceforge.net/projects/cutter">
+    <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=208375&type=12" width="120" height="30" border="0" alt="Get Cutter at SourceForge.net. Fast, secure and Free Open Source software downloads" />
   </a>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/cutter/" : "http://apps.sourceforge.net/piwik/cutter/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/cutter/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
 </p>
 </body>""",
                          content)
@@ -197,14 +236,15 @@ class tag(Command):
         else:
             print "%s is already tagged" % version
 
+download_url = "http://downloads.sourceforge.net/pikzie/pikzie-%s.tar.gz" % version
 setup(name=package_name,
       version=version,
       description=description,
       long_description=long_description,
       author="Kouhei Sutou",
       author_email="kou@cozmixng.org",
-      url="http://pikzie.sf.net/",
-      download_url="http://sf.net/project/showfiles.php?group_id=215708",
+      url="http://pikzie.sourceforge.net/",
+      download_url=download_url,
       license="LGPL",
       package_dir={'': 'lib'},
       packages=["pikzie", "pikzie.ui"],
