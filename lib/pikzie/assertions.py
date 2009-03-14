@@ -15,32 +15,36 @@ import pikzie.pretty_print as pp
 
 class Assertions(object):
     def fail(self, message):
-        """Always fails with message.
+        """
+        Always fails with message.
 
-        self.fail("must not happen!") # => fail
+          self.fail("must not happen!") # => fail
         """
         self._fail(message)
 
     def pend(self, message):
-        """Pending the current running test.
+        """
+        Pending the current running test.
 
-        self.pend("module XXX isn't found") # => pend test
+          self.pend("module XXX isn't found") # => pend test
         """
         self._pend(message)
 
     def notify(self, message):
-        """Notify a message for the current running test.
+        """
+        Notify a message for the current running test.
 
-        if command_not_found:
-            self.notify("skip due to command not found") # => notify a message
-            return
+          if command_not_found:
+              self.notify("skip due to command not found") # => notify a message
+              return
         """
         self._notify(message)
 
     def assert_none(self, expression, message=None):
-        """Passes if expression is None.
+        """
+        Passes if expression is None.
 
-        self.assert_none(None) # => pass
+          self.assert_none(None) # => pass
         """
         if expression is None:
             self._pass_assertion()
@@ -49,9 +53,10 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_not_none(self, expression, message=None):
-        """Passes if expression is not None.
+        """
+        Passes if expression is not None.
 
-        self.assert_not_none("not none") # => pass
+          self.assert_not_none("not none") # => pass
         """
         if expression is not None:
             self._pass_assertion()
@@ -59,10 +64,11 @@ class Assertions(object):
             self._fail("expected: not None", message)
 
     def assert_true(self, expression, message=None):
-        """Passes if expression is true value.
+        """
+        Passes if expression is true value.
 
-        self.assert_true(True)     # => pass
-        self.assert_true("string") # => pass
+          self.assert_true(True)     # => pass
+          self.assert_true("string") # => pass
         """
         if expression:
             self._pass_assertion()
@@ -71,10 +77,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_false(self, expression, message=None):
-        """Passes if expression is false value.
+        """
+        Passes if expression is false value.
 
-        self.assert_false(False) # => pass
-        self.assert_false("")    # => pass
+          self.assert_false(False) # => pass
+          self.assert_false("")    # => pass
         """
         if expression:
             system_message = "expected: <%r> is a false value" % expression
@@ -83,9 +90,10 @@ class Assertions(object):
             self._pass_assertion()
 
     def assert_equal(self, expected, actual, message=None):
-        """Passes if expected == actual.
+        """
+        Passes if expected == actual.
 
-        self.assert_equal(5, 2 + 3) # => pass
+          self.assert_equal(5, 2 + 3) # => pass
         """
         if expected == actual:
             self._pass_assertion()
@@ -98,9 +106,10 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_not_equal(self, not_expected, actual, message=None):
-        """Passes if not_expected != actual.
+        """
+        Passes if not_expected != actual.
 
-        self.assert_equal(-5, 2 + 3) # => pass
+          self.assert_equal(-5, 2 + 3) # => pass
         """
         if not_expected != actual:
             self._pass_assertion()
@@ -115,9 +124,10 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_in_delta(self, expected, actual, delta, message=None):
-        """Passes if (expected - delta) <= actual <= (expected + delta).
+        """
+        Passes if (expected - delta) <= actual <= (expected + delta).
 
-        self.assert_in_delta(3, 3.01, 0.001) # => pass
+          self.assert_in_delta(3, 3.01, 0.001) # => pass
         """
         lower = expected - delta
         upper = expected + delta
@@ -133,10 +143,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_match(self, pattern, target, message=None):
-        """Passes if re.match(pattern, target) doesn't return None.
+        """
+        Passes if re.match(pattern, target) doesn't return None.
 
-        self.assert_match("abc", "abcde") # => pass
-        self.assert_match("abc", "deabc") # => fail
+          self.assert_match("abc", "abcde") # => pass
+          self.assert_match("abc", "deabc") # => fail
         """
         if re.match(pattern, target):
             self._pass_assertion()
@@ -152,10 +163,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_not_match(self, pattern, target, message=None):
-        """Passes if re.match(pattern, target) returns None.
+        """
+        Passes if re.match(pattern, target) returns None.
 
-        self.assert_not_match("abc", "deabc") # => pass
-        self.assert_not_match("abc", "abcde") # => fail
+          self.assert_not_match("abc", "deabc") # => pass
+          self.assert_not_match("abc", "abcde") # => fail
         """
         if re.match(pattern, target) is None:
             self._pass_assertion()
@@ -171,7 +183,8 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_search(self, pattern, target, message=None):
-        """Passes if re.search(pattern, target) doesn't return None.
+        """
+        Passes if re.search(pattern, target) doesn't return None.
 
         self.assert_search("abc", "deabc") # => pass
         self.assert_search("abc", "deABC") # => fail
@@ -190,10 +203,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_not_found(self, pattern, target, message=None):
-        """Passes if re.search(pattern, target) returns None.
+        """
+        Passes if re.search(pattern, target) returns None.
 
-        self.assert_search("abc", "deABC") # => pass
-        self.assert_search("abc", "deabc") # => fail
+          self.assert_search("abc", "deABC") # => pass
+          self.assert_search("abc", "deabc") # => fail
         """
         if re.search(pattern, target) is None:
             self._pass_assertion()
@@ -209,10 +223,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_hasattr(self, object, name, message=None):
-        """Passes if hasattr(object, name) returns True.
+        """
+        Passes if hasattr(object, name) returns True.
 
-        self.assert_hasattr("string", "strip")   # => pass
-        self.assert_hasattr("string", "unknown") # => fail
+          self.assert_hasattr("string", "strip")   # => pass
+          self.assert_hasattr("string", "unknown") # => fail
         """
         if hasattr(object, name):
             self._pass_assertion()
@@ -223,10 +238,11 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_callable(self, object, message=None):
-        """Passes if callable(object) returns True.
+        """
+        Passes if callable(object) returns True.
 
-        self.assert_callable(lambda: 1) # => pass
-        self.assert_callable("string")  # => fail
+          self.assert_callable(lambda: 1) # => pass
+          self.assert_callable("string")  # => fail
         """
         if callable(object):
             self._pass_assertion()
@@ -236,14 +252,15 @@ class Assertions(object):
             self._fail(system_message, message)
 
     def assert_raise_call(self, exception, callable_object, *args, **kw_args):
-        """Passes if callable_object(*args, **kw_args) raises exception and
+        """
+        Passes if callable_object(*args, **kw_args) raises exception and
         returns raised exception value.
 
-        self.assert_raise_call(NameError,
-                               lambda: unknown_variable) # => pass
-                                                         # => returns NameError
-                                                         #    value
-        self.assert_raise_call(NameError, lambda: 1)     # => fail
+          self.assert_raise_call(NameError,
+                                 lambda: unknown_variable) # => pass
+                                                           # => returns NameError
+                                                           #    value
+          self.assert_raise_call(NameError, lambda: 1)     # => fail
         """
         self.assert_callable(callable_object)
         try:
@@ -276,12 +293,13 @@ class Assertions(object):
         return self.assert_raise_call(*args, **kw_args)
 
     def assert_nothing_raised_call(self, callable_object, *args, **kw_args):
-        """Passes if callable_object(*args, **kw_args) raises nothing exception
+        """
+        Passes if callable_object(*args, **kw_args) raises nothing exception
         and returns called result.
 
-        self.assert_nothing_raised_call(lambda: 1)                # => pass
-                                                                  # => returns 1
-        self.assert_nothing_raised_call(lambda: unknown_variable) # => fail
+          self.assert_nothing_raised_call(lambda: 1)                # => pass
+                                                                    # => returns 1
+          self.assert_nothing_raised_call(lambda: unknown_variable) # => fail
         """
         self.assert_callable(callable_object)
         try:
@@ -306,12 +324,13 @@ class Assertions(object):
         return self.assert_nothing_raised_call(*args, **kw_args)
 
     def assert_run_command(self, command, **kw_args):
-        """Passes if command is successfully ran and returns subprocess.Popen.
+        """
+        Passes if command is successfully ran and returns subprocess.Popen.
 
-        process = self.assert_run_command(["echo", "123"])    # => pass
-        self.assert_equal("123\n", process.stdout.read())     # => pass
-        self.assert_run_command("false")                      # => fail
-        self.assert_run_command("unknown-command")            # => fail
+          process = self.assert_run_command(["echo", "123"])    # => pass
+          self.assert_equal("123\\n", process.stdout.read())    # => pass
+          self.assert_run_command("false")                      # => fail
+          self.assert_run_command("unknown-command")            # => fail
         """
         import subprocess
         popen_kw_args = {
@@ -341,11 +360,12 @@ class Assertions(object):
 
     def assert_search_syslog_call(self, pattern,
                                   callable_object, *args, **kw_args):
-        """Passes if re.search(pattern, SYSLOG_CONTENT) doesn't return None
+        """
+        Passes if re.search(pattern, SYSLOG_CONTENT) doesn't return None
         after callable_object(*args, **kw_args).
 
-        self.assert_search_syslog_call("X", syslog.syslog, "XYZ") # => pass
-        self.assert_search_syslog_call("X", syslog.syslog, "ABC") # => fail
+          self.assert_search_syslog_call("X", syslog.syslog, "XYZ") # => pass
+          self.assert_search_syslog_call("X", syslog.syslog, "ABC") # => fail
         """
         self.assert_callable(callable_object)
 
@@ -388,10 +408,11 @@ class Assertions(object):
             messages.wait()
 
     def assert_open_file(self, name, *args):
-        """Passes if file(name, *args) succeeds.
+        """
+        Passes if file(name, *args) succeeds.
 
-        file = self.assert_open_file("/tmp/exist", "w") # => pass
-        self.assert_open_file("/tmp/nonexistence")      # => fail
+          file = self.assert_open_file("/tmp/exist", "w") # => pass
+          self.assert_open_file("/tmp/nonexistence")      # => fail
         """
         try:
             result = file(name, *args)
@@ -409,17 +430,18 @@ class Assertions(object):
 
     def assert_try_call(self, timeout, interval,
                         callable_object, *args, **kw_args):
-        """Passes if callable_object(*args, **kw_args) doesn't fail any
+        """
+        Passes if callable_object(*args, **kw_args) doesn't fail any
         assertions in <timeout> seconds.
         (It will tried <timeout / interval> times.)
 
-        def random_number():
-            number = random.randint(0, 9)
-            self.assert_in_delta(5, number, 1)
-            return number
-        self.assert_try_call(1, 0.1, random_number) # => will pass
-                                                    # returns 4, 5 or 6
-        self.assert_try_call(1, 0.1, self.fail, "Never succeed") # => fail
+          def random_number():
+              number = random.randint(0, 9)
+              self.assert_in_delta(5, number, 1)
+              return number
+          self.assert_try_call(1, 0.1, random_number) # => will pass
+                                                      # returns 4, 5 or 6
+          self.assert_try_call(1, 0.1, self.fail, "Never succeed") # => fail
         """
         rest = timeout
         while True:
@@ -447,11 +469,12 @@ class Assertions(object):
         return result
 
     def assert_kernel_symbol(self, name):
-        """Passes if /proc/kallsyms can be opened and name is in the list.
+        """
+        Passes if /proc/kallsyms can be opened and name is in the list.
 
-        self.assert_kernel_symbol("printk")       # => pass
-                                                  # returns an address of printk
-        self.assert_kernel_symbol("non_existent") # => fail
+          self.assert_kernel_symbol("printk")       # => pass
+                                                    # returns an address of printk
+          self.assert_kernel_symbol("non_existent") # => fail
         """
         for line in self.assert_open_file("/proc/kallsyms"):
             symbol_info = line.split()

@@ -17,7 +17,8 @@ from pikzie.priority import PriorityChecker
 __all__ = ["TestSuite", "TestCase", "TestRunnerContext", "TestLoader"]
 
 class TestSuite(object):
-    """A test suite is a composite test consisting of a number of TestCases.
+    """
+    A test suite is a composite test consisting of a number of TestCases.
 
     For use, create an instance of TestSuite, then add test case instances.
     When all tests have been added, the suite can be passed to a test
@@ -113,7 +114,8 @@ class TestCaseTemplate(object):
         pass
 
 class TestCase(TestCaseTemplate, Assertions):
-    """A class whose instances are single test cases.
+    """
+    A class whose instances are single test cases.
 
     If the fixture may be used for many test cases, create as
     many test methods as are needed. When instantiating such a TestCase
@@ -161,7 +163,8 @@ class TestCase(TestCaseTemplate, Assertions):
     metadata = property(metadata)
 
     def description(self):
-        """Returns a one-line description of the test, or None if no
+        """
+        Returns a one-line description of the test, or None if no
         description has been provided.
 
         The default implementation of this method returns the first line of
@@ -496,7 +499,8 @@ class TestLoader(object):
         return map(prepare, names)
 
 class TestRunnerContext(object):
-    """Context for running test.
+    """
+    Context for running test.
 
     Test results are automatically managed by the TestCase and TestSuite
     classes, and do not need to be explicitly manipulated by writers of tests.
