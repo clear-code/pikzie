@@ -165,36 +165,32 @@ class upload_doc(Command):
         sdist = self.reinitialize_command("update_doc")
         self.run_command("update_doc")
         html_files = glob.glob("html/*.html*")
-        for html in filter(lambda file: not file.startswith("html/index.html"), html_files):
-            self._prepare_html(html)
+        for html in html_files:
+            if html.startswith("html/index.html"):
+                continue
+            if html.endswith(".ja"):
+                footer = file("html/footer.ja").read()
+            else:
+                footer = file("html/footer").read()
+            self._prepare_html(html, footer)
         commands = ["scp"]
         commands.extend(html_files)
+        commands.append("html/pikzie.css")
         commands.append("%s:%s/" % (sf_host, sf_htdocs))
         _run(*commands)
 
-    def _prepare_html(self, html):
+    def _prepare_html(self, html, footer):
         html_file = file(html, "rw+")
         content = html_file.read()
+        content = re.sub("</head>",
+                         r'<link rel="stylesheet" href="pikzie.css" type="text/css" />\n' +
+                         r'</head>',
+                         content)
+        content = re.sub("<body([^>]*?)>",
+                         r'<body\1><div class="main">\n',
+                         content)
         content = re.sub("</body>",
-                         r"""
-<p style="float: right; margin-top: 3.5em;">
-  <a href="http://sourceforge.net/projects/cutter">
-    <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=208375&type=12" width="120" height="30" border="0" alt="Get Cutter at SourceForge.net. Fast, secure and Free Open Source software downloads" />
-  </a>
-<!-- Piwik -->
-<script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/cutter/" : "http://apps.sourceforge.net/piwik/cutter/");
-document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-</script><script type="text/javascript">
-piwik_action_name = '';
-piwik_idsite = 1;
-piwik_url = pkBaseURL + "piwik.php";
-piwik_log(piwik_action_name, piwik_idsite, piwik_url);
-</script>
-<object><noscript><p><img src="http://apps.sourceforge.net/piwik/cutter/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
-<!-- End Piwik Tag -->
-</p>
-</body>""",
+                         r'</div>\n%s\n</body>' % footer,
                          content)
         html_file.seek(0)
         html_file.write(content)

@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="pikzie.css" type="text/css" />
     <title>Pikzie - Python用単体テストフレームワーク/ユニットテストフレームワーク</title>
   </head>
   <body>
@@ -30,10 +31,11 @@
         (<a href="users.html">en</a>)
       </li-->
     </ul>
-    <p>
-      <a href="http://sourceforge.net/projects/pikzie">
-        <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=215708&type=12" width="120" height="30" border="0" alt="SourceForge.netからPikzieをダウンロード。高速で安全なフリーオープンソースソフトウェアダウンロード。" />
-      </a>
+    <div class="footer">
+      <p>
+	<a href="http://sourceforge.net/projects/pikzie">
+	  <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=215708&amp;type=12" width="120" height="30" border="0" alt="SourceForge.netからPikzieをダウンロード。高速で安全なフリーオープンソースソフトウェアダウンロード。" />
+	</a>
 <!-- Piwik -->
 <script type="text/javascript">
 var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/pikzie/" : "http://apps.sourceforge.net/piwik/pikzie/");
@@ -46,6 +48,7 @@ piwik_log(piwik_action_name, piwik_idsite, piwik_url);
 </script>
 <object><noscript><p><img src="http://apps.sourceforge.net/piwik/pikzie/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
 <!-- End Piwik Tag -->
-    </p>
+      </p>
+    </div>
   </body>
 </html>

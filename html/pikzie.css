@@ -1,0 +1,18 @@
+div.main
+{
+}
+
+div.menu
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  background-color: white;
+}
+
+div.footer
+{
+  border-top: 1px solid grey;
+  text-align: right;
+}
