@@ -216,7 +216,7 @@ class ConsoleTestRunner(object):
             self._print_traceback(fault.traceback)
             detail = fault.detail()
             if detail:
-                self._writeln(detail, self._fault_color(fault))
+                self._writeln(str(detail), self._fault_color(fault))
             self._writeln()
 
     def _print_traceback(self, traceback):
