@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>Pikzie - Python用単体テストフレームワーク/ユニットテストフレームワーク</title>
+  </head>
+  <body>
+    <h1>Pikzie - Python用単体テストフレームワーク</h1>
+    <p>[<a href="./">English</a>]</p>
+    <p>Pythonは書きやすさ・デバッグのしやすさを重視したPython用の単体テスト（ユニットテスト）フレームワークです。</p>
+    <ul>
+      <li><a href="http://sourceforge.net/projects/pikzie/">プロジェクトページ</a></li>
+      <li>
+        <a href="news.html.ja">ニュース</a>
+        (<a href="news.html">en</a>)
+      </li>
+      <li>
+        <a href="readme.html.ja">はじめに</a>
+        (<a href="readme.html">en</a>)
+      </li>
+      <li>
+        <a href="assertions.html.ja">アサーション一覧</a>
+        (<a href="assertions.html">en</a>)
+      </li>
+      <!--li>
+        <a href="users.html.ja">Pikzie採用プロジェクト</a>
+        (<a href="users.html">en</a>)
+      </li-->
+    </ul>
+    <p>
+      <a href="http://sourceforge.net/projects/pikzie">
+        <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=215708&type=12" width="120" height="30" border="0" alt="SourceForge.netからPikzieをダウンロード。高速で安全なフリーオープンソースソフトウェアダウンロード。" />
+      </a>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/pikzie/" : "http://apps.sourceforge.net/piwik/pikzie/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/pikzie/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+    </p>
+  
+<p style="float: right; margin-top: 3.5em;">
+  <a href="http://sourceforge.net/projects/cutter">
+    <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=208375&type=12" width="120" height="30" border="0" alt="Get Cutter at SourceForge.net. Fast, secure and Free Open Source software downloads" />
+  </a>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/cutter/" : "http://apps.sourceforge.net/piwik/cutter/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/cutter/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+</p>
+
+<p style="float: right; margin-top: 3.5em;">
+  <a href="http://sourceforge.net/projects/cutter">
+    <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=208375&type=12" width="120" height="30" border="0" alt="Get Cutter at SourceForge.net. Fast, secure and Free Open Source software downloads" />
+  </a>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/cutter/" : "http://apps.sourceforge.net/piwik/cutter/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/cutter/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+</p>
+
+<p style="float: right; margin-top: 3.5em;">
+  <a href="http://sourceforge.net/projects/cutter">
+    <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=208375&type=12" width="120" height="30" border="0" alt="Get Cutter at SourceForge.net. Fast, secure and Free Open Source software downloads" />
+  </a>
+<!-- Piwik -->
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://apps.sourceforge.net/piwik/cutter/" : "http://apps.sourceforge.net/piwik/cutter/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+piwik_action_name = '';
+piwik_idsite = 1;
+piwik_url = pkBaseURL + "piwik.php";
+piwik_log(piwik_action_name, piwik_idsite, piwik_url);
+</script>
+<object><noscript><p><img src="http://apps.sourceforge.net/piwik/cutter/piwik.php?idsite=1" alt="piwik"/></p></noscript></object>
+<!-- End Piwik Tag -->
+</p>
+</body>
+</html>
