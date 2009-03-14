@@ -165,7 +165,7 @@ class upload_doc(Command):
         sdist = self.reinitialize_command("update_doc")
         self.run_command("update_doc")
         html_files = glob.glob("html/*.html*")
-        for html in filter(lambda file: file != "html/index.html", html_files):
+        for html in filter(lambda file: not file.startswith("html/index.html"), html_files):
             self._prepare_html(html)
         commands = ["scp"]
         commands.extend(html_files)
