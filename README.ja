@@ -435,9 +435,14 @@ pikzie.priority(priority)
 謝辞
 ----
 
-  * aztmさん:
+  * aztmさん
+
     * バグレポートをしてくれました。
-    * ebuildを作ってくれました。 http://diary.atzm.org/20081201.html#p01
-  * Hideo Hattoriさん:
+
+    * ebuildを作ってくれました。
+      http://diary.atzm.org/20081201.html#p01
+
+  * Hideo Hattoriさん
+
     * バグレポートをしてくれました。
 
