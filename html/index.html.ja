@@ -11,7 +11,7 @@
   <body>
     <h1>Pikzie - Python用単体テストフレームワーク</h1>
     <p>[<a href="./">English</a>]</p>
-    <p>Pythonは書きやすさ・デバッグのしやすさを重視したPython用の単体テスト（ユニットテスト）フレームワークです。</p>
+    <p>Pikzieは書きやすさ・デバッグのしやすさを重視したPython用の単体テスト（ユニットテスト）フレームワークです。</p>
     <ul>
       <li><a href="http://sourceforge.net/projects/pikzie/">プロジェクトページ</a></li>
       <li>
