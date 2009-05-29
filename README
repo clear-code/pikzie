@@ -44,17 +44,30 @@ Dependencies
 Get
 ===
 
-http://sourceforge.net/project/showfiles.php?group_id=215708
+tar.gz::
 
-::
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
+
+Subversion::
 
   % svn co https://pikzie.svn.sourceforge.net/svnroot/pikzie/trunk pikzie
 
 Install
 =======
 
-::
+Install with easy_install::
 
+  % sudo easy_install Pikzie
+
+Install with pip::
+
+  % sudo pip install Pikzie
+
+Install from tar.gz::
+
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
+  % tar xvzf pikzie-0.9.4.tar.gz
+  % cd pikzie-0.9.4
   % sudo python setup.py install
 
 Usage

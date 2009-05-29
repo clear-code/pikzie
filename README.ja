@@ -39,17 +39,30 @@ PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 入手方法
 ========
 
-http://sourceforge.net/project/showfiles.php?group_id=215708
+tar.gz::
 
-::
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
+
+Subversion::
 
   % svn co https://pikzie.svn.sourceforge.net/svnroot/pikzie/trunk pikzie
 
 インストール
 ============
 
-::
+easy_installでインストール::
 
+  % sudo easy_install Pikzie
+
+pipでインストール::
+
+  % sudo pip install Pikzie
+
+tar.gzからインストール::
+
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
+  % tar xvzf pikzie-0.9.4.tar.gz
+  % cd pikzie-0.9.4
   % sudo python setup.py install
 
 使い方
