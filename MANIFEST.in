@@ -10,3 +10,4 @@ include test/*/*.py
 include test/*/*/*.py
 include po/*.po
 include data/locale/*/*/*
+include license/*.txt
