@@ -6,6 +6,14 @@
 
 The history of Pikzie
 
+0.9.4: 2009-05-29
+=================
+
+  * fix failure report failure on non-color mode
+    [Reported by Hideo Hattori]
+  * treat an environment that TERM environment variable is
+    ended with "term-color" as colorizable environment
+
 0.9.3: 2008-12-25
 =================
 
