@@ -394,9 +394,13 @@ class TestCase(TestCaseTemplate, Assertions):
         components = [".test-result", self._test_case_name(), self.short_name()]
         parent_directories = [os.path.dirname(sys.argv[0]),
                               os.getcwd(),
-                              os.path.join(os.path.dirname(__file__), ".."),
-                              os.path.join(tempfile.gettempdir(),
-                                           str(os.getuid()))]
+                              os.path.join(os.path.dirname(__file__), "..")]
+        if hasattr(os, "getuid"):
+            parent_directories.append([os.path.join(tempfile.gettempdir(),
+                                                    str(os.getuid()))])
+        else:
+            parent_directories.append([os.path.join(tempfile.gettempdir(),
+                                                    str(os.getpid()))])
         for parent_directory in parent_directories:
             dir = os.path.abspath(os.path.join(parent_directory, *components))
             if os.path.isdir(dir):
