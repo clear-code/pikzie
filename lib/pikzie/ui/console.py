@@ -161,6 +161,7 @@ class ConsoleTestRunner(object):
     on_failure = _on_fault
     on_error = _on_fault
     on_pending = _on_fault
+    on_omission = _on_fault
 
     def on_notification(self, context, notification):
         self._pool_notification(notification)

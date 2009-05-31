@@ -39,7 +39,7 @@ class Assertions(object):
 
     def pend(self, message):
         """
-        Pending the current running test.
+        Pend the current running test.
 
           self.pend("module XXX isn't found") # => pend test
         """
@@ -54,6 +54,15 @@ class Assertions(object):
               return
         """
         self._notify(message)
+
+    def omit(self, message):
+        """
+        Omit the current running test.
+
+          if module_not_found:
+              self.omit("omit due to a module isn't found") # => omit test
+        """
+        self._omit(message)
 
     def assert_none(self, expression, message=None):
         """

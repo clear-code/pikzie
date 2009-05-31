@@ -58,6 +58,23 @@ class Notification(TestResult):
     def detail(self):
         return ""
 
+class Omission(TestResult):
+    name = "omission"
+
+    def __init__(self, test, message, traceback):
+        self.fault = True
+        self.critical = False
+        self.symbol = "O"
+        self.test = test
+        self.message = message
+        self.traceback = traceback
+
+    def title(self):
+        return "Omission: %s: %s" % (self.test, self.message)
+
+    def detail(self):
+        return ""
+
 class Pending(TestResult):
     name = "pending"
 
@@ -113,7 +130,7 @@ class Error(TestResult):
     def detail(self):
         return "%s: %s" % (self.exception_type, self.message)
 
-FAULT_ORDER = [Notification, Pending, Failure, Error]
+FAULT_ORDER = [Notification, Omission, Pending, Failure, Error]
 
 def compare_fault(fault1, fault2):
     return cmp(FAULT_ORDER.index(type(fault1)),

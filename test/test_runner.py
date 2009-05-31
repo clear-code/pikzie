@@ -48,7 +48,7 @@ class TestRunner(pikzie.TestCase, Assertions):
         target_line = "self.assert_equal(\"aaaaa\", \"a\")"
         line_no = Source.find_target_line_no(target_line)
         details = format % (target_line, self.file_name, line_no, target_line)
-        self.assert_output("F", 1, 1, 1, 0, 0, 0, details, [test])
+        self.assert_output("F", 1, 1, 1, 0, 0, 0, 0, details, [test])
 
     def test_run_error_test(self):
         class TestCase(pikzie.TestCase):
@@ -68,7 +68,7 @@ class TestRunner(pikzie.TestCase, Assertions):
         line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line,
                             exceptions.AttributeError)
-        self.assert_output("E", 1, 0, 0, 1, 0, 0, details, [test])
+        self.assert_output("E", 1, 0, 0, 1, 0, 0, 0, details, [test])
 
     def test_metadata(self):
         class TestCase(pikzie.TestCase):
@@ -107,9 +107,9 @@ class TestRunner(pikzie.TestCase, Assertions):
         details = format % (self.file_name, line_no1, target_line1,
                             exceptions.AttributeError,
                             target_line2, self.file_name, line_no2, target_line2)
-        self.assert_output("EF", 2, 0, 1, 1, 0, 0, details, tests)
+        self.assert_output("EF", 2, 0, 1, 1, 0, 0, 0, details, tests)
 
-    def test_run_pending_test(self):
+    def test_pending(self):
         class TestCase(pikzie.TestCase):
             def test_pend(self):
                 self.pend("just a minute!")
@@ -123,7 +123,23 @@ class TestRunner(pikzie.TestCase, Assertions):
         target_line = "self.pend(\"just a minute!\")"
         line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
-        self.assert_output("P", 1, 0, 0, 0, 1, 0, details, [test])
+        self.assert_output("P", 1, 0, 0, 0, 1, 0, 0, details, [test])
+
+    def test_omission(self):
+        class TestCase(pikzie.TestCase):
+            def test_omit(self):
+                self.omit("just a minute!")
+
+        test = TestCase("test_omit")
+        format = \
+            "\n" \
+            "1) Omission: TestCase.test_omit: just a minute!\n" \
+            "%s:%d: %s\n" \
+            "\n"
+        target_line = "self.omit(\"just a minute!\")"
+        line_no = Source.find_target_line_no(target_line)
+        details = format % (self.file_name, line_no, target_line)
+        self.assert_output("O", 1, 0, 0, 0, 0, 1, 0, details, [test])
 
     def test_notification(self):
         class TestCase(pikzie.TestCase):
@@ -141,4 +157,4 @@ class TestRunner(pikzie.TestCase, Assertions):
         target_line = "self.notify(\"Call me!\")"
         line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
-        self.assert_output("N.", 1, 2, 0, 0, 0, 1, details, [test])
+        self.assert_output("N.", 1, 2, 0, 0, 0, 0, 1, details, [test])

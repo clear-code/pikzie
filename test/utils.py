@@ -49,7 +49,8 @@ class Assertions(object):
             return False
 
     def assert_result(self, succeeded, n_tests, n_assertions, n_failures,
-                      n_errors, n_pendings, n_notifications, fault_info, tests):
+                      n_errors, n_pendings, n_omissions, n_notifications,
+                      fault_info, tests):
         context = pikzie.TestRunnerContext()
         for test_name in tests:
             self.TestCase(test_name).run(context)
@@ -66,6 +67,7 @@ class Assertions(object):
                                                   n_failures,
                                                   n_errors,
                                                   n_pendings,
+                                                  n_omissions,
                                                   n_notifications),
                                                  fault_info),
                           self.RegexpMatchResult(context.succeeded,
@@ -74,23 +76,26 @@ class Assertions(object):
                                                   context.n_failures,
                                                   context.n_errors,
                                                   context.n_pendings,
+                                                  context.n_omissions,
                                                   context.n_notifications),
                                                  map(collect_fault_info,
                                                      context.faults)))
 
     def assert_success_output(self, n_tests, n_assertions, tests):
-        self.assert_output("." * n_tests, n_tests, n_assertions, 0, 0, 0, 0,
+        self.assert_output("." * n_tests, n_tests, n_assertions, 0, 0, 0, 0, 0,
                            "", tests)
 
     def assert_output(self, progress, n_tests, n_assertions, n_failures,
-                      n_errors, n_pendings, n_notifications, details, tests):
+                      n_errors, n_pendings, n_omissions, n_notifications,
+                      details, tests):
         suite = pikzie.TestSuite(tests)
         context = self.runner.run(suite)
         self.assert_equal((n_tests, n_assertions, n_failures, n_errors,
-                           n_pendings, n_notifications),
+                           n_pendings, n_omissions, n_notifications),
                           (context.n_tests, context.n_assertions,
                            context.n_failures, context.n_errors,
-                           context.n_pendings, n_notifications))
+                           context.n_pendings, context.n_omissions,
+                           context.n_notifications))
         self.output.seek(0)
         message = self.output.read()
         format = \
@@ -99,10 +104,11 @@ class Assertions(object):
             "Finished in %.3f seconds\n" \
             "\n" \
             "%d test(s), %d assertion(s), %d failure(s), %d error(s), " \
-            "%d pending(s), %d notification(s)\n"
+            "%d pending(s), %d omission(s), %d notification(s)\n"
         self.assert_equal(format % (progress, details, context.elapsed,
                                     n_tests, n_assertions, n_failures,
-                                    n_errors, n_pendings, n_notifications),
+                                    n_errors, n_pendings, n_omissions,
+                                    n_notifications),
                           message)
 
 class Source(object):

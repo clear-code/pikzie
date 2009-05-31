@@ -94,6 +94,7 @@ SCHEMES = {
         "success": COLORS["green"],
         "notification": COLORS["cyan"],
         "pending": COLORS["magenta"],
+        "omission": COLORS["white-back"] + COLORS["blue"],
         "failure": COLORS["red"],
         "error": COLORS["yellow"],
         "test-case-name": COLORS["green-back"] + COLORS["white"],

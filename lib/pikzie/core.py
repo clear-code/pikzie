@@ -97,6 +97,13 @@ class PendingTestError(Exception):
     def __str__(self):
         return self.message
 
+class OmissionTestError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
 class TestCaseRunner(object):
     def __init__(self, test_case, tests, priority_mode=True):
         self.test_case = test_case
@@ -222,6 +229,8 @@ class TestCase(TestCaseTemplate, Assertions):
                     self._run_setup(context)
                 except PendingTestError:
                     self._pend_test(context)
+                except OmissionTestError:
+                    self._omit_test(context)
                 except KeyboardInterrupt:
                     context.interrupted()
                     return
@@ -236,6 +245,8 @@ class TestCase(TestCaseTemplate, Assertions):
                     self._add_failure(context)
                 except PendingTestError:
                     self._pend_test(context)
+                except OmissionTestError:
+                    self._omit_test(context)
                 except KeyboardInterrupt:
                     context.interrupted()
                     return
@@ -246,6 +257,8 @@ class TestCase(TestCaseTemplate, Assertions):
                     self._run_teardown(context)
                 except PendingTestError:
                     self._pend_test(context)
+                except OmissionTestError:
+                    self._omit_test(context)
                 except KeyboardInterrupt:
                     context.interrupted()
                 except:
@@ -278,6 +291,9 @@ class TestCase(TestCaseTemplate, Assertions):
 
     def _pend(self, message):
         raise PendingTestError(message)
+
+    def _omit(self, message):
+        raise OmissionTestError(message)
 
     def _notify(self, message):
         try:
@@ -321,6 +337,12 @@ class TestCase(TestCaseTemplate, Assertions):
         traceback = self._prepare_traceback(traceback, True)
         pending = Pending(self, message, traceback)
         context.pend_test(self, pending)
+
+    def _omit_test(self, context):
+        exception_type, message, traceback = sys.exc_info()
+        traceback = self._prepare_traceback(traceback, True)
+        omission = Omission(self, message, traceback)
+        context.omit_test(self, omission)
 
     def _prepare_traceback(self, tb, compute_length):
         while tb and self._is_relevant_frame_level(tb.tb_frame):
@@ -548,20 +570,28 @@ class TestRunnerContext(object):
     n_faults = property(n_faults)
 
     def n_failures(self):
-        return len(filter(lambda fault: isinstance(fault, Failure), self.faults))
+        return len(filter(lambda result: isinstance(result, Failure),
+                          self.results))
     n_failures = property(n_failures)
 
     def n_errors(self):
-        return len(filter(lambda fault: isinstance(fault, Error), self.faults))
+        return len(filter(lambda result: isinstance(result, Error),
+                          self.results))
     n_errors = property(n_errors)
 
     def n_pendings(self):
-        return len(filter(lambda fault: isinstance(fault, Pending), self.faults))
+        return len(filter(lambda result: isinstance(result, Pending),
+                          self.results))
     n_pendings = property(n_pendings)
 
+    def n_omissions(self):
+        return len(filter(lambda result: isinstance(result, Omission),
+                          self.results))
+    n_omissions = property(n_omissions)
+
     def n_notifications(self):
-        return len(filter(lambda fault: isinstance(fault, Notification),
-                          self.faults))
+        return len(filter(lambda result: isinstance(result, Notification),
+                          self.results))
     n_notifications = property(n_notifications)
 
     def pass_assertion(self, test):
@@ -627,6 +657,12 @@ class TestRunnerContext(object):
         self.results.append(pending)
         self._notify("pending", pending)
 
+    def omit_test(self, test, omission):
+        """Called when a test is omitted."""
+        omission.elapsed = time.time() - self._start_at
+        self.results.append(omission)
+        self._notify("omission", omission)
+
     def interrupt(self):
         "Indicates that the tests should be interrupted"
         self.interrupted = True
@@ -646,8 +682,8 @@ class TestRunnerContext(object):
 
     def summary(self):
         return ("%d test(s), %d assertion(s), %d failure(s), %d error(s), " \
-                    "%d pending(s), %d notification(s)") % \
+                    "%d pending(s), %d omission(s), %d notification(s)") % \
             (self.n_tests, self.n_assertions, self.n_failures, self.n_errors,
-             self.n_pendings, self.n_notifications)
+             self.n_pendings, self.n_omissions, self.n_notifications)
 
     __str__ = summary
