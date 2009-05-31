@@ -505,6 +505,11 @@ class Assertions(object):
                                                     # returns an address of printk
           self.assert_kernel_symbol("non_existent") # => fail
         """
+        if not hasattr(os, "uname"):
+            self.omit("only for Linux environment")
+        if os.uname()[0] != "Linux":
+            self.omit("only for Linux environment")
+
         for line in self.assert_open_file("/proc/kallsyms"):
             symbol_info = line.split()
             address = symbol_info[0]

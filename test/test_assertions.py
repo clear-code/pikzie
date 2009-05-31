@@ -530,6 +530,10 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_try_call"])
 
     def test_kernel_symbol(self):
+        if not hasattr(os, "uname"):
+            self.omit("only for Linux environment")
+        if os.uname()[0] != "Linux":
+            self.omit("only for Linux environment")
         self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_kernel_symbol",
