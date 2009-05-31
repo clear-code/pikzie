@@ -3,7 +3,10 @@ import re
 import exceptions
 import shutil
 import sys
-import syslog
+try:
+    import syslog
+except ImportError:
+    pass
 import pikzie
 import test.utils
 
@@ -484,6 +487,9 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_run_command_unknown"])
 
     def test_assert_search_syslog_call(self):
+        if not hasattr(sys.modules[__name__], "syslog"):
+            self.omit("syslog isn't supported on this environment")
+
         if not os.access("/var/log/messages", os.R_OK):
             self.pend("can't read /var/log/messages.")
         detail = \

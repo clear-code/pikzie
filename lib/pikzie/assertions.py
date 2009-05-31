@@ -18,7 +18,10 @@ import sys
 import re
 import traceback
 import random
-import syslog
+try:
+    import syslog
+except ImportError:
+    pass
 import select
 import time
 import popen2
@@ -391,6 +394,8 @@ class Assertions(object):
           self.assert_search_syslog_call("X", syslog.syslog, "XYZ") # => pass
           self.assert_search_syslog_call("X", syslog.syslog, "ABC") # => fail
         """
+        if not hasattr(sys.modules[__name__], "syslog"):
+            self.omit("syslog isn't supported on this environment")
         self.assert_callable(callable_object)
 
         mark = 'Pikzie: %.20f' % random.random()
