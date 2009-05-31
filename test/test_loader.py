@@ -1,16 +1,17 @@
+import os
 import pikzie
 
 class TestLoader(pikzie.TestCase):
     """Tests for TestLoader"""
 
     def setup(self):
-        self.fixture_dir = "test/fixtures/tests"
-        pattern = self.fixture_dir + "/test_*.py"
+        self.fixture_dir = os.path.join("test", "fixtures", "tests")
+        pattern = os.path.join(self.fixture_dir, "test_*.py")
         self.loader = pikzie.TestLoader(pattern, priority_mode=False)
 
     def test_find_targets(self):
         def build_full_path(name):
-            return "%s/test_%s.py" % (self.fixture_dir, name)
+            return os.path.join(self.fixture_dir, "test_%s.py" % name)
 
         self.assert_equal(sorted(map(build_full_path,
                                      ["module_base", "xxx", "yyy", "zzz"])),
