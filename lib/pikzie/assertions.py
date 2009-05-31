@@ -20,13 +20,13 @@ import traceback
 import random
 try:
     import syslog
+    import fcntl
 except ImportError:
     pass
 import select
 import time
 import popen2
 import signal
-import fcntl
 
 import pikzie.core
 import pikzie.pretty_print as pp
