@@ -25,7 +25,6 @@ except ImportError:
     pass
 import select
 import time
-import popen2
 import signal
 
 import pikzie.core
@@ -396,6 +395,8 @@ class Assertions(object):
         """
         if not hasattr(sys.modules[__name__], "syslog"):
             self.omit("syslog isn't supported on this environment")
+
+        import popen2 # FIXME: rewrite with subprocess.
         self.assert_callable(callable_object)
 
         mark = 'Pikzie: %.20f' % random.random()
