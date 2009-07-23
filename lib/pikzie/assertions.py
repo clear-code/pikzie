@@ -135,7 +135,7 @@ class Assertions(object):
         """
         Passes if not_expected != actual.
 
-          self.assert_equal(-5, 2 + 3) # => pass
+          self.assert_not_equal(-5, 2 + 3) # => pass
         """
         if not_expected != actual:
             self._pass_assertion()
