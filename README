@@ -46,7 +46,7 @@ Get
 
 tar.gz::
 
-  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.5.tar.gz
 
 Subversion::
 
@@ -65,9 +65,9 @@ Install with pip::
 
 Install from tar.gz::
 
-  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.4.tar.gz
-  % tar xvzf pikzie-0.9.4.tar.gz
-  % cd pikzie-0.9.4
+  % wget http://downloads.sourceforge.net/pikzie/pikzie-0.9.5.tar.gz
+  % tar xvzf pikzie-0.9.5.tar.gz
+  % cd pikzie-0.9.5
   % sudo python setup.py install
 
 Usage
