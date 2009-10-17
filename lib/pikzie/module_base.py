@@ -45,9 +45,14 @@ for assertion in filter(lambda name: not name.startswith("_"), dir(Assertions)):
 def collect_test_case_from_module(self, module):
     test_cases = []
     pikzie_module = sys.modules.get("pikzie")
-    if (pikzie_module is not None and
-        pikzie_module in map(lambda name: getattr(module, name),
-                             dir(module))):
+    if (pikzie_module is None):
+        return []
+    module_object = type(pikzie_module)
+    def _is_module(_object):
+        return type(_object) == module_object
+    if (pikzie_module in filter(_is_module,
+                                map(lambda name: getattr(module, name),
+                                    dir(module)))):
         for assertion in assertions:
             if not module.__dict__.has_key(assertion):
                 module.__dict__[assertion] = assertions[assertion]
