@@ -70,7 +70,7 @@ class ModuleBasedTestCase(TestCase):
         def _is_test_method(name):
             object = getattr(cls.target_module, name)
             return (hasattr(object, "func_code") and
-                    hasattr(object.func_code, "co_argument") and
+                    hasattr(object.func_code, "co_argcount") and
                     object.func_code.co_argcount == 0)
         return map(cls, filter(_is_test_method, dir(cls.target_module)))
     collect_test = classmethod(collect_test)
