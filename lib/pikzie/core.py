@@ -496,10 +496,19 @@ class TestLoader(object):
                 targets.append(target)
         return targets
 
+    def _need_load_files(self, files, modules):
+        if self.pattern is not None:
+            return True
+        if len(files) == 0:
+            return True
+        if len(modules) == 0 or modules == [sys.modules['__main__']]:
+            return True
+        return False
+
     def _load_modules(self, files=[]):
         modules = self.target_modules[:]
         targets = files[:]
-        if (len(files) == 0 and len(modules) == 0) or self.pattern is not None:
+        if self._need_load_files(files, modules):
             targets += self._find_targets()
         for target in targets:
             target = os.path.splitext(target)[0]
