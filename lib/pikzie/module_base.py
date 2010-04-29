@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2010  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -67,16 +67,8 @@ class ModuleBasedTestCase(TestCase):
     __current_test_case__ = None
 
     def collect_test(cls):
-        def _is_test_method(name):
-            object = getattr(cls.target_module, name)
-            return (hasattr(object, "func_code") and
-                    hasattr(object.func_code, "co_argcount") and
-                    object.func_code.co_argcount == 0)
-        return map(cls, filter(_is_test_method, dir(cls.target_module)))
+        return cls._collect_test(cls.target_module, 0)
     collect_test = classmethod(collect_test)
-
-    def __init__(self, method_name):
-        TestCase.__init__(self, method_name)
 
     def _test_method(self):
         return getattr(self.__class__.target_module, self._method_name())
@@ -88,9 +80,10 @@ class ModuleBasedTestCase(TestCase):
         return self.id()
 
     def __repr__(self):
-        return "<%s method_name=%s description=%s>" % \
-               (str(self.__class__.target_module),
-                self._method_name(), self.__description)
+        return "<%s method_name=%s description=%s data_label=%s data=%s>" % \
+            (str(self.__class__.target_module),
+             self._method_name(), self.__description,
+             self.__data_label, str(self.__data))
 
     def _run_setup(self, context):
         setup = getattr(self.__class__.target_module, "setup", None)

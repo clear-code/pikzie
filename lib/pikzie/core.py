@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2010  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -155,17 +155,42 @@ class TestCase(TestCaseTemplate, Assertions):
     in order to be run.
     """
 
-    def collect_test(cls):
-        def _is_test_method(name):
-            object = getattr(cls, name)
+    def _collect_test(cls, target, base_n_args):
+        def is_function(object):
             return (hasattr(object, "func_code") and
-                    object.func_code.co_argcount == 1)
-        return map(cls, filter(_is_test_method, dir(cls)))
+                    hasattr(object.func_code, "co_argcount"))
+        def test_data(object):
+            if not hasattr(object, metadata.container_key):
+                return None
+            return getattr(object, metadata.container_key).get("data")
+
+        tests = []
+        for name in dir(target):
+            object = getattr(target, name)
+            if not is_function(object):
+                continue
+            n_args = object.func_code.co_argcount
+            data = test_data(object)
+            if data is None:
+                if n_args == base_n_args:
+                    tests.append(cls(name))
+            else:
+                if not n_args == base_n_args + 1:
+                    continue
+                for datum in data:
+                    tests.append(cls(name, datum["label"], datum["value"]))
+        return tests
+    _collect_test = classmethod(_collect_test)
+
+    def collect_test(cls):
+        return cls._collect_test(cls, 1)
     collect_test = classmethod(collect_test)
 
-    def __init__(self, method_name):
+    def __init__(self, method_name, data_label=None, data=None):
         self.__method_name = method_name
         self.__description = self._test_method().__doc__
+        self.__data_label = data_label
+        self.__data = data
 
     def __len__(self):
         return 1
@@ -203,17 +228,27 @@ class TestCase(TestCaseTemplate, Assertions):
                           self.__class__.__name__)
 
     def id(self):
-        return "%s.%s" % (self._test_case_name(), self._method_name())
+        id = "%s.%s" % (self._test_case_name(), self._method_name())
+        if self.__data_label:
+            id += " (%s)" % self.__data_label
+        return id
 
     def __str__(self):
-        return "%s.%s" % (self.__class__.__name__, self._method_name())
+        string = "%s.%s" % (self.__class__.__name__, self._method_name())
+        if self.__data_label:
+            string += " (%s)" % self.__data_label
+        return string
 
     def short_name(self):
-        return self.__method_name
+        name = self.__method_name
+        if self.__data_label:
+            name += " (%s)" % self.__data_label
+        return name
 
     def __repr__(self):
-        return "<%s method_name=%s description=%s>" % \
-               (str(self.__class__), self.__method_name, self.__description)
+        return "<%s method_name=%s description=%s data_label=%s data=%s>" % \
+            (str(self.__class__), self.__method_name, self.__description,
+             self.__data_label, str(self.__data))
 
     def need_to_run(self):
         return not self._is_previous_test_success() or \
@@ -272,7 +307,11 @@ class TestCase(TestCaseTemplate, Assertions):
         self.setup()
 
     def _run_test(self, context):
-        self._test_method()()
+        test_method = self._test_method()
+        if self.__data_label:
+            test_method(self.__data)
+        else:
+            test_method()
 
     def _run_teardown(self, context):
         self.teardown()
