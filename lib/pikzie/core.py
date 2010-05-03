@@ -192,6 +192,12 @@ class TestCase(TestCaseTemplate, Assertions):
         self.__data_label = data_label
         self.__data = data
 
+    def _data(self):
+        return self.__data
+
+    def _data_label(self):
+        return self.__data_label
+
     def __len__(self):
         return 1
 

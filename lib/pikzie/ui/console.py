@@ -226,6 +226,8 @@ class ConsoleTestRunner(object):
         for i, fault in enumerate(context.faults):
             self._write(index_format % (i + 1))
             self._writeln(fault.title(), self._fault_color(fault))
+            if fault.test._data_label():
+                self._writeln("  data: %s" % fault.test._data())
             metadata = format_metadata(fault.test.metadata)
             if metadata:
                 self._writeln(metadata, self._fault_color(fault))

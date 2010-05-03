@@ -16,10 +16,13 @@
 from pikzie.color import *
 
 def format_metadata(metadata, need_newline=False):
-    if metadata is None or len(metadata) == 0:
+    if metadata is None:
+        return ""
+    format_keys = filter(lambda key: key != "data", metadata)
+    if len(format_keys) == 0:
         return ""
     formatted_metadata = map(lambda key: "  %s: %s" % (key, metadata[key]),
-                             metadata)
+                             format_keys)
     result = "\n".join(formatted_metadata)
     if need_newline:
         result += "\n"
