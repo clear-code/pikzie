@@ -17,6 +17,16 @@ nonexistent_path = os.path.join(base_path, "nonexistent")
 class TestAssertions(pikzie.TestCase, test.utils.Assertions):
     """Tests for assertions."""
 
+    class ComparableError(Exception):
+        def __init__(self, message):
+            self.message = message
+
+        def __repr__(self):
+            return "%s(%r,)" % (type(self).__name__, self.message)
+
+        def __eq__(self, other):
+            return self.message == other.message
+
     class TestCase(pikzie.TestCase):
         def setup(self):
             shutil.rmtree(tmp_path, True)
@@ -174,6 +184,14 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             def raise_zero_division_error():
                 1 / 0
             self.assert_raise_call(NameError, raise_zero_division_error)
+
+        def test_assert_raise_call_instance(self):
+            def raise_error():
+                raise TestAssertions.ComparableError("raise error")
+            self.assert_raise_call(TestAssertions.ComparableError("raise error"),
+                                   raise_error)
+            self.assert_raise_call(TestAssertions.ComparableError("not error"),
+                                   raise_error)
 
         def test_assert_nothing_raised_call(self):
             self.assert_equal(123, self.assert_nothing_raised_call(lambda : 123))
@@ -431,7 +449,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_callable"])
 
     def test_assert_raise_call(self):
-        self.assert_result(False, 2, 5, 2, 0, 0, 0, 0,
+        self.assert_result(False, 3, 8, 3, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_raise_call",
                              "expected: <%s> is raised\n"
@@ -446,9 +464,17 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "(integer division or modulo by zero)" %
                              (exceptions.NameError,
                               exceptions.ZeroDivisionError),
+                             None),
+                            ('F',
+                             "TestCase.test_assert_raise_call_instance",
+                             "expected: <%r>\n"
+                             " but was: <%r>" %
+                             (self.ComparableError("not error"),
+                              self.ComparableError("raise error")),
                              None)],
                            ["test_assert_raise_call",
-                            "test_assert_raise_call_different_error"])
+                            "test_assert_raise_call_different_error",
+                            "test_assert_raise_call_instance"])
 
     def test_assert_nothing_raised_call(self):
         self.assert_result(False, 1, 4, 1, 0, 0, 0, 0,

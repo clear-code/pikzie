@@ -98,13 +98,15 @@ class Pending(TestResult):
 class Failure(TestResult):
     name = "failure"
 
-    def __init__(self, test, message, traceback):
+    def __init__(self, test, message, traceback, expected=None, actual=None):
         self.fault = True
         self.critical = True
         self.symbol = "F"
         self.test = test
         self.message = message
         self.traceback = traceback
+        self.expected = expected
+        self.actual = actual
 
     def title(self):
         if len(self.traceback) == 0:

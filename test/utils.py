@@ -2,6 +2,22 @@ import sys
 import re
 import pikzie
 
+import pikzie.pretty_print as pp
+
+def collect_fault_info(fault):
+    if hasattr(fault, "expected") and fault.expected and fault.actual:
+        message = \
+            ("expected: <%s>\n but was: <%s>") % \
+            (fault.expected, fault.actual)
+        if fault.message:
+            message = fault.message + "\n" + message
+    else:
+        message = fault.message
+    return (fault.symbol,
+            str(fault.test),
+            str(message),
+            fault.test.metadata)
+
 class Assertions(object):
     class RegexpMatchResult(object):
         def __init__(self, succeeded, test_result, fault_infos):
@@ -54,12 +70,6 @@ class Assertions(object):
         context = pikzie.TestRunnerContext()
         for test_name in tests:
             self.TestCase(test_name).run(context)
-
-        def collect_fault_info(fault):
-            return (fault.symbol,
-                    str(fault.test),
-                    str(fault.message),
-                    fault.test.metadata)
 
         self.assert_equal(self.RegexpMatchResult(succeeded,
                                                  (n_tests,

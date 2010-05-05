@@ -80,9 +80,11 @@ class TracebackEntry(object):
         return result
 
 class AssertionFailure(Exception):
-    def __init__(self, message, user_message=None):
+    def __init__(self, message, user_message=None, expected=None, actual=None):
         self.message = message
         self.user_message = user_message
+        self.expected = expected
+        self.actual = actual
 
     def __str__(self):
         result = self.message
@@ -331,8 +333,8 @@ class TestCase(TestCaseTemplate, Assertions):
     def _pass_assertion(self):
         self.__context.pass_assertion(self)
 
-    def _fail(self, message, user_message=None):
-        raise AssertionFailure(message, user_message)
+    def _fail(self, message, user_message=None, expected=None, actual=None):
+        raise AssertionFailure(message, user_message, expected, actual)
 
     def _pend(self, message):
         raise PendingTestError(message)
@@ -366,9 +368,11 @@ class TestCase(TestCaseTemplate, Assertions):
         context.add_success(self)
 
     def _add_failure(self, context):
-        exception_type, message, traceback = sys.exc_info()
+        exception_type, assertion_failure, traceback = sys.exc_info()
         traceback = self._prepare_traceback(traceback, True)
-        failure = Failure(self, message, traceback)
+        failure = Failure(self, str(assertion_failure), traceback,
+                          assertion_failure.expected,
+                          assertion_failure.actual)
         context.add_failure(self, failure)
 
     def _add_error(self, context):

@@ -1,5 +1,5 @@
 import pikzie
-from test.utils import Assertions
+from test.utils import Assertions, collect_fault_info
 
 fixture_dir = "test/fixtures/data_driven_test"
 pattern = fixture_dir + "/test_*.py"
@@ -25,12 +25,6 @@ def assert_result(succeeded, n_tests, n_assertions, n_failures,
     loader = pikzie.TestLoader(**_kw_args)
     test_suite = loader.create_test_suite()
     test_suite.run(context)
-
-    def collect_fault_info(fault):
-        return (fault.symbol,
-                str(fault.test),
-                str(fault.message),
-                fault.test.metadata)
 
     assert_equal(Assertions.RegexpMatchResult(succeeded,
                                               (n_tests,

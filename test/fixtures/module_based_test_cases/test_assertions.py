@@ -6,5 +6,3 @@ def test_assert_equal_success():
 
 def test_assert_equal_fail():
     assert_equal(2, 1)
-
-

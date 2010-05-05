@@ -23,6 +23,7 @@ from optparse import OptionValueError
 import pikzie.color
 from pikzie.core import *
 from pikzie.results import *
+import pikzie.pretty_print as pp
 
 VERBOSE_LEVEL_SILENT = 0
 VERBOSE_LEVEL_NORMAL = 1
@@ -232,9 +233,7 @@ class ConsoleTestRunner(object):
             if metadata:
                 self._writeln(metadata, self._fault_color(fault))
             self._print_traceback(fault.traceback)
-            detail = fault.detail()
-            if detail:
-                self._writeln(str(detail), self._fault_color(fault))
+            self._print_fault_message(fault)
             self._writeln()
 
     def _print_traceback(self, traceback):
@@ -248,6 +247,30 @@ class ConsoleTestRunner(object):
                 self._write(": ")
                 self._write(entry.content, self._content_color())
             self._writeln()
+
+    def _print_fault_message(self, fault):
+        detail = fault.detail()
+        if detail:
+            self._writeln(str(detail))
+        if hasattr(fault, "expected") and fault.expected and fault.actual:
+            self._write("expected: <")
+            self._write(fault.expected, self.color_scheme["success"])
+            self._writeln(">")
+            self._write(" but was: <")
+            self._write(fault.actual, self._fault_color(fault))
+            self._writeln(">")
+            formatted_expected = pp.format_for_diff(fault.expected)
+            formatted_actual = pp.format_for_diff(fault.actual)
+            diff = pp.format_diff(formatted_expected, formatted_actual)
+            if pp.is_interested_diff(diff):
+                self._writeln("diff:")
+                self._writeln(diff)
+            if pp.need_fold(diff):
+                folded_diff = pp.format_folded_diff(formatted_expected,
+                                                    formatted_actual)
+                self._writeln()
+                self._writeln("folded diff:")
+                self._writeln(folded_diff)
 
     def _result_color(self, context):
         if len(context.faults) == 0:
