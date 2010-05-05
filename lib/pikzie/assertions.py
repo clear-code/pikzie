@@ -126,10 +126,7 @@ class Assertions(object):
         else:
             formatted_expected = pp.format(expected)
             formatted_actual = pp.format(actual)
-            system_message = "expected: <%s>\n but was: <%s>" % \
-                (formatted_expected, formatted_actual)
-            system_message = pp.append_diff(system_message, expected, actual)
-            self._fail(system_message, message)
+            self._fail("", message, formatted_expected, formatted_actual)
 
     def assert_not_equal(self, not_expected, actual, message=None):
         """
@@ -287,28 +284,64 @@ class Assertions(object):
                                                            # => returns NameError
                                                            #    value
           self.assert_raise_call(NameError, lambda: 1)     # => fail
+
+        Exception instance can be also passed if it's comparable.
+
+          class ComparableError(Exception):
+              def __init__(self, message):
+                  self.message = message
+
+              def __repr__(self):
+                  return "%s(%r,)" % (type(self).__name__, self.message)
+
+              def __eq__(self, other):
+                  return self.message == other.message
+
+          def raise_error():
+              raise ComparableError("value")
+          self.assert_raise_call(ComparableError("value"),
+                                 raise_error)              # => pass
+                                                           # => returns
+                                                           #    ComparableError
+                                                           #    value
+          self.assert_raise_call(ComparableError("key"),
+                                 raise_error)              # => fail
         """
         self.assert_callable(callable_object)
+        if isinstance(exception, Exception):
+            exception_class = type(exception)
+        else:
+            exception_class = exception
         try:
             callable_object(*args, **kw_args)
-        except exception:
-            self._pass_assertion()
-            return sys.exc_info()[1]
+        except exception_class:
+            actual = sys.exc_info()[1]
+            if exception_class == exception:
+                self._pass_assertion()
+            else:
+                self.assert_equal(exception, actual)
+            return actual
         except:
             actual = sys.exc_info()
             actual_exception_class, actual_exception_value = actual[:2]
-            message = \
-                "expected: <%s> is raised\n" \
-                " but was: <%s>(%s)" % \
-                (pp.format_exception_class(exception),
-                 pp.format_exception_class(actual_exception_class),
+            if exception_class == exception:
+                expected = "<%s>" % pp.format_exception_class(exception_class)
+            else:
+                expected = "<%s>(%s)" % \
+                    (pp.format_exception_class(exception_class),
+                     str(exception))
+            actual = "<%s>(%s)" % \
+                (pp.format_exception_class(actual_exception_class),
                  str(actual_exception_value))
+            message = \
+                "expected: %s is raised\n" \
+                " but was: %s" % (expected, actual)
             self._fail(message)
         else:
             message = \
                 "expected: <%s> is raised\n" \
                 " but was: %s nothing raised" % \
-                (pp.format_exception_class(exception),
+                (pp.format_exception_class(exception_class),
                  pp.format_call(callable_object, args, kw_args))
             self._fail(message)
 
