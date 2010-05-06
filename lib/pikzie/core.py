@@ -474,7 +474,7 @@ class TestCase(TestCaseTemplate, Assertions):
             return True
 
 class TestLoader(object):
-    default_base_dir = re.sub("^\./", "", os.path.dirname(sys.argv[0]))
+    default_base_dir = os.path.dirname(sys.argv[0])
     default_pattern = "test[_-]*.py"
     default_ignore_dirs = [".svn", "CVS", ".git", ".test-result"]
 
@@ -551,7 +551,7 @@ class TestLoader(object):
         for root, dirs, files in os.walk(base_dir):
             for file in files:
                 if fnmatch.fnmatch(file, pattern):
-                    targets.append(os.path.join(root, file))
+                    targets.append(re.sub("^\./", "", os.path.join(root, file)))
             for ignore_dir in ignore_dirs:
                 if ignore_dir in dirs:
                     dirs.remove(ignore_dir)
