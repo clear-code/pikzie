@@ -476,7 +476,7 @@ class TestCase(TestCaseTemplate, Assertions):
 class TestLoader(object):
     default_base_dir = "test"
     default_pattern = "test[_-]*.py"
-    default_ignore_dirs = [".svn", "CVS", ".git"]
+    default_ignore_dirs = [".svn", "CVS", ".git", ".test-result"]
 
     def __init__(self, base_dir=None, pattern=None, ignore_dirs=None,
                  test_names=None, test_case_names=None,
