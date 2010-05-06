@@ -18,7 +18,7 @@ import sys
 import traceback
 import os
 import errno
-import glob
+import fnmatch
 import types
 import time
 import tempfile
@@ -474,11 +474,16 @@ class TestCase(TestCaseTemplate, Assertions):
             return True
 
 class TestLoader(object):
-    default_pattern = "test/test_*.py"
+    default_base_dir = "test"
+    default_pattern = "test[_-]*.py"
+    default_ignore_dirs = [".svn", "CVS", ".git"]
 
-    def __init__(self, pattern=None, test_names=None, test_case_names=None,
+    def __init__(self, base_dir=None, pattern=None, ignore_dirs=None,
+                 test_names=None, test_case_names=None,
                  target_modules=None, priority_mode=True):
+        self.base_dir = base_dir
         self.pattern = pattern
+        self.ignore_dirs = ignore_dirs
         self.test_names = test_names
         self.test_case_names = test_case_names
         self.target_modules = target_modules or []
@@ -540,9 +545,16 @@ class TestLoader(object):
 
     def _find_targets(self):
         targets = []
-        for target in glob.glob(self.pattern or self.default_pattern):
-            if os.path.isfile(target):
-                targets.append(target)
+        base_dir = self.base_dir or self.default_base_dir
+        pattern = self.pattern or self.default_pattern
+        ignore_dirs = (self.ignore_dirs or []) + self.default_ignore_dirs
+        for root, dirs, files in os.walk(base_dir):
+            for file in files:
+                if fnmatch.fnmatch(file, pattern):
+                    targets.append(os.path.join(root, file))
+            for ignore_dir in ignore_dirs:
+                if ignore_dir in dirs:
+                    dirs.remove(ignore_dir)
         return targets
 
     def _need_load_files(self, files, modules):

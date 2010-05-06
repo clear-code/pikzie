@@ -45,6 +45,8 @@ class Tester(object):
         options, args = self._parse(args)
         options = options.__dict__
         test_suite_create_options = {
+            "base_dir": options.pop("base_dir"),
+            "ignore_dirs": options.pop("ignore_dirs"),
             "pattern": options.pop("test_file_name_pattern"),
             "test_names": options.pop("test_names"),
             "test_case_names": options.pop("test_case_names"),
@@ -67,9 +69,17 @@ class Tester(object):
         parser = OptionParser(version=self.version,
                               usage="%prog [options] [test_files]")
         group = parser.add_option_group("Common", "Common options")
+        group.add_option("--base-dir",
+                         metavar="DIR", dest="base_dir",
+                         help="Base directory that has tests "
+                         "(default: %s)" % TestLoader.default_base_dir)
+        group.add_option("--ignore-directory", metavar="DIRECTORY",
+                         action="append", dest="ignore_dirs",
+                         help="Don't load tests under DIRECTORY "
+                         "(default: %r)" % TestLoader.default_ignore_dirs)
         group.add_option("-p", "--test-file-name-pattern",
                          metavar="PATTERN", dest="test_file_name_pattern",
-                         help="Glob for test file name "
+                         help="Glob for test file base name "
                          "(default: %s)" % TestLoader.default_pattern)
         group.add_option("-n", "--name", metavar="TEST_NAME",
                          action="append", dest="test_names",

@@ -2,7 +2,6 @@ import pikzie
 from test.utils import Assertions, collect_fault_info
 
 fixture_dir = "test/fixtures/data_driven_test"
-pattern = fixture_dir + "/test_*.py"
 
 def test_assertions():
     prefix = 'test.fixtures.data_driven_test.test_assertions'
@@ -18,7 +17,7 @@ def assert_result(succeeded, n_tests, n_assertions, n_failures,
                   n_errors, n_pendings, n_notifications, fault_info,
                   **kw_args):
     context = pikzie.TestRunnerContext()
-    _kw_args = {"pattern": pattern, "priority_mode": False}
+    _kw_args = {"base_dir": fixture_dir, "priority_mode": False}
     for name in kw_args:
         _kw_args[name] = kw_args[name]
     # _kw_args.update(**kw_args) # require Python >= 2.4

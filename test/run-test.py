@@ -9,4 +9,6 @@ sys.path.insert(0, base_dir)
 
 import pikzie
 
+sys.argv.insert(1, "--ignore-directory")
+sys.argv.insert(2, "fixtures")
 sys.exit(pikzie.Tester(version=pikzie.version).run())
