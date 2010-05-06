@@ -474,7 +474,7 @@ class TestCase(TestCaseTemplate, Assertions):
             return True
 
 class TestLoader(object):
-    default_base_dir = "test"
+    default_base_dir = re.sub("^\./", "", os.path.dirname(sys.argv[0]))
     default_pattern = "test[_-]*.py"
     default_ignore_dirs = [".svn", "CVS", ".git", ".test-result"]
 
