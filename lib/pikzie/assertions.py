@@ -470,24 +470,24 @@ class Assertions(object):
             os.kill(messages.pid, signal.SIGINT)
             messages.wait()
 
-    def assert_exist(self, path):
+    def assert_exists(self, path):
         """
         Passes if path exists.
 
-          self.assert_exist("/tmp/exist")        # => pass
-          self.assert_exist("/tmp/nonexistence") # => fail
+          self.assert_exists("/tmp/exist")        # => pass
+          self.assert_exists("/tmp/nonexistence") # => fail
         """
         if os.path.exists(path):
             self._pass_assertion
         else:
             self.fail("expected: <%s> exists" % path)
 
-    def assert_not_exist(self, path):
+    def assert_not_exists(self, path):
         """
         Passes if path doesn't exists.
 
-          self.assert_not_exist("/tmp/nonexistence") # => pass
-          self.assert_not_exist("/tmp/exist")        # => fail
+          self.assert_not_exists("/tmp/nonexistence") # => pass
+          self.assert_not_exists("/tmp/exist")        # => fail
         """
         if os.path.exists(path):
             self.fail("expected: <%s> doesn't exists" % path)
