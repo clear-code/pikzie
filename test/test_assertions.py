@@ -213,6 +213,14 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.assert_search_syslog_call("fix me!",
                                            syslog.syslog, "FIXME!!!")
 
+        def test_assert_exist(self):
+            self.assert_exist(__file__)
+            self.assert_exist(nonexistent_path)
+
+        def test_assert_not_exist(self):
+            self.assert_not_exist(nonexistent_path)
+            self.assert_not_exist(__file__)
+
         def test_assert_open_file(self):
             file = self.assert_open_file(__file__)
             self.assert_equal("r", file.mode)
@@ -528,6 +536,22 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              re.compile(detail),
                              None)],
                            ["test_assert_search_syslog_call"])
+
+    def test_assert_exist(self):
+        self.assert_result(False, 1, 0, 1, 0, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_exist",
+                             "expected: <%s> exists" % nonexistent_path,
+                             None)],
+                           ["test_assert_exist"])
+
+    def test_assert_not_exist(self):
+        self.assert_result(False, 1, 0, 1, 0, 0, 0, 0,
+                           [('F',
+                             "TestCase.test_assert_not_exist",
+                             "expected: <%s> not exists" % __file__,
+                             None)],
+                           ["test_assert_not_exist"])
 
     def test_assert_open_file(self):
         self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
