@@ -39,3 +39,26 @@ def test_rm_rf():
     assert_exists(tmp_dir)
     rm_rf(tmp_dir)
     assert_not_exists(tmp_dir)
+
+def test_cp_a():
+    source_dir = os.path.join(tmp_dir, "src")
+    shallow_copy = os.path.join(source_dir, "file")
+    deep_dir = os.path.join(source_dir, "deep", "dir")
+    deep_file = os.path.join(deep_dir, "file")
+    mkdir_p(deep_dir)
+    assert_open_file(shallow_copy, "w")
+    assert_open_file(deep_file, "w")
+
+    destination_dir = os.path.join(tmp_dir, "dest")
+    assert_not_exists(destination_dir)
+    cp_a(source_dir, destination_dir)
+    assert_exists(destination_dir)
+    tree = []
+    for root, dirs, files in os.walk(destination_dir):
+        for base in dirs + files:
+            tree.append(os.path.join(root, base))
+    assert_equal(sorted([os.path.join(destination_dir, "file"),
+                         os.path.join(destination_dir, "deep"),
+                         os.path.join(destination_dir, "deep", "dir"),
+                         os.path.join(destination_dir, "deep", "dir", "file")]),
+                 sorted(tree))

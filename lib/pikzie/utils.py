@@ -16,7 +16,7 @@
 import os
 import shutil
 
-__all__ = ["mkdir_p", "rm_rf"]
+__all__ = ["mkdir_p", "rm_rf", "cp_a"]
 
 def mkdir_p(path, *arguments, **parameters):
     os.makedirs(path, *arguments, **parameters)
@@ -28,3 +28,6 @@ def rm_rf(path):
         shutil.rmtree(path, ignore_errors=True)
     else:
         os.remove(path)
+
+def cp_a(src, dest):
+    shutil.copytree(src, dest)
