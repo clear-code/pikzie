@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import shutil
 
 __all__ = ["mkdir_p", "rm_rf"]
 
@@ -23,12 +24,7 @@ def mkdir_p(path, *arguments, **parameters):
 def rm_rf(path):
     if not os.path.exists(path):
         return
-    for root, dirs, files in os.walk(path, topdown=False):
-        for name in files:
-            os.remove(os.path.join(root, name))
-        for name in dirs:
-            os.rmdir(os.path.join(root, name))
     if os.path.isdir(path):
-        os.rmdir(path)
+        shutil.rmtree(path, ignore_errors=True)
     else:
         os.remove(path)

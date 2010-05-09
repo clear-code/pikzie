@@ -31,7 +31,7 @@ def test_mkdir_p():
     mkdir_p(deep_dir)
     assert_exists(deep_dir)
 
-def test_rm_f():
+def test_rm_rf():
     deep_dir = os.path.join(tmp_dir, "deep", "dir")
     deep_file = os.path.join(deep_dir, "file")
     mkdir_p(deep_dir)
