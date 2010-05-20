@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2010  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
 
 import __builtin__
 
-version = "0.9.5"
+version = "0.9.6"
 
 if not hasattr(__builtin__, "sorted"):
     def sorted(iterable, cmd=None, key=None, reverse=False):
