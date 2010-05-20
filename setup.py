@@ -40,6 +40,7 @@ package_name = "Pikzie"
 distribution_name = package_name.lower()
 version = pikzie.version
 sf_project_name = "Pikzie"
+sf_project_id = package_name.lower()
 sf_package_name = package_name.lower()
 sf_user = "ktou"
 sf_host = "%s@web.sourceforge.net" % sf_user
@@ -224,9 +225,12 @@ class release(Command):
     def run(self):
         sdist = self.reinitialize_command("sdist")
         self.run_command("sdist")
-        _run("misc/release.rb", sf_user, sf_project_name, sf_package_name,
-             version, "dist/%s.tar.gz" % self.distribution.get_fullname(),
-             "README", "NEWS")
+        archive_name = "%s.tar.gz" % self.distribution.get_fullname()
+        os.rename("dist/%s" % archive_name, archive_name)
+        _run("misc/release.rb", sf_user,
+             sf_project_id, sf_project_name, sf_package_name,
+             version, "README", "NEWS",
+             archive_name)
 
 class tag(Command):
     description = "tag %s" % version
