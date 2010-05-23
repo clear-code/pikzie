@@ -5,7 +5,7 @@ from test.utils import Assertions, collect_fault_info
 fixture_dir = "test/fixtures/module_based_test_cases"
 
 def test_assertions():
-    prefix = 'test.fixtures.module_based_test_cases.test_assertions'
+    prefix = 'test_module_based_test_case_fixture'
     assert_result(True, 0, 0, 0, 0, 0, 0, [],
                   test_case_names=["/test_never_match/"])
     assert_result(False, 2, 2, 1, 0, 0, 0,
@@ -14,7 +14,7 @@ def test_assertions():
                     "expected: <2>\n"
                     " but was: <1>",
                     None]],
-                  test_case_names=["/test_assertions/"])
+                  test_case_names=["/test_module_based_test_case_fixture/"])
 
 def assert_result(succeeded, n_tests, n_assertions, n_failures,
                   n_errors, n_pendings, n_notifications, fault_info,

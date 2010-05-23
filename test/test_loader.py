@@ -11,28 +11,31 @@ class TestLoader(pikzie.TestCase):
 
     def test_find_targets(self):
         def build_full_path(name):
-            return os.path.join(self.fixture_dir, "test_%s.py" % name)
-
-        self.assert_equal(sorted(map(build_full_path,
-                                     ["module_base", "xxx", "yyy", "zzz"])),
-                          sorted(self.loader._find_targets()))
+            return "test_%s.py" % name
+        base_dir, targets = self.loader._find_targets()
+        self.assert_equal((os.path.abspath(self.fixture_dir),
+                           sorted(map(build_full_path,
+                                      ["module_base", "xxx", "yyy", "zzz"]))),
+                          (base_dir, sorted(targets)))
 
     def test_load_modules(self):
         modules = self.loader._load_modules()
         module_names = map(lambda module: module.__name__, modules)
-        self.assert_equal(["test.fixtures.tests.test_module_base",
-                           "test.fixtures.tests.test_xxx",
-                           "test.fixtures.tests.test_yyy",
-                           "test.fixtures.tests.test_zzz"],
+        self.assert_equal(["test_module_base",
+                           "test_xxx",
+                           "test_yyy",
+                           "test_zzz"],
                           sorted(module_names))
 
     def test_collect_test_cases(self):
         test_cases = self.loader.collect_test_cases()
         test_case_names = map(lambda case: case.__name__, test_cases)
-        self.assert_equal(["TestXXX1", "TestXXX2", "TestYYY",
-                           'test.fixtures.tests.test_module_base',
-                           'test.fixtures.tests.test_xxx',
-                           'test.fixtures.tests.test_yyy'],
+        self.assert_equal(["TestXXX1",
+                           "TestXXX2",
+                           "TestYYY",
+                           'test_module_base',
+                           'test_xxx',
+                           'test_yyy'],
                           sorted(test_case_names))
 
     def test_collect_test_cases_with_test_case_name_filter(self):
@@ -50,41 +53,41 @@ class TestLoader(pikzie.TestCase):
     def test_create_test_suite(self):
         test_suite = self.loader.create_test_suite()
         self.assert_equal(
-            ["test.fixtures.tests.test_module_base.test_top_level1",
-             "test.fixtures.tests.test_module_base.test_top_level2",
-             "test.fixtures.tests.test_xxx.TestXXX1.test_one",
-             "test.fixtures.tests.test_xxx.TestXXX1.test_two",
-             "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
+            ["test_module_base.test_top_level1",
+             "test_module_base.test_top_level2",
+             "test_xxx.TestXXX1.test_one",
+             "test_xxx.TestXXX1.test_two",
+             "test_yyy.TestYYY.test_xyz"],
             sorted(self._collect_test_names(test_suite)))
 
     def test_create_test_suite_with_test_name_filter(self):
         self.loader.test_names = ["test_one", "test_xyz"]
         test_suite = self.loader.create_test_suite()
-        self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
-                           "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
+        self.assert_equal(["test_xxx.TestXXX1.test_one",
+                           "test_yyy.TestYYY.test_xyz"],
                           sorted(self._collect_test_names(test_suite)))
 
     def test_create_test_suite_with_test_name_regexp_filter(self):
         self.loader.test_names = ["/one|xyz/"]
         test_suite = self.loader.create_test_suite()
-        self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
-                           "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
+        self.assert_equal(["test_xxx.TestXXX1.test_one",
+                           "test_yyy.TestYYY.test_xyz"],
                           sorted(self._collect_test_names(test_suite)))
 
     def test_create_test_suite_with_filters(self):
         self.loader.test_case_names = "TestXXX1"
         self.loader.test_names = ["test_one", "test_two"]
         test_suite = self.loader.create_test_suite()
-        self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
-                           "test.fixtures.tests.test_xxx.TestXXX1.test_two"],
+        self.assert_equal(["test_xxx.TestXXX1.test_one",
+                           "test_xxx.TestXXX1.test_two"],
                           sorted(self._collect_test_names(test_suite)))
 
     def test_create_test_suite_with_regexp_filters(self):
         self.loader.test_case_names = ["/XXX/", "/YYY/"]
         self.loader.test_names = ["/one|xyz/"]
         test_suite = self.loader.create_test_suite()
-        self.assert_equal(["test.fixtures.tests.test_xxx.TestXXX1.test_one",
-                           "test.fixtures.tests.test_yyy.TestYYY.test_xyz"],
+        self.assert_equal(["test_xxx.TestXXX1.test_one",
+                           "test_yyy.TestYYY.test_xyz"],
                           sorted(self._collect_test_names(test_suite)))
 
     def _collect_test_names(self, test_suite):

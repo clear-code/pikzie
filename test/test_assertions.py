@@ -463,7 +463,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: <%s> is raised\n"
                              " but was: %s() nothing raised" %
                              (exceptions.NameError,
-                              "test.test_assertions.nothing_raised"),
+                              "test_assertions.nothing_raised"),
                              None),
                             ('F',
                              "TestCase.test_assert_raise_call_different_error",
@@ -490,7 +490,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "TestCase.test_assert_nothing_raised_call",
                              "expected: %s() nothing raised\n"
                              " but was: <%s>(%s) is raised" % \
-                                 ("test.test_assertions."
+                                 ("test_assertions."
                                   "raise_zero_division_error",
                                   exceptions.ZeroDivisionError,
                                   "integer division or modulo by zero"),
@@ -575,7 +575,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "interval: <0.01> seconds\n"
                              " but was:\n"
                              "Never succeed" % \
-                                 ("test.test_assertions.never_succeed()",),
+                                 ("test_assertions.never_succeed()",),
                              None)],
                            ["test_assert_try_call"])
 

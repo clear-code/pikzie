@@ -545,7 +545,7 @@ class TestLoader(object):
 
     def _find_targets(self):
         targets = []
-        base_dir = self.base_dir or self.default_base_dir
+        base_dir = os.path.abspath(self.base_dir or self.default_base_dir)
         pattern = self.pattern or self.default_pattern
         ignore_dirs = (self.ignore_dirs or []) + self.default_ignore_dirs
         for root, dirs, files in os.walk(base_dir):
@@ -555,7 +555,9 @@ class TestLoader(object):
             for ignore_dir in ignore_dirs:
                 if ignore_dir in dirs:
                     dirs.remove(ignore_dir)
-        return targets
+        return (base_dir,
+                map(lambda path: re.sub("^%s\/" % re.escape(base_dir), "", path),
+                    targets))
 
     def _need_load_files(self, files, modules):
         if self.pattern is not None:
@@ -569,8 +571,13 @@ class TestLoader(object):
     def _load_modules(self, files=[]):
         modules = self.target_modules[:]
         targets = files[:]
+        base_dir = None
         if self._need_load_files(files, modules):
-            targets += self._find_targets()
+            base_dir, _targets = self._find_targets()
+            targets += _targets
+        if base_dir:
+            base_dir = os.path.abspath(base_dir)
+            sys.path.insert(0, base_dir)
         for target in targets:
             target = os.path.splitext(target)[0]
             target = re.sub(re.escape(os.path.sep), ".", target)
@@ -583,6 +590,8 @@ class TestLoader(object):
                 parts.pop()
             if module is not None and module not in modules:
                 modules.append(module)
+	if base_dir:
+            sys.path.remove(base_dir)
         return modules
 
     def _is_target_test(self, test):

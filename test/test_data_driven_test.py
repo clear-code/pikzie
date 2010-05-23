@@ -4,14 +4,14 @@ from test.utils import Assertions, collect_fault_info
 fixture_dir = "test/fixtures/data_driven_test"
 
 def test_assertions():
-    prefix = 'test.fixtures.data_driven_test.test_assertions'
+    prefix = 'test_data_driven_test_fixture'
     assert_result(False, 3, 2, 1, 0, 0, 0,
                   [['F',
                     prefix + '.test_assert_equal (fail)',
                     "expected: <'abc'>\n"
                     " but was: <'def'>",
                     None]],
-                  test_case_names=["/test_assertions/"])
+                  test_case_names=["/test_data_driven_test_fixture/"])
 
 def assert_result(succeeded, n_tests, n_assertions, n_failures,
                   n_errors, n_pendings, n_notifications, fault_info,

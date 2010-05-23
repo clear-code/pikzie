@@ -38,7 +38,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 <report>
   <result>
     <test_case>
-      <name>test.test_xml_report.TestCase</name>
+      <name>test_xml_report.TestCase</name>
       <description>A test case for test</description>
     </test_case>
     <test>
@@ -60,7 +60,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 <report>
   <result>
     <test_case>
-      <name>test.test_xml_report.TestCase</name>
+      <name>test_xml_report.TestCase</name>
       <description>A test case for test</description>
     </test_case>
     <test>
@@ -96,7 +96,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
 <report>
   <result>
     <test_case>
-      <name>test.test_xml_report.TestCase</name>
+      <name>test_xml_report.TestCase</name>
       <description>A test case for test</description>
     </test_case>
     <test>
