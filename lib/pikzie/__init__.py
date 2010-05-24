@@ -15,7 +15,7 @@
 
 import __builtin__
 
-version = "0.9.6"
+version = "0.9.7"
 
 if not hasattr(__builtin__, "sorted"):
     def sorted(iterable, cmd=None, key=None, reverse=False):
