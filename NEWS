@@ -6,6 +6,11 @@
 
 The history of Pikzie
 
+0.9.7: 2010-05-24
+=================
+
+  * normalize test module name on test loading
+
 0.9.6: 2010-05-20
 =================
 
