@@ -562,9 +562,7 @@ class TestLoader(object):
     def _need_load_files(self, files, modules):
         if self.pattern is not None:
             return True
-        if len(files) == 0:
-            return True
-        if len(modules) == 0 or modules == [sys.modules['__main__']]:
+        if len(files) == 0 and len(modules) == 0:
             return True
         return False
 
