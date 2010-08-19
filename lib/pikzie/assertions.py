@@ -429,26 +429,32 @@ class Assertions(object):
         if not hasattr(sys.modules[__name__], "syslog"):
             self.omit("syslog isn't supported on this environment")
 
-        import popen2 # FIXME: rewrite with subprocess.
         self.assert_callable(callable_object)
 
         mark = 'Pikzie: %.20f' % random.random()
         syslog.syslog(mark)
 
         log_file = "/var/log/messages"
-        messages = popen2.Popen4(["tail", "-F", log_file])
-        fd = messages.fromchild.fileno()
-        fcntl.fcntl(fd, fcntl.F_SETFL,
-                    os.O_NONBLOCK | fcntl.fcntl(fd, fcntl.F_GETFL))
+        command = ["tail", "-F", log_file]
+        try:
+            from subprocess import Popen, PIPE
+            messages = Popen(command, stdout=PIPE, close_fds=True)
+        except ImportError:
+            from popen2 import Popen3
+            messages = Popen3(command)
+            messages.stdout = messages.fromchild
+
+        fcntl.fcntl(messages.stdout, fcntl.F_SETFL,
+                    os.O_NONBLOCK | fcntl.fcntl(messages.stdout, fcntl.F_GETFL))
 
         def search(pattern):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
             content = ''
             timeout = 1.5
-            while len(select.select([fd], [], [], timeout)[0]) > 0:
+            while len(select.select([messages.stdout], [], [], timeout)[0]) > 0:
                 timeout = 0.1
-                added_content = messages.fromchild.read()
+                added_content = messages.stdout.read()
                 if not added_content:
                     break
                 content += added_content
