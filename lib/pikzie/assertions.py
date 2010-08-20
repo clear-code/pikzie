@@ -295,7 +295,8 @@ class Assertions(object):
                   return "%s(%r,)" % (type(self).__name__, self.message)
 
               def __eq__(self, other):
-                  return self.message == other.message
+                  return isinstance(other, self.__class__) and \
+                          self.message == other.message
 
           def raise_error():
               raise ComparableError("value")
@@ -309,7 +310,7 @@ class Assertions(object):
         """
         self.assert_callable(callable_object)
         if isinstance(exception, Exception):
-            exception_class = type(exception)
+            exception_class = exception.__class__
         else:
             exception_class = exception
         try:

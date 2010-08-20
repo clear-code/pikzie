@@ -25,7 +25,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             return "%s(%r,)" % (type(self).__name__, self.message)
 
         def __eq__(self, other):
-            return self.message == other.message
+            return isinstance(other, self.__class__) and \
+                    self.message == other.message
 
     class TestCase(pikzie.TestCase):
         def setup(self):
