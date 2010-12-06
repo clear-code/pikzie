@@ -158,3 +158,70 @@ class TestRunner(pikzie.TestCase, Assertions):
         line_no = Source.find_target_line_no(target_line)
         details = format % (self.file_name, line_no, target_line)
         self.assert_output("N.", 1, 2, 0, 0, 0, 0, 1, details, [test])
+
+    def test_run_failed_tuple_data(self):
+        class TestCase(pikzie.TestCase):
+            def test_fail_assertion_tuple_data(self, data):
+                self.assert_equal(data, data)
+                self.assert_equal("tuple", data)
+        label = "fail"
+        data = (1, 2)
+        test = TestCase("test_fail_assertion_tuple_data", label, data)
+        format = \
+            "\n" \
+            "1) Failure: TestCase.test_fail_assertion_tuple_data (%s): %s\n" \
+            "  data: %s\n" \
+            "%s:%d: %s\n" \
+            "expected: <'tuple'>\n" \
+            " but was: <%s>\n" \
+            "\n"
+        target_line = "self.assert_equal(\"tuple\", data)"
+        line_no = Source.find_target_line_no(target_line)
+        details = format % (label, target_line, str(data),
+                            self.file_name, line_no, target_line, str(data))
+        self.assert_output("F", 1, 1, 1, 0, 0, 0, 0, details, [test])
+
+    def test_run_failed_list_data(self):
+        class TestCase(pikzie.TestCase):
+            def test_fail_assertion_list_data(self, data):
+                self.assert_equal(data, data)
+                self.assert_equal("list", data)
+        label = "fail"
+        data = [1, 2]
+        test = TestCase("test_fail_assertion_list_data", label, data)
+        format = \
+            "\n" \
+            "1) Failure: TestCase.test_fail_assertion_list_data (%s): %s\n" \
+            "  data: %s\n" \
+            "%s:%d: %s\n" \
+            "expected: <'list'>\n" \
+            " but was: <%s>\n" \
+            "\n"
+        target_line = "self.assert_equal(\"list\", data)"
+        line_no = Source.find_target_line_no(target_line)
+        details = format % (label, target_line, str(data),
+                            self.file_name, line_no, target_line, str(data))
+        self.assert_output("F", 1, 1, 1, 0, 0, 0, 0, details, [test])
+
+    def test_run_failed_dict_data(self):
+        class TestCase(pikzie.TestCase):
+            def test_fail_assertion_dict_data(self, data):
+                self.assert_equal(data, data)
+                self.assert_equal("dict", data)
+        label = "fail"
+        data = {"a":1, "b":2}
+        test = TestCase("test_fail_assertion_dict_data", label, data)
+        format = \
+            "\n" \
+            "1) Failure: TestCase.test_fail_assertion_dict_data (%s): %s\n" \
+            "  data: %s\n" \
+            "%s:%d: %s\n" \
+            "expected: <'dict'>\n" \
+            " but was: <%s>\n" \
+            "\n"
+        target_line = "self.assert_equal(\"dict\", data)"
+        line_no = Source.find_target_line_no(target_line)
+        details = format % (label, target_line, str(data),
+                            self.file_name, line_no, target_line, str(data))
+        self.assert_output("F", 1, 1, 1, 0, 0, 0, 0, details, [test])
+
