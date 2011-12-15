@@ -588,7 +588,7 @@ class TestLoader(object):
                 parts.pop()
             if module is not None and module not in modules:
                 modules.append(module)
-	if base_dir:
+        if base_dir:
             sys.path.remove(base_dir)
         return modules
 
