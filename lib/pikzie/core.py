@@ -532,9 +532,9 @@ class TestLoader(object):
                     return test_case_name == name
                 else:
                     return test_case_name.search(name)
-            return len(filter(is_target_name, self.test_case_names)) > 0
+            return len(list(filter(is_target_name, self.test_case_names))) > 0
 
-        return filter(is_target_test_case_name, test_cases)
+        return list(filter(is_target_test_case_name, test_cases))
 
     def create_test_suite(self, files=[]):
         tests = []
@@ -542,6 +542,7 @@ class TestLoader(object):
             def _is_target_test(test):
                 return self._is_target_test(test)
             target_tests = filter(_is_target_test, test_case.collect_test())
+            target_tests = list(target_tests)
             if len(target_tests) > 0:
                 tests.append(TestCaseRunner(test_case, target_tests,
                                             self.priority_mode))
@@ -606,7 +607,7 @@ class TestLoader(object):
                     return test_name == name
                 else:
                     return test_name.search(name)
-            if len(filter(is_target_name, self.test_names)) == 0:
+            if len(list(filter(is_target_name, self.test_names))) == 0:
                 return False
         return True
 
@@ -647,7 +648,7 @@ class TestRunnerContext(object):
         self.listeners.extend(listeners)
 
     def faults(self):
-        return filter(lambda result: result.fault, self.results)
+        return list(filter(lambda result: result.fault, self.results))
     faults = property(faults)
 
     def n_faults(self):
@@ -655,28 +656,28 @@ class TestRunnerContext(object):
     n_faults = property(n_faults)
 
     def n_failures(self):
-        return len(filter(lambda result: isinstance(result, Failure),
-                          self.results))
+        return len(list(filter(lambda result: isinstance(result, Failure),
+                               self.results)))
     n_failures = property(n_failures)
 
     def n_errors(self):
-        return len(filter(lambda result: isinstance(result, Error),
-                          self.results))
+        return len(list(filter(lambda result: isinstance(result, Error),
+                               self.results)))
     n_errors = property(n_errors)
 
     def n_pendings(self):
-        return len(filter(lambda result: isinstance(result, Pending),
-                          self.results))
+        return len(list(filter(lambda result: isinstance(result, Pending),
+                               self.results)))
     n_pendings = property(n_pendings)
 
     def n_omissions(self):
-        return len(filter(lambda result: isinstance(result, Omission),
-                          self.results))
+        return len(list(filter(lambda result: isinstance(result, Omission),
+                               self.results)))
     n_omissions = property(n_omissions)
 
     def n_notifications(self):
-        return len(filter(lambda result: isinstance(result, Notification),
-                          self.results))
+        return len(list(filter(lambda result: isinstance(result, Notification),
+                               self.results)))
     n_notifications = property(n_notifications)
 
     def pass_assertion(self, test):
@@ -756,7 +757,7 @@ class TestRunnerContext(object):
         return self.interrupted
 
     def succeeded(self):
-        return len(filter(lambda fault: fault.critical, self.faults)) == 0
+        return len(list(filter(lambda fault: fault.critical, self.faults))) == 0
     succeeded = property(succeeded)
 
     def _notify(self, name, *args):
