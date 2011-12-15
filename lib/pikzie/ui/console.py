@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -51,7 +51,7 @@ class ConsoleTestRunner(object):
     setup_color_option = classmethod(setup_color_option)
 
     def setup_color_scheme_option(cls, group):
-        available_schemes = pikzie.color.SCHEMES.keys()
+        available_schemes = list(pikzie.color.SCHEMES.keys())
         help = "Use color scheme named SCHEME [%s]" % "|".join(available_schemes)
         group.add_option("--color-scheme", dest="color_scheme",
                          choices=available_schemes,
