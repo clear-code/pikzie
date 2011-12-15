@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -503,11 +503,15 @@ class TestLoader(object):
 
     test_case_collectors = []
 
+    _class_types = [type]
+    if "ClassType" in types.__dict__:
+        _class_types.append(types.ClassType)
+    _class_types = tuple(_class_types)
     def _collect_test_case_from_module(self, module):
         test_cases = []
         for name in dir(module):
             object = getattr(module, name)
-            if (isinstance(object, (type, types.ClassType)) and
+            if (isinstance(object, self._class_types) and
                 issubclass(object, TestCase)):
                 test_cases.append(object)
         return test_cases
