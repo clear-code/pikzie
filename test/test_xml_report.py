@@ -30,7 +30,7 @@ class TestXMLReport(pikzie.TestCase, Assertions):
             self.non_existence_method()
 
     def test_empty_test(self):
-    	self.assert_xml("<report/>\n", self._suite())
+        self.assert_xml("<report/>\n", self._suite())
 
     def test_success_result(self):
         elapsed = "0.001"
