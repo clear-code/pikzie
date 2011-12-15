@@ -33,8 +33,8 @@ for assertion in filter(lambda name: not name.startswith("_"), dir(Assertions)):
                     return arg + ("=%s" % kw_args[arg])
                 inspected_args = ", ".join(map(str, args) +
                                            map(inspect_kw_arg, kw_args))
-                raise TypeError, \
-                      "did you mean: self.%s(%s)" % (assertion, inspected_args)
+                raise TypeError("did you mean: self.%s(%s)" % \
+                                    (assertion, inspected_args))
             return _assertion(__current_test_case__, *args, **kw_args)
         return run_assertion
     wrapped_assertion = wrap_assertion(assertion)
