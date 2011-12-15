@@ -14,7 +14,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-from new import classobj
 
 from pikzie.core import *
 from pikzie.assertions import Assertions
@@ -56,9 +55,9 @@ def collect_test_case_from_module(self, module):
         for assertion in assertions:
             if not module.__dict__.has_key(assertion):
                 module.__dict__[assertion] = assertions[assertion]
-        test_cases.append(classobj(module.__name__,
-                                   (ModuleBasedTestCase,),
-                                   {"target_module": module}))
+        test_cases.append(type(module.__name__,
+                               (ModuleBasedTestCase,),
+                               {"target_module": module}))
     return test_cases
 
 TestLoader.test_case_collectors.append(collect_test_case_from_module)
