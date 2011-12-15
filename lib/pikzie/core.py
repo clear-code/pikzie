@@ -457,7 +457,7 @@ class TestCase(TestCaseTemplate, Assertions):
             try:
                 os.makedirs(dir)
                 return dir
-            except OSError, e:
+            except OSError:
                 pass
 
         raise OSError(errno.EACCES, "Permission denied",
