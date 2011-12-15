@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2010  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -53,7 +53,7 @@ def collect_test_case_from_module(self, module):
                                 map(lambda name: getattr(module, name),
                                     dir(module)))):
         for assertion in assertions:
-            if not module.__dict__.has_key(assertion):
+            if not assertion in module.__dict__:
                 module.__dict__[assertion] = assertions[assertion]
         test_cases.append(type(module.__name__,
                                (ModuleBasedTestCase,),
