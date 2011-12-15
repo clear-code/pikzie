@@ -1,6 +1,10 @@
-from StringIO import StringIO
 import re
 import exceptions
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import pikzie
 from pikzie.ui.console import ConsoleTestRunner

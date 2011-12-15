@@ -1,7 +1,11 @@
 import re
 import exceptions
 import cgi
-from StringIO import StringIO
+
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
 import pikzie
 import pikzie.report
 import pikzie.ui.console
