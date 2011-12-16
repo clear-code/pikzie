@@ -147,7 +147,7 @@ class Source(object):
         if type(pattern) == type(""):
             pattern = re.compile(re.escape(pattern))
         try:
-            f = file(file_name)
+            f = open(file_name)
             for i, line in enumerate(f):
                 if pattern.search(line):
                     line_no = i + 1
