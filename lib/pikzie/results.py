@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -137,6 +137,5 @@ class Error(TestResult):
 
 FAULT_ORDER = [Notification, Omission, Pending, Failure, Error]
 
-def compare_fault(fault1, fault2):
-    return cmp(FAULT_ORDER.index(type(fault1)),
-               FAULT_ORDER.index(type(fault2)))
+def fault_compare_key(fault):
+    return FAULT_ORDER.index(type(fault))
