@@ -93,6 +93,5 @@ class TestLoader(pikzie.TestCase):
     def _collect_test_names(self, test_suite):
         names = []
         for test_case_runner in test_suite._tests:
-            names.extend(map(lambda test: test.id(),
-                             test_case_runner.tests()))
+            names.extend([test.id() for test in test_case_runner.tests()])
         return names
