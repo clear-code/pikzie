@@ -147,7 +147,7 @@ class ConsoleTestRunner(object):
         indent = "  "
         context_mark = "."
         spaces = len(indent) + len(":") + len(context_mark)
-        tab = "\t" * ((8 * 9 + spaces - len(test_name)) / 8)
+        tab = "\t" * int((8 * 9 + spaces - len(test_name)) / 8)
         self._write("%s%s:%s" % (indent, test_name, tab),
                     level=VERBOSE_LEVEL_VERBOSE)
 
