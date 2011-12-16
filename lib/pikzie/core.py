@@ -370,7 +370,7 @@ class TestCase(TestCaseTemplate, Assertions):
         self.__context = None
 
     def _add_success(self, context):
-        file(self._passed_file(), "w").close()
+        open(self._passed_file(), "w").close()
         context.add_success(self)
 
     def _add_failure(self, context):
