@@ -23,7 +23,7 @@ class Assertions(object):
         def __init__(self, succeeded, test_result, fault_infos):
             self.succeeded = succeeded
             self.test_result = test_result
-            self.fault_infos = fault_infos
+            self.fault_infos = list(fault_infos)
 
         def __eq__(self, other):
             if self.succeeded != other.succeeded: return False
