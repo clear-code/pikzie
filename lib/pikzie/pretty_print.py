@@ -1,4 +1,4 @@
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -75,7 +75,7 @@ def format_callable_object(callable_object):
                           callable_object.__name__)
 
 def format_call_arguments(args, kw_args):
-    formatted_args = map(lambda arg: format(arg), args)
+    formatted_args = [format(arg) for arg in args]
     formatted_args.extend(["%s=%s" % (format(key), format(value))
                            for (key, value) in kw_args.items()])
     return ", ".join(formatted_args)
