@@ -50,9 +50,12 @@ class Assertions(object):
                     return pattern_or_string.pattern
                 else:
                     return pattern_or_string
-            return str((self.succeeded, self.test_result,
-                        map(lambda fault_info: map(extract_pattern, fault_info),
-                            self.fault_infos)))
+            patterns = [[extract_pattern(pattern_or_string)
+                         for pattern_or_string
+                         in fault_info]
+                        for fault_info
+                        in self.fault_infos]
+            return str((self.succeeded, self.test_result, patterns))
 
         _pattern_class = type(re.compile(""))
         def _regexp_support_string_equal(self, value1, value2):
