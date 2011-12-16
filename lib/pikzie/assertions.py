@@ -503,17 +503,17 @@ class Assertions(object):
 
     def assert_open_file(self, name, *args):
         """
-        Passes if file(name, *args) succeeds.
+        Passes if open(name, *args) succeeds.
 
           file = self.assert_open_file("/tmp/exist", "w") # => pass
           self.assert_open_file("/tmp/nonexistence")      # => fail
         """
         try:
-            result = file(name, *args)
+            result = open(name, *args)
         except IOError:
             exception_class, exception_value = sys.exc_info()[:2]
             message = \
-                "expected: file(%s) succeeds\n" \
+                "expected: open(%s) succeeds\n" \
                 " but was: <%s>(%s) is raised" % \
                 (pp.format_call_arguments((name,) + args, {}),
                  pp.format_exception_class(exception_class),
