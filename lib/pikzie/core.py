@@ -159,8 +159,10 @@ class TestCase(TestCaseTemplate, Assertions):
 
     def _collect_test(cls, target, base_n_args):
         def is_function(object):
-            return (hasattr(object, "func_code") and
-                    hasattr(object.func_code, "co_argcount"))
+            return ((hasattr(object, "__code__") and
+                     hasattr(object.__code__, "co_argcount")) or
+                    (hasattr(object, "func_code") and
+                     hasattr(object.func_code, "co_argcount")))
         def test_data(object):
             if not hasattr(object, metadata.container_key):
                 return None
@@ -171,7 +173,11 @@ class TestCase(TestCaseTemplate, Assertions):
             object = getattr(target, name)
             if not is_function(object):
                 continue
-            n_args = object.func_code.co_argcount
+            if hasattr(object, "__code__"):
+                code = object.__code__
+            else:
+                code = object.func_code
+            n_args = code.co_argcount
             data = test_data(object)
             if data is None:
                 if n_args == base_n_args:
