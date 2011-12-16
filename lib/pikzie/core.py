@@ -428,7 +428,7 @@ class TestCase(TestCaseTemplate, Assertions):
         globals = frame.f_globals
         for cls in (TestCase,) + TestCase.__bases__:
             name = cls.__name__
-            if globals.has_key(name) and globals[name] == cls:
+            if name in globals and globals[name] == cls:
                 return True
         return False
 
