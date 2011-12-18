@@ -61,7 +61,7 @@ def _run(*command):
                                (return_code, " ".join(command)))
 
 def _run_without_check(*command):
-    print " ".join(command)
+    print(" ".join(command))
     return subprocess.call(command)
 
 class update_po(Command):
@@ -148,7 +148,7 @@ class update_doc(Command):
             html_name = "%s.%s" % (html_name, lang)
             translation = gettext.translation("pikzie", "data/locale", [lang])
 
-        print html_name
+        print(html_name)
 
         original_getdoc = pydoc.getdoc
         def getdoc(object):
@@ -249,7 +249,7 @@ class tag(Command):
             _run("svn", "cp", "-m", "released %s!!!" % version,
                  "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
         else:
-            print "%s is already tagged" % version
+            print("%s is already tagged" % version)
 
 download_url = "http://downloads.sourceforge.net/pikzie/pikzie-%s.tar.gz" % version
 setup(name=package_name,
