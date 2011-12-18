@@ -530,6 +530,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             import subprocess
         except ImportError:
             self.pend("subprocess module isn't available.")
+        os_error = None
+        try:
+            subprocess.Popen(["unknown", "arg1", "arg2"])
+        except OSError as exception:
+            os_error = exception
         self.assert_result(False, 2, 2, 2, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_run_command",
@@ -542,8 +547,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: <%s> is successfully ran\n"
                              " but was: <%s>(%s) is raised and failed to ran" \
                                  % ("['unknown', 'arg1', 'arg2']",
-                                    OSError,
-                                    "[Errno 2] No such file or directory"),
+                                    type(os_error),
+                                    os_error),
                              None)],
                            ["test_assert_run_command",
                             "test_assert_run_command_unknown"])
