@@ -31,7 +31,7 @@ Pikzieの歴史
   * 同じファイルを2回読み込む問題を修正。
     [Hideo Hattoriさんが修正]
   * データ駆動テスト失敗時にテストデータの出力を失敗する問題を修正。
-    [pizke-users-ja:22] [Tetsuya Morimotoさんが修正]
+    [pikzie-users-ja:22] [Tetsuya Morimotoさんが修正]
 
 感謝
 ----

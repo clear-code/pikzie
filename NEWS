@@ -31,7 +31,7 @@ Fixes
     [Fixed by Hideo Hattori]
   * Fixed a problem that test data output is failed when
     data driven test is failed.
-    [pizke-users-ja:22] [Fixed by Tetsuya Morimoto]
+    [pikzie-users-ja:22] [Fixed by Tetsuya Morimoto]
 
 Thanks
 ------
