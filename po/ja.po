@@ -6,10 +6,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.5\n"
-"POT-Creation-Date: 2009-07-23 12:20+JST\n"
-"PO-Revision-Date: 2009-07-23 12:21+0900\n"
+"POT-Creation-Date: 2011-12-18 15:56+JST\n"
+"PO-Revision-Date: 2011-12-18 16:01+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -106,7 +107,7 @@ msgstr ""
 "\n"
 "  self.assert_equal(5, 2 + 3) # => パス"
 
-#: lib/pikzie/assertions.py:135
+#: lib/pikzie/assertions.py:132
 msgid ""
 "Passes if not_expected != actual.\n"
 "\n"
@@ -116,7 +117,7 @@ msgstr ""
 "\n"
 "  self.assert_not_equal(-5, 2 + 3) # => パス"
 
-#: lib/pikzie/assertions.py:153
+#: lib/pikzie/assertions.py:150
 msgid ""
 "Passes if (expected - delta) <= actual <= (expected + delta).\n"
 "\n"
@@ -126,7 +127,7 @@ msgstr ""
 "\n"
 "  self.assert_in_delta(3, 3.01, 0.001) # => パス"
 
-#: lib/pikzie/assertions.py:172
+#: lib/pikzie/assertions.py:169
 msgid ""
 "Passes if re.match(pattern, target) doesn't return None.\n"
 "\n"
@@ -138,7 +139,7 @@ msgstr ""
 "  self.assert_match(\"abc\", \"abcde\") # => パス\n"
 "  self.assert_match(\"abc\", \"deabc\") # => 失敗"
 
-#: lib/pikzie/assertions.py:192
+#: lib/pikzie/assertions.py:189
 msgid ""
 "Passes if re.match(pattern, target) returns None.\n"
 "\n"
@@ -150,7 +151,7 @@ msgstr ""
 "  self.assert_not_match(\"abc\", \"deabc\") # => パス\n"
 "  self.assert_not_match(\"abc\", \"abcde\") # => 失敗"
 
-#: lib/pikzie/assertions.py:212
+#: lib/pikzie/assertions.py:209
 msgid ""
 "Passes if re.search(pattern, target) doesn't return None.\n"
 "\n"
@@ -162,7 +163,7 @@ msgstr ""
 "  self.assert_search(\"abc\", \"deabc\") # => パス\n"
 "  self.assert_search(\"abc\", \"deABC\") # => 失敗"
 
-#: lib/pikzie/assertions.py:232
+#: lib/pikzie/assertions.py:229
 msgid ""
 "Passes if re.search(pattern, target) returns None.\n"
 "\n"
@@ -174,7 +175,7 @@ msgstr ""
 "  self.assert_search(\"abc\", \"deABC\") # => パス\n"
 "  self.assert_search(\"abc\", \"deabc\") # => 失敗"
 
-#: lib/pikzie/assertions.py:252
+#: lib/pikzie/assertions.py:249
 msgid ""
 "Passes if hasattr(object, name) returns True.\n"
 "\n"
@@ -186,7 +187,7 @@ msgstr ""
 "  self.assert_hasattr(\"string\", \"strip\")   # => パス\n"
 "  self.assert_hasattr(\"string\", \"unknown\") # => 失敗"
 
-#: lib/pikzie/assertions.py:267
+#: lib/pikzie/assertions.py:264
 msgid ""
 "Passes if callable(object) returns True.\n"
 "\n"
@@ -198,7 +199,7 @@ msgstr ""
 "  self.assert_callable(lambda: 1) # => パス\n"
 "  self.assert_callable(\"string\")  # => 失敗"
 
-#: lib/pikzie/assertions.py:281
+#: lib/pikzie/assertions.py:278
 msgid ""
 "Passes if callable_object(*args, **kw_args) raises exception and\n"
 "returns raised exception value.\n"
@@ -207,18 +208,63 @@ msgid ""
 "                         lambda: unknown_variable) # => pass\n"
 "                                                   # => returns NameError\n"
 "                                                   #    value\n"
-"  self.assert_raise_call(NameError, lambda: 1)     # => fail"
-msgstr ""
-"callable_object(*args, **kw_args)が例外exceptionを発生させるとパスします。\n"
+"  self.assert_raise_call(NameError, lambda: 1)     # => fail\n"
 "\n"
-"  self.assert_call_raise(NameError, lambda: unknown_variable) # => パス\n"
-"  self.assert_call_raise(NameError, lambda: 1)                # => 失敗"
+"Exception instance can be also passed if it's comparable.\n"
+"\n"
+"  class ComparableError(Exception):\n"
+"      def __init__(self, message):\n"
+"          self.message = message\n"
+"\n"
+"      def __repr__(self):\n"
+"          return \"%s(%r,)\" % (type(self).__name__, self.message)\n"
+"\n"
+"      def __eq__(self, other):\n"
+"          return isinstance(other, self.__class__) "
+"and                           self.message == other.message\n"
+"\n"
+"  def raise_error():\n"
+"      raise ComparableError(\"value\")\n"
+"  self.assert_raise_call(ComparableError(\"value\"),\n"
+"                         raise_error)              # => pass\n"
+"                                                   # => returns\n"
+"                                                   #    ComparableError\n"
+"                                                   #    value\n"
+"  self.assert_raise_call(ComparableError(\"key\"),\n"
+"                         raise_error)              # => fail"
+msgstr ""
+"callable_object(*args, **kw_args)が例外を発生させたらパスします。そして、発生した例外を返します。\n"
+"\n"
+"  self.assert_raise_call(NameError,\n"
+"                         lambda: unknown_variable) # => パス\n"
+"                                                   # => NameErrorを返す\n"
+"  self.assert_raise_call(NameError, lambda: 1)     # => 失敗\n"
+"\n"
+"もし、例外インスタンスが比較可能であれば、例外インスタンスを渡すこともできます。\n"
+"\n"
+"  class ComparableError(Exception):\n"
+"      def __init__(self, message):\n"
+"          self.message = message\n"
+"\n"
+"      def __repr__(self):\n"
+"          return \"%s(%r,)\" % (type(self).__name__, self.message)\n"
+"\n"
+"      def __eq__(self, other):\n"
+"          return isinstance(other, self.__class__) and                           self.message == other.message\n"
+"\n"
+"  def raise_error():\n"
+"      raise ComparableError(\"value\")\n"
+"  self.assert_raise_call(ComparableError(\"value\"),\n"
+"                         raise_error)              # => パス\n"
+"                                                   # => ComparableErrorを返す\n"
+"  self.assert_raise_call(ComparableError(\"key\"),\n"
+"                         raise_error)              # => 失敗"
 
-#: lib/pikzie/assertions.py:316
+#: lib/pikzie/assertions.py:350
 msgid "Deprecated. Use assert_raise_call()."
 msgstr "非推奨です。assert_raise_call()を使ってください。"
 
-#: lib/pikzie/assertions.py:322
+#: lib/pikzie/assertions.py:356
 msgid ""
 "Passes if callable_object(*args, **kw_args) raises nothing exception\n"
 "and returns called result.\n"
@@ -232,11 +278,11 @@ msgstr ""
 "  self.assert_call_raise(NameError, lambda: unknown_variable) # => パス\n"
 "  self.assert_call_raise(NameError, lambda: 1)                # => 失敗"
 
-#: lib/pikzie/assertions.py:347
+#: lib/pikzie/assertions.py:381
 msgid "Deprecated. Use assert_nothing_raised_call()."
 msgstr "非推奨です。assert_nothing_raised_call()を使ってください。"
 
-#: lib/pikzie/assertions.py:353
+#: lib/pikzie/assertions.py:387
 msgid ""
 "Passes if command is successfully ran and returns subprocess.Popen.\n"
 "\n"
@@ -253,7 +299,7 @@ msgstr ""
 "  self.assert_run_command(\"false\")                      # => 失敗\n"
 "  self.assert_run_command(\"unknown-command\")            # => 失敗"
 
-#: lib/pikzie/assertions.py:389
+#: lib/pikzie/assertions.py:423
 msgid ""
 "Passes if re.search(pattern, SYSLOG_CONTENT) doesn't return None\n"
 "after callable_object(*args, **kw_args).\n"
@@ -267,19 +313,43 @@ msgstr ""
 "  self.assert_search_syslog_call(\"X\", syslog.syslog, \"XYZ\") # => パス\n"
 "  self.assert_search_syslog_call(\"X\", syslog.syslog, \"ABC\") # => 失敗"
 
-#: lib/pikzie/assertions.py:441
+#: lib/pikzie/assertions.py:481
 msgid ""
-"Passes if file(name, *args) succeeds.\n"
+"Passes if path exists.\n"
+"\n"
+"  self.assert_exists(\"/tmp/exist\")        # => pass\n"
+"  self.assert_exists(\"/tmp/nonexistence\") # => fail"
+msgstr ""
+"パスが存在したらパスします。\n"
+"\n"
+"  self.assert_exists(\"/tmp/exist\")        # => パス\n"
+"  self.assert_exists(\"/tmp/nonexistence\") # => 失敗"
+
+#: lib/pikzie/assertions.py:493
+msgid ""
+"Passes if path doesn't exists.\n"
+"\n"
+"  self.assert_not_exists(\"/tmp/nonexistence\") # => pass\n"
+"  self.assert_not_exists(\"/tmp/exist\")        # => fail"
+msgstr ""
+"パスが存在しなかったらパスします。\n"
+"\n"
+"  self.assert_not_exists(\"/tmp/nonexistence\") # => パス\n"
+"  self.assert_not_exists(\"/tmp/exist\")        # => 失敗"
+
+#: lib/pikzie/assertions.py:505
+msgid ""
+"Passes if open(name, *args) succeeds.\n"
 "\n"
 "  file = self.assert_open_file(\"/tmp/exist\", \"w\") # => pass\n"
 "  self.assert_open_file(\"/tmp/nonexistence\")      # => fail"
 msgstr ""
-"file(name, *args)が成功するとパスします。\n"
+"open(name, *args)が成功するとパスします。\n"
 "\n"
 "  file = self.assert_open_file(\"/tmp/exist\", \"w\") # => パス\n"
 "  self.assert_open_file(\"/tmp/nonexistence\")      # => 失敗"
 
-#: lib/pikzie/assertions.py:463
+#: lib/pikzie/assertions.py:527
 msgid ""
 "Passes if callable_object(*args, **kw_args) doesn't fail any\n"
 "assertions in <timeout> seconds.\n"
@@ -305,7 +375,7 @@ msgstr ""
 "                                              # 4か5か6を返す\n"
 "  self.assert_try_call(1, 0.1, self.fail, \"Never succeed\") # => 失敗"
 
-#: lib/pikzie/assertions.py:502
+#: lib/pikzie/assertions.py:566
 msgid ""
 "Passes if /proc/kallsyms can be opened and name is in the list.\n"
 "\n"
@@ -331,11 +401,11 @@ msgid ""
 "subclassing, do not forget to call the base class constructor."
 msgstr ""
 
-#: lib/pikzie/core.py:135
+#: lib/pikzie/core.py:137
 msgid "Hook method for deconstructing the test fixture after testing it."
 msgstr ""
 
-#: lib/pikzie/core.py:139
+#: lib/pikzie/core.py:141
 msgid ""
 "A class whose instances are single test cases.\n"
 "\n"
@@ -355,7 +425,7 @@ msgid ""
 "in order to be run."
 msgstr ""
 
-#: lib/pikzie/core.py:188
+#: lib/pikzie/core.py:227
 msgid ""
 "Returns a one-line description of the test, or None if no\n"
 "description has been provided.\n"
@@ -364,7 +434,7 @@ msgid ""
 "the specified test method's docstring."
 msgstr ""
 
-#: lib/pikzie/core.py:543
+#: lib/pikzie/core.py:636
 msgid ""
 "Context for running test.\n"
 "\n"
@@ -377,64 +447,72 @@ msgid ""
 "formatted traceback of the error that occurred."
 msgstr ""
 
-#: lib/pikzie/core.py:606
+#: lib/pikzie/core.py:699
 msgid "Called when the given test is about to be run"
 msgstr ""
 
-#: lib/pikzie/core.py:612
+#: lib/pikzie/core.py:705
 msgid "Called when the given test has been run"
 msgstr ""
 
-#: lib/pikzie/core.py:618
+#: lib/pikzie/core.py:711
 msgid "Called when the given test case is about to be run"
 msgstr ""
 
-#: lib/pikzie/core.py:622
+#: lib/pikzie/core.py:715
 msgid "Called when the given test case has been run"
 msgstr ""
 
-#: lib/pikzie/core.py:626
+#: lib/pikzie/core.py:719
 msgid "Called when the given test suite is about to be run"
 msgstr ""
 
-#: lib/pikzie/core.py:630
+#: lib/pikzie/core.py:723
 msgid "Called when the given test suite has been run"
 msgstr ""
 
-#: lib/pikzie/core.py:634
+#: lib/pikzie/core.py:727
 msgid "Called when an error has occurred."
 msgstr ""
 
-#: lib/pikzie/core.py:640
+#: lib/pikzie/core.py:733
 msgid "Called when a failure has occurred."
 msgstr ""
 
-#: lib/pikzie/core.py:646
+#: lib/pikzie/core.py:739
 msgid "Called when a notification has occurred."
 msgstr ""
 
-#: lib/pikzie/core.py:652
+#: lib/pikzie/core.py:745
 msgid "Called when a test has completed successfully"
 msgstr ""
 
-#: lib/pikzie/core.py:659
+#: lib/pikzie/core.py:752
 msgid "Called when a test is pended."
 msgstr ""
 
-#: lib/pikzie/core.py:665
+#: lib/pikzie/core.py:758
 msgid "Called when a test is omitted."
 msgstr ""
 
-#: lib/pikzie/core.py:671
+#: lib/pikzie/core.py:764
 msgid "Indicates that the tests should be interrupted"
 msgstr ""
 
 #: lib/pikzie/decorators.py:27
+msgid "Set metadata to a method."
+msgstr ""
+
+#: lib/pikzie/decorators.py:39
 msgid "Set Bug ID to a method."
 msgstr ""
 
-#: lib/pikzie/decorators.py:31
+#: lib/pikzie/decorators.py:43
 msgid "Set priority of test."
+msgstr ""
+
+#: lib/pikzie/decorators.py:47
+msgid "Set test data."
 msgstr ""
 
 #: lib/pikzie/tester.py:25
@@ -443,6 +521,6 @@ msgid ""
 "for making test modules conveniently executable."
 msgstr ""
 
-#: lib/pikzie/ui/console.py:99
+#: lib/pikzie/ui/console.py:100
 msgid "Run the given test case or test suite."
 msgstr ""
