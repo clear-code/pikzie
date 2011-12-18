@@ -621,9 +621,14 @@ class TestLoader(object):
         if names is None: return names
         if type(names) == str:
             names = [names]
+        re_re = re.compile("/(.*)/([ilmsux]*)")
         def prepare(name):
-            if name.startswith("/") and name.endswith("/"):
-                name = re.compile(name[1:-1])
+            match = re_re.search(name)
+            if match:
+                flags = 0
+                for flag_string in match.groups()[1]:
+                    flags |= getattr(re, flag_string.upper())
+                name = re.compile(match.groups()[0], flags)
             return name
         return [prepare(name) for name in names]
 
