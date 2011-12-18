@@ -28,7 +28,7 @@ def _re_flags(pattern):
         if pattern.flags & re.IGNORECASE: result += "i"
         if pattern.flags & re.LOCALE: result += "l"
         if pattern.flags & re.MULTILINE: result += "m"
-        if pattern.flags & re.DOTALL: result += "d"
+        if pattern.flags & re.DOTALL: result += "s"
         if pattern.flags & re.UNICODE: result += "u"
         if pattern.flags & re.VERBOSE: result += "x"
     return result
