@@ -625,7 +625,7 @@ class TestLoader(object):
             if name.startswith("/") and name.endswith("/"):
                 name = re.compile(name[1:-1])
             return name
-        return map(prepare, names)
+        return [prepare(name) for name in names]
 
 class TestRunnerContext(object):
     """
