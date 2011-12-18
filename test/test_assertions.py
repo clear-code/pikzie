@@ -209,7 +209,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
 
         def test_assert_run_command(self):
             process = self.assert_run_command(["echo", "12345"])
-            self.assert_equal("12345\n", process.stdout.read())
+            self.assert_equal(b"12345\n", process.stdout.read())
             self.assert_run_command("false")
 
         def test_assert_run_command_unknown(self):
