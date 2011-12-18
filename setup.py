@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2009  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -261,6 +261,7 @@ setup(name=package_name,
         "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
         "Natural Language :: Japanese",
         "Natural Language :: English",
         ],
