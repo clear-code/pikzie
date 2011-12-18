@@ -39,7 +39,7 @@ And Pikzie has the following features:
 Dependencies
 ============
 
-  * Python >= 2.3
+  * Python >= 2.6 (Python 3.x is also supported.)
 
 Install
 =======
@@ -393,14 +393,6 @@ the following::
 
 In the above example, test_invalid_input test has an attribute
 that the test is for Bug #123.
-
-And the above example uses decorator that is introduced since
-Python 2.4. If you want to use with Python 2.3, you need to
-write like the following::
-
-  def test_invalid_input(self):
-      self.assert_call_raise(IndexError, ().__getitem__, 0)
-  test_invalid_input = pikzie.bug(123)(test_invalid_input)
 
 Here is a list of available attributes:
 

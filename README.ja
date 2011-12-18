@@ -39,7 +39,7 @@ PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 依存関係
 ========
 
-  * Python >= 2.3
+  * Python >= 2.6 （Python 3.xでも可）
 
 インストール
 ============
@@ -159,7 +159,7 @@ test/run-test.pyは以下の通りです。::
 
 -vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
                           [s|silent|n|normal|v|verbose]のう
-	 		  ちのどれかです。
+			  ちのどれかです。
 
 			  このオプションはコンソールUIを使用
 			  する場合だけ有効です。（現在はコン
@@ -389,14 +389,6 @@ http://pikzie.sourceforge.net/assertions.html
 
 この例では、test_invalid_inputテストがBug #123のテストである
 という属性を付加しています。
-
-また、この例ではPython 2.4から導入されたデコレータ機能を利用
-しています。Python 2.3で使用する場合は以下のように書いてくだ
-さい。::
-
-  def test_invalid_input(self):
-      self.assert_call_raise(IndexError, ().__getitem__, 0)
-  test_invalid_input = pikzie.bug(123)(test_invalid_input)
 
 現在利用可能な属性は以下の通りです。
 
