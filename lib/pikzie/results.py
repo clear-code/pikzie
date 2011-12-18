@@ -19,10 +19,11 @@ def format_metadata(metadata, need_newline=False):
     if metadata is None:
         return ""
     format_keys = filter(lambda key: key != "data", metadata)
-    if len(format_keys) == 0:
+    formatted_metadata = ["  %s: %s" % (key, metadata[key])
+                          for key
+                          in format_keys]
+    if len(formatted_metadata) == 0:
         return ""
-    formatted_metadata = map(lambda key: "  %s: %s" % (key, metadata[key]),
-                             format_keys)
     result = "\n".join(formatted_metadata)
     if need_newline:
         result += "\n"
