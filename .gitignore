@@ -3,3 +3,7 @@ __pycache__/
 /test/tmp
 /test/.test-result/
 /misc
+/html/
+/po/*.po~
+/po/*.pot
+/data/locale/*/LC_MESSAGES/pikzie.mo
