@@ -6,6 +6,39 @@
 
 Pikzieの歴史
 
+1.0.0: 2011-12-18
+=================
+
+リポジトリをsourceforge.netから "GitHub
+<https://github.com/clear-code/pikzie>"_ へ移行しました。
+
+改良
+----
+
+  * subprocess対応。 [Tetsuya Morimotoさんが改良]
+  * Python 3.2対応。
+  * Python 2.5以下のサポートを終了。
+  * 正規表現を表示するときに ``re.DOTALL`` を示すために
+    ``d`` ではなく ``s`` を使うように変更。これは ``re.S``
+    とあわせるためである。
+  * ``--name`` と ``--test-case`` で 正規表現フラグに対応。
+    ``/.../フラグ`` という書式で ``/.../i`` とすると大文字小
+    文字を区別してマッチする。
+
+修正
+----
+
+  * 同じファイルを2回読み込む問題を修正。
+    [Hideo Hattoriさんが修正]
+  * データ駆動テスト失敗時にテストデータの出力を失敗する問題を修正。
+    [pizke-users-ja:22] [Tetsuya Morimotoさんが修正]
+
+感謝
+----
+
+  * Hideo Hattoriさん
+  * Tetsuya Morimotoさん
+
 0.9.7: 2010-05-24
 =================
 

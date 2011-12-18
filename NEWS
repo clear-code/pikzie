@@ -6,6 +6,39 @@
 
 The history of Pikzie
 
+1.0.0: 2011-12-18
+=================
+
+Our repository has been moved to "GitHub
+<https://github.com/clear-code/pikzie>"_ from sourceforge.net.
+
+Improvements
+------------
+
+  * Supported subprocess. [Improved by Tetsuya Morimoto]
+  * Supported Python 3.2.
+  * Dropped Python 2.5 or earlier support.
+  * Changed an abbreviation character for ``re.DOTALL`` to
+    ``s`` instead of ``d`` because ``re.S`` means ``re.DOTALL``.
+  * Supported regular expression flags in ``--name`` and
+    ``--test-case``. ``/.../FLAGS`` format is
+    used. ``/.../i`` means case insensitive match.
+
+Fixes
+-----
+
+  * Fixed a problem that the same test files are loaded twice.
+    [Fixed by Hideo Hattori]
+  * Fixed a problem that test data output is failed when
+    data driven test is failed.
+    [pizke-users-ja:22] [Fixed by Tetsuya Morimoto]
+
+Thanks
+------
+
+  * Hideo Hattori
+  * Tetsuya Morimoto
+
 0.9.7: 2010-05-24
 =================
 
