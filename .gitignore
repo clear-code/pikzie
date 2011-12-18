@@ -7,3 +7,6 @@ __pycache__/
 /po/*.po~
 /po/*.pot
 /data/locale/*/LC_MESSAGES/pikzie.mo
+/*.tar.gz
+/lib/*.egg-info/
+/dist/
