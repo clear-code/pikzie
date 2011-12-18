@@ -244,7 +244,7 @@ class tag(Command):
     def run(self):
         _run("git", "tag", version, "-a", "-m", "released %s!!!" % version)
 
-download_url = "http://downloads.sourceforge.net/pikzie/pikzie-%s.tar.gz" % version
+download_url = "http://downloads.sourceforge.net/project/pikzie/pikzie/%s/pikzie-%s.tar.gz" % (version, version)
 setup(name=package_name,
       version=version,
       description=description,
