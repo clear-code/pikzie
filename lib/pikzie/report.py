@@ -46,8 +46,16 @@ class XML(object):
         if self.file:
             self.output.close()
 
+    try:
+        unicode
+        def _normalize(self, string):
+            return unicode(string)
+    except:
+        def _normalize(self, string):
+            return str(string)
+
     def _write(self, string):
-        self.output.write(unicode(string))
+        self.output.write(self._normalize(string))
 
     def _write_tag(self, indent, name, content):
         if content:
