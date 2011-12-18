@@ -475,6 +475,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_callable"])
 
     def test_assert_raise_call(self):
+        zero_division_error = None
+        try:
+            1 / 0
+        except ZeroDivisionError as exception:
+            zero_division_error = exception
         self.assert_result(False, 3, 8, 3, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_raise_call",
@@ -486,10 +491,10 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             ('F',
                              "TestCase.test_assert_raise_call_different_error",
                              "expected: <%s> is raised\n"
-                             " but was: <%s>"
-                             "(integer division or modulo by zero)" %
+                             " but was: <%s>(%s)" %
                              (NameError,
-                              ZeroDivisionError),
+                              type(zero_division_error),
+                              zero_division_error),
                              None),
                             ('F',
                              "TestCase.test_assert_raise_call_instance",
@@ -503,6 +508,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             "test_assert_raise_call_instance"])
 
     def test_assert_nothing_raised_call(self):
+        zero_division_error = None
+        try:
+            1 / 0
+        except ZeroDivisionError as exception:
+            zero_division_error = exception
         self.assert_result(False, 1, 4, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_nothing_raised_call",
@@ -510,8 +520,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              " but was: <%s>(%s) is raised" % \
                                  ("test_assertions."
                                   "raise_zero_division_error",
-                                  ZeroDivisionError,
-                                  "integer division or modulo by zero"),
+                                  type(zero_division_error),
+                                  zero_division_error),
                              None)],
                            ["test_assert_nothing_raised_call"])
 
