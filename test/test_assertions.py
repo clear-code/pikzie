@@ -561,8 +561,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.pend("can't read /var/log/messages.")
         detail = \
             "expected: <%s> is found in <%s>\n" \
-            " content: <'.*FIXME!!!.*'>" % \
-            ("/fix me!/", "'/var/log/messages'")
+            " content: <b?'.*FIXME!!!.*'>" % \
+            ("/fix me!/u?", "'/var/log/messages'")
         self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_search_syslog_call",

@@ -451,7 +451,7 @@ class Assertions(object):
         def search(pattern):
             if isinstance(pattern, str):
                 pattern = re.compile(pattern)
-            content = ''
+            content = b''
             timeout = 1.5
             while len(select.select([messages.stdout], [], [], timeout)[0]) > 0:
                 timeout = 0.1
@@ -459,7 +459,7 @@ class Assertions(object):
                 if not added_content:
                     break
                 content += added_content
-                if re.search(pattern, content):
+                if re.search(pattern, str(content)):
                     return
             message = \
                 "expected: <%s> is found in <%s>\n" \
