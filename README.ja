@@ -62,9 +62,12 @@ tar.gzからインストール::
 リポジトリ
 ==========
 
-Subversion::
+GitHubの "clear-code/pikzie
+<https://github.com/clear-code/pikzie>"_ にあります。
 
-  % svn co https://pikzie.svn.sourceforge.net/svnroot/pikzie/trunk pikzie
+git::
+
+  % git clone https://github.com/clear-code/pikzie.git
 
 使い方
 ======
