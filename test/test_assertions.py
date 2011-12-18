@@ -14,6 +14,7 @@ except ImportError:
     pass
 
 import pikzie
+import pikzie.pretty_print as pp
 import test.utils
 
 base_path = os.path.dirname(__file__)
@@ -381,6 +382,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_in_delta"])
 
     def test_assert_match(self):
+        pattern = re.compile('xyz')
         self.assert_result(False, 2, 2, 2, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_match",
@@ -391,15 +393,18 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              None),
                             ('F',
                              "TestCase.test_assert_match_re",
-                             "expected: re.match('xyz', 'abcxyz') "
+                             "expected: re.match(%s, 'abcxyz') "
                                "doesn't return None\n"
-                             " pattern: </xyz/>\n"
-                             "  target: <'abcxyz'>",
+                             " pattern: <%s>\n"
+                             "  target: <'abcxyz'>" % \
+                                 (pp.format_re_repr(pattern),
+                                  pp.format_re(pattern)),
                              None)],
                            ["test_assert_match",
                             "test_assert_match_re"])
 
     def test_assert_not_match(self):
+        pattern = re.compile('xyz', re.IGNORECASE)
         self.assert_result(False, 2, 2, 2, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_match",
@@ -410,14 +415,16 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                             ('F',
                              "TestCase.test_assert_not_match_re",
                              "expected: re.match(%s, 'XYZabc') returns None\n"
-                             " pattern: </xyz/i>\n"
+                             " pattern: <%s>\n"
                              "  target: <'XYZabc'>" % \
-                                 ("re.compile('xyz', re.IGNORECASE)"),
+                                 (pp.format_re_repr(pattern),
+                                  pp.format_re(pattern)),
                              None)],
                            ["test_assert_not_match",
                             "test_assert_not_match_re"])
 
     def test_assert_search(self):
+        pattern = re.compile('xyz')
         self.assert_result(False, 2, 4, 2, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_search",
@@ -428,22 +435,26 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              None),
                             ('F',
                              "TestCase.test_assert_search_re",
-                             "expected: re.search('xyz', 'AxYzA') "
+                             "expected: re.search(%s, 'AxYzA') "
                                "doesn't return None\n"
-                             " pattern: </xyz/>\n"
-                             "  target: <'AxYzA'>",
+                             " pattern: <%s>\n"
+                             "  target: <'AxYzA'>" % \
+                                 (pp.format_re_repr(pattern),
+                                  pp.format_re(pattern)),
                              None)],
                            ["test_assert_search",
                             "test_assert_search_re"])
 
     def test_assert_not_found(self):
-        re_repr = "re.compile('bcd', re.IGNORECASE | re.LOCALE)"
+        pattern = re.compile('bcd', re.IGNORECASE | re.LOCALE)
         self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_found",
                              "expected: re.search(%s, 'abCde') returns None\n"
-                             " pattern: </bcd/il>\n"
-                             "  target: <'abCde'>" % re_repr,
+                             " pattern: <%s>\n"
+                             "  target: <'abCde'>" % \
+                                 (pp.format_re_repr(pattern),
+                                  pp.format_re(pattern)),
                              None)],
                            ["test_assert_not_found"])
 
