@@ -44,7 +44,6 @@ sf_project_id = package_name.lower()
 sf_package_name = package_name.lower()
 sf_user = "ktou"
 sf_host = "%s@web.sourceforge.net" % sf_user
-sf_repos = "https://%s@pikzie.svn.sourceforge.net/svnroot/pikzie" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
 long_description = re.split("\n.+\n=+", open("README").read())[5].strip()
