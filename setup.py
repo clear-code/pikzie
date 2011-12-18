@@ -243,13 +243,7 @@ class tag(Command):
         pass
 
     def run(self):
-        try:
-            _run("svn", "ls", "%s/tags/%s" % (sf_repos, version))
-        except:
-            _run("svn", "cp", "-m", "released %s!!!" % version,
-                 "%s/trunk" % sf_repos, "%s/tags/%s" % (sf_repos, version))
-        else:
-            print("%s is already tagged" % version)
+        _run("git", "tag", version, "-a", "-m", "released %s!!!" % version)
 
 download_url = "http://downloads.sourceforge.net/pikzie/pikzie-%s.tar.gz" % version
 setup(name=package_name,
