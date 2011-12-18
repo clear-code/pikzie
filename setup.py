@@ -259,7 +259,7 @@ setup(name=package_name,
       packages=["pikzie", "pikzie.ui"],
       classifiers=[
         "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development :: Testing",
         "Programming Language :: Python",
         "Natural Language :: Japanese",
