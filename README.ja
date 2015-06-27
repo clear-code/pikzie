@@ -86,6 +86,27 @@ git::
               |
 	      +- ...
 
+
+雛型
+----
+
+テストの雛型は以下のようになります。::
+
+  import pikzie
+  import テスト対象のモジュール
+  
+  class TestYourModule(pikzie.TestCase):
+      def setup(self):
+          # 初期化用コード
+	  self.setup_called = True
+  
+      def teardown(self):
+          # 後片付け用コード
+	  self.setup_called = False
+  
+      def test_condition(self): # "test_"から始める
+          self.assert_true(self.setup_called)
+
 test/run-test.pyは以下の通りです。::
 
   #!/usr/bin/env python
@@ -116,90 +137,6 @@ test/run-test.pyは以下の通りです。::
 あるいは::
   % python test/run_test.py
 
-オプション
-==========
-
---version                バージョンを表示して終了します。
-
--pPATTERN, --test-file-name-pattern=PATTERN テストファイル名
-                                            にマッチするグロ
-                                            ブパターンを指定
-                                            します。
-
-					    デフォルトは
-					    test/test_*.pyで
-					    す。
-
--nTEST_NAME, --name=TEST_NAME  TEST_NAMEにマッチしたテストを実
-                               行します。もし、TEST_NAMEが
-                               "/"で囲まれていた場合は（例:
-                               /test\_/）正規表現として扱いま
-                               す。
-
-			       このオプションは何度でも指定で
-                               き、その場合は、どれかのパター
-                               ンにマッチしたテストすべてが実
-                               行されます。
-
--tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  TEST_CASE_NAME
-                                              にマッチしたテ
-                                              ストケースを実
-                                              行します。もし、
-                                              TEST_CASE_NAME
-                                              が"/"で囲まれて
-                                              いた場合は（例:
-                                              /TestMyLib/）正
-                                              規表現として扱
-                                              います。
-
-					      このオプション
-                                              は何度でも指定
-                                              でき、その場合
-                                              は、どれかのパ
-                                              ターンにマッチ
-                                              したテストケー
-                                              スすべてが実行
-                                              されます。
-
---xml-report=FILE         テスト結果をXML形式でFILEに出力し
-                          ます。
-
---priority                優先度に応じて実行するテストを選択
-                          します。優先度が低いテストでも、前
-                          回のテストでパスしていないテストは
-                          実行します。
-
---no-priority             優先度に関係なく全てのテストを実行
-                          します。（デフォルト）
-
--vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
-                          [s|silent|n|normal|v|verbose]のう
-			  ちのどれかです。
-
-			  このオプションはコンソールUIを使用
-			  する場合だけ有効です。（現在はコン
-			  ソールUIしかありません。）
-
--cMODE, --color=MODE      出力を色付けするかどうかを指定しま
-                          す。MODEには[yes|true|no|false|auto]の
-                          どれかを指定します。yesまたはtrue
-                          が指定された場合はエスケープシーケ
-                          ンスで色付けして出力します。
-                          noまたはfalseが指定された場合は色付
-                          けしません。autoあるいは値が省略さ
-                          れた時は、可能なら色付けをします。
-
-			  このオプションはコンソールUIを使用
-                          する場合だけ有効です。（現在はコン
-                          ソールUIしかありません。）
-
---color-scheme=SCHEME     出力時にどの色を使うかを指定します。
-                          SCHEMEには[default]のどれかを指定
-                          します。
-
-			  このオプションはコンソールUIを使用
-                          する場合だけ有効です。（現在はコン
-                          ソールUIしかありません。）
 
 テスト結果
 ==========
@@ -378,6 +315,90 @@ XML出力
 リファレンス
 ============
 
+オプション
+==========
+
+--version                バージョンを表示して終了します。
+
+-pPATTERN, --test-file-name-pattern=PATTERN テストファイル名
+                                            にマッチするグロ
+                                            ブパターンを指定
+                                            します。
+
+					    デフォルトは
+					    test/test_*.pyで
+					    す。
+
+-nTEST_NAME, --name=TEST_NAME  TEST_NAMEにマッチしたテストを実
+                               行します。もし、TEST_NAMEが
+                               "/"で囲まれていた場合は（例:
+                               /test\_/）正規表現として扱いま
+                               す。
+
+			       このオプションは何度でも指定で
+                               き、その場合は、どれかのパター
+                               ンにマッチしたテストすべてが実
+                               行されます。
+
+-tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  TEST_CASE_NAME
+                                              にマッチしたテ
+                                              ストケースを実
+                                              行します。もし、
+                                              TEST_CASE_NAME
+                                              が"/"で囲まれて
+                                              いた場合は（例:
+                                              /TestMyLib/）正
+                                              規表現として扱
+                                              います。
+
+					      このオプション
+                                              は何度でも指定
+                                              でき、その場合
+                                              は、どれかのパ
+                                              ターンにマッチ
+                                              したテストケー
+                                              スすべてが実行
+                                              されます。
+
+--xml-report=FILE         テスト結果をXML形式でFILEに出力し
+                          ます。
+
+--priority                優先度に応じて実行するテストを選択
+                          します。優先度が低いテストでも、前
+                          回のテストでパスしていないテストは
+                          実行します。
+
+--no-priority             優先度に関係なく全てのテストを実行
+                          します。（デフォルト）
+
+-vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
+                          [s|silent|n|normal|v|verbose]のう
+			  ちのどれかです。
+
+			  このオプションはコンソールUIを使用
+			  する場合だけ有効です。（現在はコン
+			  ソールUIしかありません。）
+
+-cMODE, --color=MODE      出力を色付けするかどうかを指定しま
+                          す。MODEには[yes|true|no|false|auto]の
+                          どれかを指定します。yesまたはtrue
+                          が指定された場合はエスケープシーケ
+                          ンスで色付けして出力します。
+                          noまたはfalseが指定された場合は色付
+                          けしません。autoあるいは値が省略さ
+                          れた時は、可能なら色付けをします。
+
+			  このオプションはコンソールUIを使用
+                          する場合だけ有効です。（現在はコン
+                          ソールUIしかありません。）
+
+--color-scheme=SCHEME     出力時にどの色を使うかを指定します。
+                          SCHEMEには[default]のどれかを指定
+                          します。
+
+			  このオプションはコンソールUIを使用
+                          する場合だけ有効です。（現在はコン
+                          ソールUIしかありません。）
 表明
 ----
 
@@ -433,25 +454,6 @@ pikzie.priority(priority)
   never
     実行しない。
 
-雛型
-----
-
-テストの雛型は以下のようになります。::
-
-  import pikzie
-  import テスト対象のモジュール
-  
-  class TestYourModule(pikzie.TestCase):
-      def setup(self):
-          # 初期化用コード
-	  self.setup_called = True
-  
-      def teardown(self):
-          # 後片付け用コード
-	  self.setup_called = False
-  
-      def test_condition(self): # "test_"から始める
-          self.assert_true(self.setup_called)
 
 謝辞
 ----
