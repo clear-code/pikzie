@@ -68,6 +68,8 @@ There is "clear-code/pikzie
 git::
 
   % git clone https://github.com/clear-code/pikzie.git
+  % cd pikzie
+  % sudo python setup.py install
 
 Usage
 =====
