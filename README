@@ -104,6 +104,16 @@ are ran by invoking run-test.py like the following::
 
   % test/run-test.py
 
+If you get this error::
+  permission denied: test/run_test.py
+
+You can execute by command below::
+  % chmod u+x test/run_test.py
+  % test/run-test.py
+
+or::
+  % python test/run_test.py
+
 Options
 -------
 
