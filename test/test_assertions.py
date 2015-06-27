@@ -593,7 +593,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: open('%s') succeeds\n"
                              " but was: <%s>(%s) is raised" % \
                                  (nonexistent_path,
-                                  IOError,
+                                  FileNotFoundError,
                                   "[Errno 2] No such file or directory: '%s'" % \
                                       nonexistent_path),
                              None)],
