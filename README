@@ -86,6 +86,24 @@ We assume that you have the following directory structure::
               |
 	      +- ...
 
+Template
+--------
+
+Here is a template of a test case::
+
+  import pikzie
+  import test_target_module
+  
+  class TestYourModule(pikzie.TestCase):
+      def setup(self):
+	  self.setup_called = True
+  
+      def teardown(self):
+	  self.setup_called = False
+  
+      def test_condition(self): # starts with "test_"
+          self.assert_true(self.setup_called)
+
 test/run-test.py is the following::
 
   #!/usr/bin/env python
@@ -116,95 +134,6 @@ You can execute by command below::
 or::
   % python test/run_test.py
 
-Options
--------
-
---version               shows its own version and exits.
-
--pPATTERN, --test-file-name-pattern=PATTERN collects test
-                                            files that
-                                            matches with the
-                                            specified glob
-                                            pattern.
-
-					    Default: test/test_*.py
-
--nTEST_NAME, --name=TEST_NAME  runs tests that are matched
-                               with TEST_NAME. If TEST_NAME
-                               is surrounded by "/"
-                               (e.g. /test\_/), TEST_NAME is
-                               handled as regular
-                               expression.
-
-			       This option can be specified
-                               n times. In the case, Pikzie
-                               runs tests that are matched
-                               with any TEST_NAME.
-
--tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  runs test
-                                              cases that are
-                                              matched with
-                                              TEST_CASE_NAME.
-					      If
-                                              TEST_CASE_NAME
-                                              is surrounded
-                                              by "/"
-                                              (e.g. /TestMyLib/),
-                                              TEST_CASE_NAME
-                                              is handled as
-                                              regular
-                                              expression.
-
-					      This option
-					      can be
-					      specified n
-					      times. In the
-					      case, Pikzie
-					      runs test
-					      cases that are
-					      matched with
-					      any
-					      TEST_CASE_NAME.
-
---xml-report=FILE         outputs test result in XML format
-                          to FILE.
-
---priority                selects tests to run according to
-                          their priority. If a test is not
-                          passed in the previous test, the
-                          test is ran.
-
---no-priority             runs all tests regardless of their
-                          priority. (default)
-
--vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
-                          one of [s|silent|n|normal|v|verbose].
-
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
-
--cMODE, --color=MODE      specifies whether colorize output
-                          or not. MODE is one of
-                          [yes|true|no|false|auto]. If 'yes'
-                          or 'true' is specified, colorized
-                          output by escape sequence is used.
-			  If 'no' or 'false' is specified,
-                          colorized output is never used. If 'auto'
-			  or the option is omitted,
-                          colorized output is used if available.
-
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
-
---color-scheme=SCHEME     specifies whether color scheme is
-                          used for output. SCHEME is one of
-                          [default].
-
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
 
 Test result
 ===========
@@ -381,6 +310,96 @@ structure::
 References
 ==========
 
+Options
+-------
+
+--version               shows its own version and exits.
+
+-pPATTERN, --test-file-name-pattern=PATTERN collects test
+                                            files that
+                                            matches with the
+                                            specified glob
+                                            pattern.
+
+					    Default: test/test_*.py
+
+-nTEST_NAME, --name=TEST_NAME  runs tests that are matched
+                               with TEST_NAME. If TEST_NAME
+                               is surrounded by "/"
+                               (e.g. /test\_/), TEST_NAME is
+                               handled as regular
+                               expression.
+
+			       This option can be specified
+                               n times. In the case, Pikzie
+                               runs tests that are matched
+                               with any TEST_NAME.
+
+-tTEST_CASE_NAME, --test-case=TEST_CASE_NAME  runs test
+                                              cases that are
+                                              matched with
+                                              TEST_CASE_NAME.
+					      If
+                                              TEST_CASE_NAME
+                                              is surrounded
+                                              by "/"
+                                              (e.g. /TestMyLib/),
+                                              TEST_CASE_NAME
+                                              is handled as
+                                              regular
+                                              expression.
+
+					      This option
+					      can be
+					      specified n
+					      times. In the
+					      case, Pikzie
+					      runs test
+					      cases that are
+					      matched with
+					      any
+					      TEST_CASE_NAME.
+
+--xml-report=FILE         outputs test result in XML format
+                          to FILE.
+
+--priority                selects tests to run according to
+                          their priority. If a test is not
+                          passed in the previous test, the
+                          test is ran.
+
+--no-priority             runs all tests regardless of their
+                          priority. (default)
+
+-vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
+                          one of [s|silent|n|normal|v|verbose].
+
+			  This option is only for console
+			  UI. (There is only console UI at
+			  present.)
+
+-cMODE, --color=MODE      specifies whether colorize output
+                          or not. MODE is one of
+                          [yes|true|no|false|auto]. If 'yes'
+                          or 'true' is specified, colorized
+                          output by escape sequence is used.
+			  If 'no' or 'false' is specified,
+                          colorized output is never used. If 'auto'
+			  or the option is omitted,
+                          colorized output is used if available.
+
+			  This option is only for console
+			  UI. (There is only console UI at
+			  present.)
+
+--color-scheme=SCHEME     specifies whether color scheme is
+                          used for output. SCHEME is one of
+                          [default].
+
+			  This option is only for console
+			  UI. (There is only console UI at
+			  present.)
+
 Assertions
 ----------
 
@@ -437,23 +456,6 @@ pikzie.priority(priority)
   never
     never run the test.
 
-Template
---------
-
-Here is a template of a test case::
-
-  import pikzie
-  import test_target_module
-  
-  class TestYourModule(pikzie.TestCase):
-      def setup(self):
-	  self.setup_called = True
-  
-      def teardown(self):
-	  self.setup_called = False
-  
-      def test_condition(self): # starts with "test_"
-          self.assert_true(self.setup_called)
 
 Thanks
 ------
