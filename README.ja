@@ -104,6 +104,16 @@ test/run-test.pyは以下の通りです。::
 
   % test/run-test.py
 
+以下のエラーが出る場合::
+  permission denied: test/run_test.py
+
+以下のコマンドで実行できます::
+  % chmod u+x test/run_test.py
+  % test/run-test.py
+
+あるいは::
+  % python test/run_test.py
+
 オプション
 ==========
 
