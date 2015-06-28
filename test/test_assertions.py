@@ -617,6 +617,8 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.omit("only for Linux environment")
         if os.uname()[0] != "Linux":
             self.omit("only for Linux environment")
+        if not os.path.exists("/proc/kallsyms"):
+            self.omit("require /proc/kallsyms")
         self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_kernel_symbol",
