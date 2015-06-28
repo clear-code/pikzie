@@ -124,7 +124,7 @@ test/run-test.pyは以下の通りです。::
 
 test/run-test.pyに実行権をつけます。::
 
-  % chmod u+x test/run_test.py
+  % chmod +x test/run_test.py
 
 以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
 トを自動で読み込み、定義されているテストを実行します。::
