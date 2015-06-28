@@ -128,6 +128,18 @@ are ran by invoking run-test.py like the following::
 
   % test/run-test.py
 
+You can pass zero or more options to test/run-test.py like the
+following::
+
+  % test/run-test.py --priority
+
+You can see all available options by ``--help`` option like the
+following::
+
+  % test/run-test.py --help
+
+See "Options" section in this document for more details.
+
 Test result
 ===========
 
@@ -305,6 +317,8 @@ References
 
 Options
 -------
+
+See "Template" section in this document how to pass options to Pikzie.
 
 --version               shows its own version and exits.
 
