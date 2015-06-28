@@ -217,7 +217,7 @@ class TestRunner(pikzie.TestCase, Assertions):
                 self.assert_equal(data, data)
                 self.assert_equal("dict", data)
         label = "fail"
-        data = {"a":1, "b":2}
+        data = {"a": 1, "b": 2}
         test = TestCase("test_fail_assertion_dict_data", label, data)
         format = \
             "\n" \
