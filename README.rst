@@ -121,7 +121,7 @@ test/run-test.py is the following::
 
 Make test/run-test.py executable::
 
-  % chmod +x test/run_test.py
+  % chmod +x test/run-test.py
 
 test/test_*.py are automatically loaded and defined tests
 are ran by invoking run-test.py like the following::
