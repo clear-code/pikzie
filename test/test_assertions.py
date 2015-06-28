@@ -16,6 +16,10 @@ except ImportError:
 import pikzie
 import pikzie.pretty_print as pp
 import test.utils
+try:
+    import builtins
+except ImportError:
+    builtins = __builtins__
 
 base_path = os.path.dirname(__file__)
 tmp_path = os.path.join(base_path, "tmp")
@@ -587,13 +591,14 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_not_exists"])
 
     def test_assert_open_file(self):
+        file_not_found_error = getattr(builtins, "FileNotFoundError", IOError)
         self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_open_file",
                              "expected: open('%s') succeeds\n"
                              " but was: <%s>(%s) is raised" % \
                                  (nonexistent_path,
-                                  FileNotFoundError,
+                                  file_not_found_error,
                                   "[Errno 2] No such file or directory: '%s'" % \
                                       nonexistent_path),
                              None)],
