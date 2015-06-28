@@ -80,11 +80,11 @@ We assume that you have the following directory structure::
      |
      +- test -+- run-test.py
               |
-	      +- __init__.py
+              +- __init__.py
               |
-	      +- test_module1.py
+              +- test_module1.py
               |
-	      +- ...
+              +- ...
 
 Template
 --------
@@ -96,10 +96,10 @@ Here is a template of a test case::
   
   class TestYourModule(pikzie.TestCase):
       def setup(self):
-	  self.setup_called = True
+          self.setup_called = True
   
       def teardown(self):
-	  self.setup_called = False
+          self.setup_called = False
   
       def test_condition(self): # starts with "test_"
           self.assert_true(self.setup_called)
@@ -321,7 +321,7 @@ Options
                                             specified glob
                                             pattern.
 
-					    Default: test/test_*.py
+                                            Default: test/test_*.py
 
 -nTEST_NAME, --name=TEST_NAME  runs tests that are matched
                                with TEST_NAME. If TEST_NAME
@@ -330,7 +330,7 @@ Options
                                handled as regular
                                expression.
 
-			       This option can be specified
+                               This option can be specified
                                n times. In the case, Pikzie
                                runs tests that are matched
                                with any TEST_NAME.
@@ -339,7 +339,7 @@ Options
                                               cases that are
                                               matched with
                                               TEST_CASE_NAME.
-					      If
+                                              If
                                               TEST_CASE_NAME
                                               is surrounded
                                               by "/"
@@ -349,16 +349,16 @@ Options
                                               regular
                                               expression.
 
-					      This option
-					      can be
-					      specified n
-					      times. In the
-					      case, Pikzie
-					      runs test
-					      cases that are
-					      matched with
-					      any
-					      TEST_CASE_NAME.
+                                              This option
+                                              can be
+                                              specified n
+                                              times. In the
+                                              case, Pikzie
+                                              runs test
+                                              cases that are
+                                              matched with
+                                              any
+                                              TEST_CASE_NAME.
 
 --xml-report=FILE         outputs test result in XML format
                           to FILE.
@@ -374,31 +374,31 @@ Options
 -vLEVEL, --verbose=LEVEL  specifies verbose level. LEVEL is
                           one of [s|silent|n|normal|v|verbose].
 
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
+                          This option is only for console
+                          UI. (There is only console UI at
+                          present.)
 
 -cMODE, --color=MODE      specifies whether colorize output
                           or not. MODE is one of
                           [yes|true|no|false|auto]. If 'yes'
                           or 'true' is specified, colorized
                           output by escape sequence is used.
-			  If 'no' or 'false' is specified,
+                          If 'no' or 'false' is specified,
                           colorized output is never used. If 'auto'
-			  or the option is omitted,
+                          or the option is omitted,
                           colorized output is used if available.
 
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
+                          This option is only for console
+                          UI. (There is only console UI at
+                          present.)
 
 --color-scheme=SCHEME     specifies whether color scheme is
                           used for output. SCHEME is one of
                           [default].
 
-			  This option is only for console
-			  UI. (There is only console UI at
-			  present.)
+                          This option is only for console
+                          UI. (There is only console UI at
+                          present.)
 
 Assertions
 ----------

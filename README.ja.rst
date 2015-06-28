@@ -80,11 +80,11 @@ git::
      |
      +- test -+- run-test.py
               |
-	      +- __init__.py
+              +- __init__.py
               |
-	      +- test_module1.py
+              +- test_module1.py
               |
-	      +- ...
+              +- ...
 
 
 雛型
@@ -98,11 +98,11 @@ git::
   class TestYourModule(pikzie.TestCase):
       def setup(self):
           # 初期化用コード
-	  self.setup_called = True
+          self.setup_called = True
   
       def teardown(self):
           # 後片付け用コード
-	  self.setup_called = False
+          self.setup_called = False
   
       def test_condition(self): # "test_"から始める
           self.assert_true(self.setup_called)
@@ -323,9 +323,9 @@ XML出力
                                             ブパターンを指定
                                             します。
 
-					    デフォルトは
-					    test/test_*.pyで
-					    す。
+                                            デフォルトは
+                                            test/test_*.pyで
+                                            す。
 
 -nTEST_NAME, --name=TEST_NAME  TEST_NAMEにマッチしたテストを実
                                行します。もし、TEST_NAMEが
@@ -333,7 +333,7 @@ XML出力
                                /test\_/）正規表現として扱いま
                                す。
 
-			       このオプションは何度でも指定で
+                               このオプションは何度でも指定で
                                き、その場合は、どれかのパター
                                ンにマッチしたテストすべてが実
                                行されます。
@@ -349,7 +349,7 @@ XML出力
                                               規表現として扱
                                               います。
 
-					      このオプション
+                                              このオプション
                                               は何度でも指定
                                               でき、その場合
                                               は、どれかのパ
@@ -371,11 +371,11 @@ XML出力
 
 -vLEVEL, --verbose=LEVEL  出力の詳細さを指定します。LEVELは
                           [s|silent|n|normal|v|verbose]のう
-			  ちのどれかです。
+                          ちのどれかです。
 
-			  このオプションはコンソールUIを使用
-			  する場合だけ有効です。（現在はコン
-			  ソールUIしかありません。）
+                          このオプションはコンソールUIを使用
+                          する場合だけ有効です。（現在はコン
+                          ソールUIしかありません。）
 
 -cMODE, --color=MODE      出力を色付けするかどうかを指定しま
                           す。MODEには[yes|true|no|false|auto]の
@@ -386,7 +386,7 @@ XML出力
                           けしません。autoあるいは値が省略さ
                           れた時は、可能なら色付けをします。
 
-			  このオプションはコンソールUIを使用
+                          このオプションはコンソールUIを使用
                           する場合だけ有効です。（現在はコン
                           ソールUIしかありません。）
 
@@ -394,7 +394,7 @@ XML出力
                           SCHEMEには[default]のどれかを指定
                           します。
 
-			  このオプションはコンソールUIを使用
+                          このオプションはコンソールUIを使用
                           する場合だけ有効です。（現在はコン
                           ソールUIしかありません。）
 
