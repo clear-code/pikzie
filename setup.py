@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -46,7 +46,7 @@ sf_user = "ktou"
 sf_host = "%s@web.sourceforge.net" % sf_user
 sf_htdocs = "/home/groups/p/pi/pikzie/htdocs"
 
-long_description = re.split("\n.+\n=+", open("README").read())[5].strip()
+long_description = re.split("\n.+\n=+", open("README.rst").read())[5].strip()
 description = re.sub("\n", " ", long_description.split("\n\n")[0])
 
 def get_fullname(self):
@@ -134,10 +134,10 @@ class update_doc(Command):
     def run(self):
         self._generate_assertions_html(None)
         self._generate_assertions_html("ja")
-        _run("rst2html", "README", "html/readme.html")
-        _run("rst2html", "README.ja", "html/readme.html.ja")
-        _run("rst2html", "NEWS", "html/news.html")
-        _run("rst2html", "NEWS.ja", "html/news.html.ja")
+        _run("rst2html", "README.rst", "html/readme.html")
+        _run("rst2html", "README.ja.rst", "html/readme.html.ja")
+        _run("rst2html", "NEWS.rst", "html/news.html")
+        _run("rst2html", "NEWS.ja.rst", "html/news.html.ja")
 
     def _generate_assertions_html(self, lang):
         object = pikzie.assertions.Assertions
@@ -228,7 +228,7 @@ class release(Command):
         os.rename("dist/%s" % archive_name, archive_name)
         _run("misc/release.rb", sf_user,
              sf_project_id, sf_project_name, sf_package_name,
-             version, "README", "NEWS",
+             version, "README.rst", "NEWS.rst",
              archive_name)
 
 class tag(Command):
