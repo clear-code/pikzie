@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2011  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2009-2015  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,7 @@ def format_metadata(metadata, need_newline=False):
     format_keys = filter(lambda key: key != "data", metadata)
     formatted_metadata = ["  %s: %s" % (key, metadata[key])
                           for key
-                          in format_keys]
+                          in sorted(format_keys)]
     if len(formatted_metadata) == 0:
         return ""
     result = "\n".join(formatted_metadata)
