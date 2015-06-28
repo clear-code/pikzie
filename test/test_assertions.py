@@ -181,8 +181,11 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             def raise_name_error():
                 unknown_name
             exception = self.assert_raise_call(NameError, raise_name_error)
-            self.assert_equal("global name \'unknown_name\' is not defined",
-                              str(exception))
+            try:
+                unknown_name
+            except NameError as name_error:
+                expected_message = str(name_error)
+            self.assert_equal(expected_message, str(exception))
 
             def nothing_raised():
                 "nothing raised"
