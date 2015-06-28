@@ -122,23 +122,14 @@ test/run-test.pyは以下の通りです。::
 
   sys.exit(pikzie.Tester().run())
 
+test/run-test.pyに実行権をつけます。::
+
+  % chmod u+x test/run_test.py
+
 以下のようにtest/run-test.pyを起動すると、test/test_*.pyテス
 トを自動で読み込み、定義されているテストを実行します。::
 
   % test/run-test.py
-
-以下のエラーが出る場合::
-
-  permission denied: test/run_test.py
-
-以下のコマンドで実行できます::
-
-  % chmod u+x test/run_test.py
-  % test/run-test.py
-
-あるいは::
-
-  % python test/run_test.py
 
 
 テスト結果
