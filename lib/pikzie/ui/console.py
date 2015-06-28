@@ -292,6 +292,7 @@ class ConsoleTestRunner(object):
         term = os.getenv("TERM")
         if term and (term.endswith("term") or
                      term.endswith("term-color") or
+                     term.endswith("term-256color") or
                      term == "screen"):
             return True
         emacs = os.getenv("EMACS")
