@@ -12,6 +12,7 @@ except ImportError:
 
 import pikzie
 from pikzie.ui.console import ConsoleTestRunner
+import pikzie.pretty_print as pp
 
 from test.utils import *
 
@@ -230,6 +231,7 @@ class TestRunner(pikzie.TestCase, Assertions):
         target_line = "self.assert_equal(\"dict\", data)"
         line_no = Source.find_target_line_no(target_line)
         details = format % (label, target_line, str(data),
-                            self.file_name, line_no, target_line, str(data))
+                            self.file_name, line_no, target_line,
+                            pp.format(data))
         self.assert_output("F", 1, 1, 1, 0, 0, 0, 0, details, [test])
 
