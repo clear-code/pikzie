@@ -469,10 +469,12 @@ pikzie.priority(priority)
 ----
 
 - aztmさん
+
   バグレポートをしてくれました。
 
   ebuildを作ってくれました。
   http://diary.atzm.org/20081201.html#p01
 
 - Hideo Hattoriさん
+
   バグレポートをしてくれました。
