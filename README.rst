@@ -34,12 +34,12 @@ unittest.py included in the standard Python distribution:
 
 And Pikzie has the following features:
 
- - ...
+- ...
 
 Dependencies
 ============
 
- - Python >= 2.6 (Python 3.x is also supported.)
+- Python >= 2.6 (Python 3.x is also supported.)
 
 Install
 =======
@@ -468,9 +468,11 @@ Thanks
 ------
 
 - aztm:
+
   reports a bug.
 
   makes a ebuild. http://diary.atzm.org/20081201.html#p01
 
 - Hideo Hattori:
+
   reports a bug.
