@@ -12,7 +12,7 @@ Pikzie
 Author
 ======
 
-  * Kouhei Sutou <kou@clear-code.com>
+- Kouhei Sutou <kou@clear-code.com>
 
 License
 =======
@@ -28,18 +28,18 @@ Python.
 Pikzie provides the following features that are lacked in
 unittest.py included in the standard Python distribution:
 
-  * Pythonic API
-  * a lot of assertions
-  * outputs result with useful format for debugging.
+- Pythonic API
+- a lot of assertions
+- outputs result with useful format for debugging.
 
 And Pikzie has the following features:
 
-  * ...
+ - ...
 
 Dependencies
 ============
 
-  * Python >= 2.6 (Python 3.x is also supported.)
+ - Python >= 2.6 (Python 3.x is also supported.)
 
 Install
 =======
@@ -467,12 +467,10 @@ pikzie.priority(priority)
 Thanks
 ------
 
-  * aztm:
+- aztm:
+  reports a bug.
 
-    * reports a bug.
+  makes a ebuild. http://diary.atzm.org/20081201.html#p01
 
-    * makes a ebuild. http://diary.atzm.org/20081201.html#p01
-
-  * Hideo Hattori:
-
-    * reports a bug.
+- Hideo Hattori:
+  reports a bug.
