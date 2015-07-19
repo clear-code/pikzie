@@ -468,7 +468,7 @@ pikzie.priority(priority)
 謝辞
 ----
 
-* aztmさん
+* atzmさん
 
   * バグレポートをしてくれました。
 

@@ -467,7 +467,7 @@ pikzie.priority(priority)
 Thanks
 ------
 
-* aztm:
+* atzm:
 
   * reports a bug.
 
