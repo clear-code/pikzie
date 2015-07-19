@@ -12,7 +12,7 @@ Pikzie（ピクジー）
 作者
 ====
 
-- Kouhei Sutou <kou@clear-code.com>
+* Kouhei Sutou <kou@clear-code.com>
 
 ライセンス
 ==========
@@ -28,18 +28,18 @@ Testing Frameworkです。
 PikzieはPython標準のunittest.pyに欠けている以下の機能を提供し
 ます。
 
-- PythonらしいAPI
-- 豊富な表明（assert_*）
-- デバッグに使いやすい出力結果
+* PythonらしいAPI
+* 豊富な表明（assert_*）
+* デバッグに使いやすい出力結果
 
 上記に加えて以下のような特徴があります。
 
-- ...
+* ...
 
 依存関係
 ========
 
-- Python >= 2.6 （Python 3.xでも可）
+* Python >= 2.6 （Python 3.xでも可）
 
 インストール
 ============
@@ -468,13 +468,13 @@ pikzie.priority(priority)
 謝辞
 ----
 
-- aztmさん
+* aztmさん
 
   バグレポートをしてくれました。
 
   ebuildを作ってくれました。
   http://diary.atzm.org/20081201.html#p01
 
-- Hideo Hattoriさん
+* Hideo Hattoriさん
 
   バグレポートをしてくれました。
