@@ -19,7 +19,7 @@ class XML(object):
     def __init__(self, output):
         self.file = isinstance(output, str)
         if self.file:
-            output = file(output, "w")
+            output = open(output, "w")
         self.output = output
         self.have_test = False
 
