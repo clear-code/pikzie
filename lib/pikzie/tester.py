@@ -103,6 +103,7 @@ auto_test_run_reject_pattern = \
 def auto_test_run():
     if Tester.ran: return
     if not sys.argv[0]: return
+    if sys.argv[0] == '-c': return
     if re.search(auto_test_run_reject_pattern, sys.argv[0]): return
     sys.exit(Tester(target_modules=['__main__']).run())
 
