@@ -52,13 +52,6 @@ Install with pip::
 
   % sudo pip install Pikzie
 
-Install from tar.gz::
-
-  % wget http://downloads.sourceforge.net/pikzie/pikzie-1.0.0.tar.gz
-  % tar xvzf pikzie-1.0.0.tar.gz
-  % cd pikzie-1.0.0
-  % sudo python setup.py install
-
 Repository
 ==========
 
