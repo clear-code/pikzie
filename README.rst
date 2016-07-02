@@ -58,7 +58,7 @@ Repository
 There is "clear-code/pikzie
 <https://github.com/clear-code/pikzie>"_ on GitHub.
 
-git::
+Git::
 
   % git clone https://github.com/clear-code/pikzie.git
   % cd pikzie

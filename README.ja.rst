@@ -58,7 +58,7 @@ pipでインストール::
 GitHubの "clear-code/pikzie
 <https://github.com/clear-code/pikzie>"_ にあります。
 
-git::
+Git::
 
   % git clone https://github.com/clear-code/pikzie.git
   % cd pikzie
