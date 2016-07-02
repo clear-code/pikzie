@@ -6,6 +6,59 @@
 
 The history of Pikzie
 
+1.0.2: 2016-07-02
+=================
+
+Improvements
+------------
+
+  * README: Added document about trouble shouting for permission error
+    of ``test/run-test.py``. [GitHub#2][Patch by Yosuke Yasuda]
+
+  * README: Added document about how to install unreleased source.
+    [GitHub#3][Patch by Keita Watanabe]
+
+  * README: Improved description order.
+    [GitHub#4][Patch by Keita Watanabe]
+
+  * Supported Python 3.
+    [GitHub#5][Reported by Yosuke Yasuda]
+    [GitHub#7][Reported by Shohei Kikuchi]
+    [GitHub#13][Patch by Yosuke Yasuda]
+    [GitHub#19][Patch by Fujimoto Seiji]
+    [GitHub#20][Patch by Fujimoto Seiji]
+
+  * Console output: Enabled colorization by default when ``TERM``
+    value ends with ``term-256color``.
+
+  * README: Added document about how to specify options.
+    [GitHub#10][Suggested by kabayan55]
+
+Fixes
+-----
+
+  * README: Fixed heading order.
+    [GitHub#12][Patch by Shohei Kikuchi]
+
+  * README: Fixed markup.
+    [GitHub#17][Patch by Shohei Kikuchi]
+
+  * Fixed a problem that ``pip install pikzie`` failures.
+    [GitHub#18][Patch by Fujimoto Seiji]
+
+Thanks
+------
+
+  * Yosuke Yasuda
+
+  * Keita Watanabe
+
+  * Shohei Kikuchi
+
+  * kabayan55
+
+  * Fujimoto Seiji
+
 1.0.1: 2011-12-18
 =================
 

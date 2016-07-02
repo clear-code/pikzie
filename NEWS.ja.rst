@@ -6,6 +6,59 @@
 
 Pikzieの歴史
 
+1.0.2: 2016-07-02
+=================
+
+改良
+----
+
+  * README: ``test/run-test.py`` 実行時にパーミッションエラーになる場
+    合の対応方法を追加。[GitHub#2][Yosuke Yasudaさんがパッチ提供]
+
+  * README: リリース前のソースをインストールする方法を追加。
+    [GitHub#3][Keita Watanabeさんがパッチ提供]
+
+  * README: 説明の順番を改善。
+    [GitHub#4][Keita Watanabeさんがパッチ提供]
+
+  * Python 3対応。
+    [GitHub#5][Yosuke Yasudaさんが報告]
+    [GitHub#7][Shohei Kikuchiさんが報告]
+    [GitHub#13][Yosuke Yasudaさんがパッチ提供]
+    [GitHub#19][Fujimoto Seijiさんがパッチ提供]
+    [GitHub#20][Fujimoto Seijiさんがパッチ提供]
+
+  * コンソール出力: ``TERM`` の値が ``term-256color`` で終わるときはデ
+    フォルトで色付きになるようにした。
+
+  * README: オプションの指定方法を追加。
+    [GitHub#10][kabayan55さんが提案]
+
+修正
+----
+
+  * README: 見出しの位置を修正。
+    [GitHub#12][Shohei Kikuchiさんがパッチ提供]
+
+  * README: マークアップを修正。
+    [GitHub#17][Shohei Kikuchiさんがパッチ提供]
+
+  * ``pip install pikzie`` が失敗する問題を修正。
+    [GitHub#18][Fujimoto Seijiさんがパッチ提供]
+
+感謝
+----
+
+  * Yosuke Yasudaさん
+
+  * Keita Watanabeさん
+
+  * Shohei Kikuchiさん
+
+  * kabayan55さん
+
+  * Fujimoto Seijiさん
+
 1.0.1: 2011-12-18
 =================
 
