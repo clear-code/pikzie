@@ -462,19 +462,3 @@ pikzie.priority(priority)
 
   never
     実行しない。
-
-
-
-謝辞
-----
-
-* atzmさん
-
-  * バグレポートをしてくれました。
-
-  * ebuildを作ってくれました。
-    http://diary.atzm.org/20081201.html#p01
-
-* Hideo Hattoriさん
-
-  * バグレポートをしてくれました。

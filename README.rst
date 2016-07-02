@@ -462,17 +462,3 @@ pikzie.priority(priority)
 
   never
     never run the test.
-
-
-Thanks
-------
-
-* atzm:
-
-  * reports a bug.
-
-  * makes a ebuild. http://diary.atzm.org/20081201.html#p01
-
-* Hideo Hattori:
-
-  * reports a bug.
