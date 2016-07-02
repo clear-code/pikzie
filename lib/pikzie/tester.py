@@ -37,7 +37,7 @@ class Tester(object):
                     return sys.modules[module_or_name]
                 else:
                     return module_or_name
-            target_modules = map(ensure_module, target_modules)
+            target_modules = list(map(ensure_module, target_modules))
         self.target_modules = target_modules
 
     def run(self, args=None):
