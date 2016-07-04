@@ -126,6 +126,8 @@ class TestCaseRunner(object):
         context.on_start_test_case(self.test_case)
         for test in tests:
             test.run(context)
+            if context.need_interrupt():
+                break
         context.on_finish_test_case(self.test_case)
 
 class TestCaseTemplate(object):
