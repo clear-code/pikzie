@@ -74,6 +74,9 @@ class Assertions(object):
         for test_name in tests:
             self.TestCase(test_name).run(context)
 
+            if context.need_interrupt():
+                raise KeyboardInterrupt
+
         self.assert_equal(self.RegexpMatchResult(succeeded,
                                                  (n_tests,
                                                   n_assertions,
