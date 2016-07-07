@@ -6,6 +6,20 @@
 
 The history of Pikzie
 
+1.0.3: 2016-07-07
+=================
+
+Fixes
+-----
+
+  * Fixed a bug that ``Ctrl-c`` doesn't stop test.
+    [GitHub#24][Patch by Fujimoto Seiji]
+
+Thanks
+------
+
+  * Fujimoto Seiji
+
 1.0.2: 2016-07-02
 =================
 
