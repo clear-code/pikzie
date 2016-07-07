@@ -281,7 +281,7 @@ class TestCase(TestCaseTemplate, Assertions):
                 except OmissionTestError:
                     self._omit_test(context)
                 except KeyboardInterrupt:
-                    context.interrupted()
+                    context.interrupt()
                     return
                 except:
                     self._add_error(context)
@@ -297,7 +297,7 @@ class TestCase(TestCaseTemplate, Assertions):
                 except OmissionTestError:
                     self._omit_test(context)
                 except KeyboardInterrupt:
-                    context.interrupted()
+                    context.interrupt()
                     return
                 except:
                     self._add_error(context)
@@ -309,7 +309,7 @@ class TestCase(TestCaseTemplate, Assertions):
                 except OmissionTestError:
                     self._omit_test(context)
                 except KeyboardInterrupt:
-                    context.interrupted()
+                    context.interrupt()
                 except:
                     self._add_error(context)
                     success = False
