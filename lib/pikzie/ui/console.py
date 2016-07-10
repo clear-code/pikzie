@@ -87,7 +87,7 @@ class ConsoleTestRunner(object):
     def __init__(self, output=sys.stdout, use_color=None, verbose_level=None,
                  color_scheme=None):
         if use_color is None:
-            use_color = self._detect_color_availability()
+            use_color = self._detect_color_availability(output)
         self.use_color = use_color
         if verbose_level is None:
             verbose_level = VERBOSE_LEVEL_NORMAL
@@ -288,11 +288,12 @@ class ConsoleTestRunner(object):
     def _content_color(self):
         return self.color_scheme["content"]
 
-    def _detect_color_availability(self):
-        term = os.getenv("TERM")
-        if term and term != "dumb":
-            return True
-        emacs = os.getenv("EMACS")
-        if emacs and (emacs == "t"):
-            return True
+    def _detect_color_availability(self, output):
+        if hasattr(output, 'isatty') and output.isatty():
+            term = os.getenv("TERM")
+            if term and term != "dumb":
+                return True
+            emacs = os.getenv("EMACS")
+            if emacs and (emacs == "t"):
+                return True
         return False
