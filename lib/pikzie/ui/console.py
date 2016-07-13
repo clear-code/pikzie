@@ -288,12 +288,18 @@ class ConsoleTestRunner(object):
     def _content_color(self):
         return self.color_scheme["content"]
 
+    def _is_tty(self, output):
+        if not hasattr(output, "isatty"):
+            return False
+        return output.isatty()
+
     def _detect_color_availability(self, output):
-        if hasattr(output, 'isatty') and output.isatty():
-            term = os.getenv("TERM")
-            if term and term != "dumb":
-                return True
-            emacs = os.getenv("EMACS")
-            if emacs and (emacs == "t"):
-                return True
+        if not self._is_tty(output):
+            return False
+        term = os.getenv("TERM")
+        if term and term != "dumb":
+            return True
+        emacs = os.getenv("EMACS")
+        if emacs and (emacs == "t"):
+            return True
         return False
