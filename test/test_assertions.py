@@ -578,7 +578,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_search_syslog_call"])
 
     def test_assert_exists(self):
-        self.assert_result(False, 1, 0, 1, 0, 0, 0, 0,
+        self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_exists",
                              "expected: <%s> exists" % nonexistent_path,
@@ -586,7 +586,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_exists"])
 
     def test_assert_not_exists(self):
-        self.assert_result(False, 1, 0, 1, 0, 0, 0, 0,
+        self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_not_exists",
                              "expected: <%s> doesn't exists" % __file__,
@@ -595,7 +595,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
 
     def test_assert_open_file(self):
         file_not_found_error = getattr(builtins, "FileNotFoundError", IOError)
-        self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
+        self.assert_result(False, 1, 4, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_open_file",
                              "expected: open('%s') succeeds\n"
@@ -608,7 +608,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                            ["test_assert_open_file"])
 
     def test_try_call(self):
-        self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
+        self.assert_result(False, 1, 2, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_try_call",
                              "expected: %s succeeds\n"
@@ -627,7 +627,7 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.omit("only for Linux environment")
         if not os.path.exists("/proc/kallsyms"):
             self.omit("require /proc/kallsyms")
-        self.assert_result(False, 1, 1, 1, 0, 0, 0, 0,
+        self.assert_result(False, 1, 4, 1, 0, 0, 0, 0,
                            [('F',
                              "TestCase.test_assert_kernel_symbol",
                              "expected: <'nonexistent'> is in kernel symbols",
