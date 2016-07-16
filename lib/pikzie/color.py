@@ -101,5 +101,17 @@ SCHEMES = {
         "file-name": COLORS["cyan"],
         "line-number": COLORS["yellow"],
         "content": None,
+        },
+    "simple": {
+        "success": Color("green"),
+        "notification": Color("none", bold=True),
+        "pending": Color("magenta"),
+        "omission": Color("blue"),
+        "failure": Color("red"),
+        "error": Color("yellow"),
+        "test-case-name": Color("none", bold=True),
+        "file-name": None,
+        "line-number": None,
+        "content": None,
         }
     }
