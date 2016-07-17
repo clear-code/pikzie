@@ -34,7 +34,7 @@ class ConsoleTestRunner(object):
         available_values = "[yes|true|no|false|auto]"
         def store_use_color(option, opt, value, parser):
             if value == "yes" or value == "true":
-                parser.values.verbose_level = True
+                parser.values.use_color = True
             elif value == "no" or value == "false":
                 parser.values.use_color = False
             elif value == "auto" or value is None:
