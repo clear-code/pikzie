@@ -485,7 +485,7 @@ class Assertions(object):
           self.assert_exists("/tmp/nonexistence") # => fail
         """
         if os.path.exists(path):
-            self._pass_assertion
+            self._pass_assertion()
         else:
             self.fail("expected: <%s> exists" % path)
 
@@ -499,7 +499,7 @@ class Assertions(object):
         if os.path.exists(path):
             self.fail("expected: <%s> doesn't exists" % path)
         else:
-            self._pass_assertion
+            self._pass_assertion()
 
     def assert_open_file(self, name, *args):
         """
@@ -519,7 +519,7 @@ class Assertions(object):
                  pp.format_exception_class(exception_class),
                  str(exception_value))
             self._fail(message)
-        self._pass_assertion
+        self._pass_assertion()
         return result
 
     def assert_try_call(self, timeout, interval,
@@ -559,7 +559,7 @@ class Assertions(object):
                 if wait_time > 0:
                     time.sleep(wait_time)
                 rest -= max(runtime, interval)
-        self._pass_assertion
+        self._pass_assertion()
         return result
 
     def assert_kernel_symbol(self, name):
@@ -580,6 +580,6 @@ class Assertions(object):
             address = symbol_info[0]
             symbol_name = symbol_info[2]
             if name == symbol_name:
-                self._pass_assertion
+                self._pass_assertion()
                 return address
         self._fail("expected: <%r> is in kernel symbols" % name)
