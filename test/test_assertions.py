@@ -181,6 +181,24 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
             self.assert_callable("string")
             self.assert_callable(self.test_assert_callable)
 
+        def test_assert_raise(self):
+            with self.assert_raise(NameError):
+                unknown_name
+
+            with self.assert_raise(NameError):
+                "no exception raised"
+
+        def test_assert_raise_unexpected(self):
+            with self.assert_raise(NameError):
+                1 / 0  # unexpected error
+
+        def test_assert_raise_instance(self):
+            with self.assert_raise(TestAssertions.ComparableError("expected")):
+                raise TestAssertions.ComparableError('expected')
+
+            with self.assert_raise(TestAssertions.ComparableError("expected")):
+                raise TestAssertions.ComparableError('unexpected')
+
         def test_assert_raise_call(self):
             def raise_name_error():
                 unknown_name
@@ -480,6 +498,36 @@ class TestAssertions(pikzie.TestCase, test.utils.Assertions):
                              "expected: callable('string')",
                              None)],
                            ["test_assert_callable"])
+
+    def test_assert_raise(self):
+        try:
+            1 / 0
+        except ZeroDivisionError as exception:
+            zero_division_error = exception
+
+        self.assert_result(
+            False, 3, 2, 3, 0, 0, 0, 0,
+            [("F",
+              "TestCase.test_assert_raise",
+              "expected: %s is raised\n"
+              " but was: no exception raised" % NameError,
+              None),
+             ("F",
+              'TestCase.test_assert_raise_unexpected',
+              "expected: %s is raised\n"
+              " but was: %s(%s)" % (NameError, type(zero_division_error),
+                                    zero_division_error),
+              None),
+             ("F",
+              "TestCase.test_assert_raise_instance",
+              "expected: <%r>\n"
+              " but was: <%r>" % \
+              (TestAssertions.ComparableError('expected'),
+               TestAssertions.ComparableError('unexpected')),
+              None)],
+            ["test_assert_raise",
+             "test_assert_raise_unexpected",
+             "test_assert_raise_instance"])
 
     def test_assert_raise_call(self):
         zero_division_error = None
