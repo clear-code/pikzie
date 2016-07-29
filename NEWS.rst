@@ -6,6 +6,35 @@
 
 The history of Pikzie
 
+1.0.4: 2016-07-29
+=================
+
+Improvements
+------------
+
+  * Improved the default value whether color output is used or not.
+    [GitHub#25][GitHub#26][Patch by Fujimoto Seiji]
+
+  * Removed needless code for backward compatibility.
+    [GitHub#27][Patch by Fujimoto Seiji]
+
+  * Added a new assertion ``assert_raise`` that can be used with ``with``.
+    [GitHub#30][Patch by Fujimoto Seiji]
+
+Fixes
+-----
+
+  * Fixed a bug that the number of assertions in summary is wrong.
+    [GitHub#28][Patch by Fujimoto Seiji]
+
+  * Fixed a bug that ``--color=yes`` doesn't work.
+    [GitHub#29][Patch by Fujimoto Seiji]
+
+Thanks
+------
+
+  * Fujimoto Seiji
+
 1.0.3: 2016-07-07
 =================
 
