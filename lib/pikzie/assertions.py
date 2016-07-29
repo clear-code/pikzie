@@ -274,6 +274,21 @@ class Assertions(object):
             system_message = "expected: callable(%s)" % (object)
             self._fail(system_message, message)
 
+    def assert_raise(self, exception):
+        """
+        Passes if the code block within the context raises `exception`.
+
+          with self.assert_raise(NameError):  # => pass
+              unknown_variable
+
+          with self.assert_raise(NameError):  # => fail
+              pass
+
+        If an exception instance (not a class) is given, comparison with the
+        raised exception is done through `assert_equal()`.
+        """
+        return AssertRaiseContext(exception, self)
+
     def assert_raise_call(self, exception, callable_object, *args, **kw_args):
         """
         Passes if callable_object(*args, **kw_args) raises exception and
@@ -583,3 +598,47 @@ class Assertions(object):
                 self._pass_assertion()
                 return address
         self._fail("expected: <%r> is in kernel symbols" % name)
+
+
+class AssertRaiseContext(object):
+    """A context manager for exception-related testing"""
+
+    def __init__(self, exception, test_case):
+        self.exception = exception
+        self.test_case = test_case
+
+    @property
+    def exception_class(self):
+        if isinstance(self.exception, BaseException):
+            return self.exception.__class__
+        else:
+            return self.exception
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        if exc_type is None:
+            expected = pp.format_exception_class(self.exception_class)
+            message = "expected: %s is raised\n" \
+                      " but was: no exception raised" % expected
+            self.test_case._fail(message)
+
+        if not isinstance(exc_value, BaseException):
+            # In Python 2.6, exc_value is not always normalized to an
+            # exception instance, so we convert it manually here.
+            exc_value = exc_type(exc_value)
+
+        if self.exception_class == exc_type:
+            if self.exception == exc_type:
+                self.test_case._pass_assertion()
+            else:
+                self.test_case.assert_equal(self.exception, exc_value)
+        else:
+            expected = pp.format_exception_class(self.exception_class)
+            actual = pp.format_exception_class(exc_type)
+            message = \
+                "expected: %s is raised\n" \
+                " but was: %s(%s)" % (expected, actual, str(exc_value))
+            self.test_case._fail(message)
+        return True
