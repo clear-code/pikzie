@@ -87,7 +87,7 @@ COLORS = {
     "white": Color("white", bold=True),
     "white-back": Color("white", foreground=False),
     "reset": Color("reset"),
-    }
+}
 
 SCHEMES = {
     "default": {
@@ -101,7 +101,7 @@ SCHEMES = {
         "file-name": COLORS["cyan"],
         "line-number": COLORS["yellow"],
         "content": None,
-        },
+    },
     "simple": {
         "success": Color("green"),
         "notification": Color("none", bold=True),
@@ -113,5 +113,5 @@ SCHEMES = {
         "file-name": None,
         "line-number": None,
         "content": None,
-        }
     }
+}
