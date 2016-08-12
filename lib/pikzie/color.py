@@ -80,6 +80,7 @@ COLORS = {
     "green-back": Color("green", foreground=False),
     "yellow": Color("yellow", bold=True),
     "blue": Color("blue", bold=True),
+    "blue-back": Color("blue", foreground=False),
     "magenta": Color("magenta", bold=True),
     "magenta-back": Color("magenta", foreground=False),
     "cyan": Color("cyan", bold=True),
@@ -91,15 +92,15 @@ COLORS = {
 
 SCHEMES = {
     "default": {
-        "success": COLORS["green"],
-        "notification": COLORS["cyan"],
-        "pending": COLORS["magenta"],
-        "omission": COLORS["white-back"] + COLORS["blue"],
-        "failure": COLORS["red"],
-        "error": COLORS["yellow"],
-        "test-case-name": COLORS["green-back"] + COLORS["white"],
-        "file-name": COLORS["cyan"],
-        "line-number": COLORS["yellow"],
+        "success": COLORS["green-back"] + COLORS["white"],
+        "notification": COLORS["cyan-back"] + COLORS["white"],
+        "pending": COLORS["magenta-back"] + COLORS["white"],
+        "omission": COLORS["blue-back"] + COLORS["white"],
+        "failure": COLORS["red-back"] + COLORS["white"],
+        "error": COLORS["black-back"] + COLORS["yellow"],
+        "test-case-name": COLORS["blue-back"] + COLORS["white"],
+        "file-name": None,
+        "line-number": None,
         "content": None,
     },
     "simple": {
