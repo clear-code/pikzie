@@ -277,7 +277,7 @@ class ConsoleTestRunner(object):
             return self.color_scheme["success"]
         else:
             sorted_faults = sorted(context.faults, key=fault_compare_key)
-            return self._fault_color(sorted_faults[0])
+            return self._fault_color(sorted_faults[-1])
 
     def _file_name_color(self):
         return self.color_scheme["file-name"]
