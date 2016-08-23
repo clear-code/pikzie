@@ -318,6 +318,22 @@ Pikzieにオプションを指定する方法はこのドキュメント内の�
 
 --version                バージョンを表示して終了します。
 
+-h, --help               ヘルプメッセージを表示して終了します。
+
+--base-dir=DIR           テストファイルが含まれるルートディレクトリを
+                         指定します。テストケースをロードする際にはDIR
+                         以下が探索されます。
+
+                         デフォルトではテストスクリプト(run-test.py)が
+                         配置されたディレクトリが探索されます。
+
+--ignore-direcotry=DIRECOTRY テストケースを探索する際にDIRECTORY以下を
+                             無視します。このオプションは複数回指定する
+                             ことができます。
+
+                             デフォルトは.svn, CVS, .git, .test-result
+                             です。
+
 -pPATTERN, --test-file-name-pattern=PATTERN テストファイル名
                                             にマッチするグロ
                                             ブパターンを指定
