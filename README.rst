@@ -315,6 +315,20 @@ See "Template" section in this document how to pass options to Pikzie.
 
 --version               shows its own version and exits.
 
+-h, --help              shows help message and exits.
+
+--base-dir=DIR          specifies the root directory which contains
+                        the test files. Pikzie will walk inside the
+                        directory to discover test cases.
+
+                        By default, the directory contains the test
+                        runner script (run-test.py) will be used.
+
+--ignore-direcotry=DIRECOTRY Don't load tests under DIRECTORY. This
+                             option can be specified multiple times.
+
+                             Default: .svn, CVS, .git, .test-result
+
 -pPATTERN, --test-file-name-pattern=PATTERN collects test
                                             files that
                                             matches with the
