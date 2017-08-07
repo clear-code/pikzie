@@ -324,7 +324,7 @@ See "Template" section in this document how to pass options to Pikzie.
                         By default, the directory contains the test
                         runner script (run-test.py) will be used.
 
---ignore-direcotry=DIRECOTRY Don't load tests under DIRECTORY. This
+--ignore-directory=DIRECTORY Don't load tests under DIRECTORY. This
                              option can be specified multiple times.
 
                              Default: .svn, CVS, .git, .test-result
