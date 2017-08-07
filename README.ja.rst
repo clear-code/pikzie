@@ -327,7 +327,7 @@ Pikzieにオプションを指定する方法はこのドキュメント内の�
                          デフォルトではテストスクリプト(run-test.py)が
                          配置されたディレクトリが探索されます。
 
---ignore-direcotry=DIRECOTRY テストケースを探索する際にDIRECTORY以下を
+--ignore-directory=DIRECTORY テストケースを探索する際にDIRECTORY以下を
                              無視します。このオプションは複数回指定する
                              ことができます。
 
